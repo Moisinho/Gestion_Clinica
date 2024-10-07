@@ -26,24 +26,16 @@
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>
             <form method="POST" action="../controllers/procesar_cita.php">
-                <div class="mb-4">
-                    <label for="name" class="block text-gray-700">Name</label>
-                    <input type="text" id="name" required
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
-                <div class="mb-4">
-                    <label for="last_name" class="block text-gray-700">Last name</label>
-                    <input type="text" id="last_name" required
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
+
+
                 <div class="mb-4">
                     <label for="cedula" class="block text-gray-700">Cédula</label>
-                    <input type="text" id="cedula" required
+                    <input type="text" id="cedula" name="cedula" required
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="mb-4">
-                    <label for="tipoCita" class="block text-gray-700">Tipo de cita</label>
-                    <input type="text" id="tipoCita" required
+                    <label for="motivo" class="block text-gray-700">Motivo de cita</label>
+                    <input type="text" id="motivo" name="motivo" required
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 
@@ -66,15 +58,9 @@
                     </select>
                 </div>  
 
-
-                <div class="mb-4">
-                    <label for="telefono" class="block text-gray-700">Teléfono</label>
-                    <input type="tel" id="telefono"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
                 <div class="mb-4">
                     <label for="fecha" class="block text-gray-700">Fecha de cita</label>
-                    <input type="date" id="fecha" required
+                    <input type="date" id="fecha" name="fecha_cita" required
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="flex justify-between">
@@ -92,8 +78,9 @@
             <table class="min-w-full table-auto">
                 <thead>
                     <tr>
-                        <th class="px-4 py-2 text-left text-gray-600">Tipo de cita</th>
+                        <th class="px-4 py-2 text-left text-gray-600">Motivo</th>
                         <th class="px-4 py-2 text-left text-gray-600">Fecha</th>
+                        <th class="px-4 py-2 text-left text-gray-600">Estado</th>
                         <th class="px-4 py-2"></th>
                     </tr>
                 </thead>
@@ -101,6 +88,7 @@
     <?php include '../controllers/obtener_citas.php'; ?>
     <?php foreach ($citas as $cita): ?>
         <tr class="border-b">
+            <td class="px-4 py-2"><?php echo htmlspecialchars($cita['motivo']); ?></td>
             <td class="px-4 py-2"><?php echo htmlspecialchars($cita['fecha_cita']); ?></td>
             <td class="px-4 py-2"><?php echo htmlspecialchars($cita['estado']); ?></td>
             <td class="px-4 py-2">
