@@ -1,9 +1,10 @@
 <?php
 class Database {
     private $host = "autorack.proxy.rlwy.net";
-    private $db_name = "Gestion_ClinicaDB";
-    private $username = "root"; // Cambia a tu nombre de usuario de MySQL
-    private $password = "QrythNCGsIPDUxnFylEEsiDjVWFELQwO"; // Cambia a tu contraseña de MySQL
+    private $port = "47824";
+    private $db_name = "gestion_clinicadb";
+    private $username = "root";
+    private $password = "QrythNCGsIPDUxnFylEEsiDjVWFELQwO";
     private $conn;
 
     // Método para obtener la conexión a la base de datos
@@ -11,8 +12,10 @@ class Database {
         $this->conn = null;
 
         try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Modo de error de PDO
+            $this->conn = new PDO("mysql:host=" . $this->host . ";port=" .$this->port . ";dbname=" . $this->db_name, $this->username, $this->password, [
+                PDO::ATTR_TIMEOUT => 55, // Tiempo de espera en segundos
+            ]);
+            
         } catch(PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
         }
