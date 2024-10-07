@@ -8,7 +8,7 @@
 
 </head>
 <body>
-    <h1 class="text-Celestito text-3xl">Bienvenido</h1>
-    <a href="app/views/agendar_cita.php">hola</a>
+    <h1 class="text-Celestito text-3xl">Hay que hacer una hijueperra pagina principal</h1>
+    <a href="app/views/">hola</a>
 </body>
 </html>

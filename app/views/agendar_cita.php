@@ -7,24 +7,12 @@
     <title>Registro de Reservas de Citas Médicas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../js/tailwind-config.js"></script>
+
 </head>
 
 <body class="bg-gray-100">
     <!-- Encabezado -->
-    <header class="bg-Moradito py-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-purple-900">Clínica Condado Real</h1>
-            <nav>
-                <ul class="flex space-x-4 text-purple-900">
-                    <li><a href="#" class="hover:text-purple-600">Inicio</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Nosotros</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Contactos</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Reservas</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Atención Virtual</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?php include '../includes/header.php'; ?>
 
     <!-- Título Principal -->
     <section class="my-8">
@@ -108,6 +96,7 @@
             </table>
         </div>
     </div>
+        <?php include '../includes/footer.php'; ?>
 </body>
 
 </html>
