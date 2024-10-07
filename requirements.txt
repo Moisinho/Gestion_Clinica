@@ -1,0 +1,13 @@
+Celestote: #81BACE;
+Celestito: #C4DCDC;
+Moradote: #6A5492;
+Morado: #A9A1D4;
+Moradito: #D1CDE4;
+
+Conexion a la BD
+
+Nombre: Gestion_ClinicaDB
+Host: http://autorack.proxy.rlwy.net
+Puerto: 47824
+Contraseña: QrythNCGsIPDUxnFylEEsiDjVWFELQwO
+User: root

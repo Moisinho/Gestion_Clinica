@@ -10,7 +10,7 @@
 
 <body class="bg-gray-100">
     <!-- Encabezado -->
-    <header class="bg-purple-200 py-4">
+    <header class="bg-Moradito py-4">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold text-purple-900">Clínica Condado Real</h1>
             <nav>
