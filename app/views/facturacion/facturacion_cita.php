@@ -1,3 +1,10 @@
+<?php 
+// Inicializa $citas como un array vacío si no está definido
+if (!isset($citas)) {
+    $citas = [];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,62 +43,54 @@
                 <table class="min-w-full table-auto">
                     <thead class="bg-purple-600 text-white">
                         <tr>
-                            <th class="p-2">Nombre</th>
-                            <th class="p-2">Teléfono</th>
-                            <th class="p-2">Dirección</th>
-                            <th class="p-2">E-mail</th>
-                            <th class="p-2">DNI</th>
-                            <th class="p-2">Fecha de reserva</th>
+                            <th class="p-2">id_cita</th>
                             <th class="p-2">Estado</th>
-                            <th class="p-2">Atención</th>
-                            <th class="p-2">NHC</th>
-                            <th class="p-2">Más</th>
+                            <th class="p-2">Recordatorio</th>
+                            <th class="p-2">Fecha Cita</th>
+                            <th class="p-2">Diagnóstico</th>
+                            <th class="p-2">Tratamiento</th>
+                            <th class="p-2">cedula</th>
+                            <th class="p-2">id_medico</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            $database = new Database;
-                            
+                            // Incluir la clase Database y Cita
+                            require_once '../../includes/Database.php';
+                            require_once '../../models/Cita.php';
 
-                            // Crear la conexión
-                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            // Crear instancia de la clase Database y obtener la conexión
+                            $database = new Database();
+                            $conn = $database->getConnection();
 
-                            // Verificar la conexión
-                            if ($conn->connect_error) {
-                                die("Conexión fallida: " . $conn->connect_error);
-                            }
+                            // Crear la instancia de Cita
+                            $cita = new Cita($conn);
 
-                            // Variables del formulario
+                            // Definir la variable de búsqueda al cargar la página
                             $busqueda = isset($_POST['busqueda']) ? $_POST['busqueda'] : '';
 
-                            // Procedimiento almacenado
-                            $sql = "CALL BuscarCitas('$busqueda')";
-                            $result = $conn->query($sql);
-
-                            // Verificar si se obtuvieron resultados
-                            if ($result->num_rows > 0) {
-                                // Recorrer los resultados
-                                while($row = $result->fetch_assoc()) {
-                                    echo "<tr class='border-b'>";
-                                    echo "<td class='p-2'>" . $row['nombre'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['telefono'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['direccion'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['email'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['dni'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['fecha_reserva'] . "</td>";
-                                    echo "<td class='p-2 text-green-500'>" . $row['estado'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['atencion'] . "</td>";
-                                    echo "<td class='p-2'>" . $row['nhc'] . "</td>";
-                                    echo "<td class='p-2'><button class='bg-blue-500 text-white p-2 rounded-md'>COBRAR</button></td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='10' class='p-2 text-center'>No se encontraron registros</td></tr>";
-                            }
-
-                            // Cerrar la conexión
-                            $conn->close();
+                            // Mapear las citas usando el método en la clase Cita
+                            $citas = $cita->mapear_citas($busqueda); // Asignar el resultado a $citas
                         ?>
+                        <?php if (!empty($citas)):?>
+                            <?php foreach ($citas as $row): ?>
+                                <tr class="border-b">
+                                    <td class="p-2"><?php echo htmlspecialchars($row['id_cita']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['estado']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['recordatorio']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['fecha_cita']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['diagnostico']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['tratamiento']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['cedula']); ?></td>
+                                    <td class="p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
+                                    <td class="p-2"><button class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="p-2 text-center">No se encontraron registros</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

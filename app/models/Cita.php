@@ -1,7 +1,7 @@
 <?php
 class Cita {
     private $conn; // Conexión a la base de datos
-    private $table_name = "Cita"; // Nombre de la tabla
+    private $table_name = "cita"; // Nombre de la tabla
 
     // Propiedades de la clase
     public $id_cita;
@@ -10,7 +10,7 @@ class Cita {
     public $fecha_cita;
     public $diagnostico;
     public $tratamiento;
-    public $id_paciente;
+    public $cedula;
     public $id_medico;
 
     // Constructor que recibe la conexión a la base de datos
@@ -55,17 +55,31 @@ class Cita {
 
 
     public function mapear_citas($input) {
-        // Llamar al procedimiento almacenado
+        // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
         $query = "CALL BuscarCitas(?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $input, PDO::PARAM_STR);
-        
-        if ($stmt->execute()) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Convertir la variable a cadena si es necesario
+        $input_str = is_array($input) ? implode(",", $input) : $input;
+    
+        // Aquí hay un cambio: `bindParam` devuelve verdadero o falso, no el valor
+        // Por eso, verifica si `bindParam` fue exitoso
+        if ($stmt->bindParam(1, $input_str, PDO::PARAM_STR)) {
+            // Ejecutar la consulta
+            if ($stmt->execute()) {
+                // Si la consulta se ejecuta correctamente, devolver los resultados
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                // Manejo de errores si la ejecución falla
+                return [];
+            }
         } else {
+            // Manejo de errores si bindParam falla
             return [];
         }
     }
+    
+    
 
     public function eliminar_cita($placa) {
         $query = "DELETE FROM automoviles WHERE placa = :placa";
