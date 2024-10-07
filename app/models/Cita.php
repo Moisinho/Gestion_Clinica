@@ -43,21 +43,50 @@ class Cita {
             return [];
         }
     }
-    
 
-    public function validar_cita($placa) {
-        $query = "SELECT * FROM automoviles WHERE placa = :placa";
+    public function mapear_citas_pendientes() {
+        // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
+        $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':placa', $placa, PDO::PARAM_INT);
-    
-        if ($stmt->execute()) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);  // Devolver los datos del automóvil
-        } else {
-            return false;
-        }
+
+            if ($stmt->execute()) {
+                // Si la consulta se ejecuta correctamente, devolver los resultados
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                // Manejo de errores si la ejecución falla
+                return [];
+            }
     }
 
+    public function buscarCitasPorCriterio($criterio, $valor)
+    {
+        // Agregar los comodines de porcentaje a la variable $valor
+        $valor = "%$valor%";
 
+        // Construir la consulta con PDO
+        $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Confirmada'";
+        
+        // Preparar la consulta
+        $stmt = $this->conn->prepare($query);
+    
+        // Enlazar el valor con bindValue (PDO::PARAM_STR se usa para cadenas)
+        $stmt->bindValue(':valor', $valor, PDO::PARAM_STR);
+    
+        // Ejecutar la consulta
+        $stmt->execute();
+    
+        // Devolver los resultados como un array asociativo
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } 
+
+    public function actualizarEstadoCita($id_cita, $nuevo_estado) {
+        $query = "UPDATE cita SET estado = :nuevo_estado WHERE id_cita = :id_cita";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':nuevo_estado', $nuevo_estado);
+        $stmt->bindParam(':id_cita', $id_cita);
+        return $stmt->execute();
+    }
+    
         public function obtener_citas() {
         $query = "SELECT id_cita, motivo, estado, recordatorio, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM Cita";
         $stmt = $this->conn->prepare($query);
@@ -89,7 +118,6 @@ public function registrarCita($cedula, $motivo, $id_medico, $fecha_cita) {
     
     return $stmt->execute();
 }
-
     
 }
 ?>
