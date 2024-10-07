@@ -41,7 +41,7 @@ if (!isset($citas)) {
             <h2 class="flex text-xl font-bold text-gray-700 p-4">CITAS SIN COBRAR</h2>
             <div class="flex-1 bg-white shadow-md rounded-lg">
                 <table class="min-w-full table-auto">
-                    <thead class="bg-purple-600 text-white">
+                    <thead class="bg-purple-600 text-white text-center">
                         <tr>
                             <th class="p-2">id_cita</th>
                             <th class="p-2">Estado</th>
@@ -51,6 +51,7 @@ if (!isset($citas)) {
                             <th class="p-2">Tratamiento</th>
                             <th class="p-2">cedula</th>
                             <th class="p-2">id_medico</th>
+                            <th class="p-2">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,16 +75,16 @@ if (!isset($citas)) {
                         ?>
                         <?php if (!empty($citas)):?>
                             <?php foreach ($citas as $row): ?>
-                                <tr class="border-b">
-                                    <td class="p-2"><?php echo htmlspecialchars($row['id_cita']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['estado']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['recordatorio']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['fecha_cita']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['diagnostico']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['tratamiento']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['cedula']); ?></td>
-                                    <td class="p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
-                                    <td class="p-2"><button class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button></td>
+                                <tr class="border-b text-center">
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['id_cita']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['estado']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['recordatorio']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['fecha_cita']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['diagnostico']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['tratamiento']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['cedula']); ?></td>
+                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
+                                    <td class="border-r p-2"><button class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -94,10 +95,6 @@ if (!isset($citas)) {
                     </tbody>
                 </table>
             </div>
-        </div>
-        <!-- Publicidad -->
-        <div class="w-64 bg-gray-200 ml-4 rounded-lg shadow-md p-4 text-center">
-            <p class="text-xl font-bold">Publicidad o foto fina</p>
         </div>
     </div>
 </body>
