@@ -2,6 +2,7 @@ Celestote: #81BACE;
 Celestito: #C4DCDC;
 Moradote: #6A5492;
 Morado: #A9A1D4;
+<<<<<<< HEAD
 Moradito: #D1CDE4;
 
 Conexion a la BD
@@ -11,3 +12,6 @@ Host: http://autorack.proxy.rlwy.net
 Puerto: 47824
 Contraseña: QrythNCGsIPDUxnFylEEsiDjVWFELQwO
 User: root
+=======
+Moradito: #D1CDE4;
+>>>>>>> 635becda00550e956a0c4e7385181af3390b8e4d
