@@ -1,10 +1,27 @@
+
+
 <?php
-class Database {
+/*
     private $host = "autorack.proxy.rlwy.net";
     private $port = "47824"; // Puerto especificado
     private $db_name = "gestion_clinicadb";
     private $username = "root"; // Usuario proporcionado
     private $password = "QrythNCGsIPDUxnFylEEsiDjVWFELQwO"; // Contraseña proporcionada
+    private $conn;
+    
+    private $host = "localhost";
+    private $db_name = "railway";
+    private $username = "root"; // Cambia a tu nombre de usuario de MySQL
+    private $password = ""; // Cambia a tu contraseña de MySQL
+    private $conn;
+    
+    */
+
+class Database {
+    private $host = "localhost";
+    private $db_name = "railway";
+    private $username = "root"; // Cambia a tu nombre de usuario de MySQL
+    private $password = ""; // Cambia a tu contraseña de MySQL
     private $conn;
 
     // Método para obtener la conexión a la base de datos
