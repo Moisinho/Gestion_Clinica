@@ -142,6 +142,13 @@ class Cita {
         
         return $stmt->execute();
     }
+
+        public function obtener_citas() {
+        $query = "SELECT id_cita, estado, recordatorio, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM Cita";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     
     
 }
