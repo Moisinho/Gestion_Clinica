@@ -56,10 +56,6 @@ class Cita {
             return false;
         }
     }
-
-    
-
-
     public function obtener_citas() {
         $query = "SELECT id_cita, motivo, estado, recordatorio, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM Cita";
         $stmt = $this->conn->prepare($query);
@@ -91,7 +87,7 @@ class Cita {
         $stmt->bindParam(4, $this->fecha_cita);
         
         return $stmt->execute();
-}
+    }
 
     
 }

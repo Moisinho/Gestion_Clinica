@@ -23,16 +23,23 @@
             <h2 class="text-lg font-bold text-Moradote">Información de cita</h2>
             <p>Fecha: <?php echo date("d/m/Y H:i", strtotime($fecha_cita)); ?></p>
             <p>Motivo: <?php echo htmlspecialchars($motivo, ENT_QUOTES, 'UTF-8'); ?></p>
-            <form method="POST" action="../controllers/actualizar_cita.php">
-            <input type="hidden" name="id_cita" value="<?php echo $id_cita; ?>">
-            <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- O el estado que desees -->
             <div class="mt-4">
-                <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
-                <button class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
-            </div>
-        </form>
+                <!-- Formulario para actualizar el estado de la cita -->
+                <form method="POST" action="../controllers/actualizar_cita.php" class="inline">
+                    <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
+                    <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- Estado que desees actualizar -->
+                    <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
+                </form>
 
+                <!-- Formulario para ver el expediente -->
+                <form method="POST" action="../controllers/obtener_historial.php" class="inline ml-2">
+                    <input type="hidden" name="cedula" value="<?php echo htmlspecialchars($paciente['cedula']); ?>">
+                    <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
+                    <button type="submit" name="accion" value="ver" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
+                </form>
+            </div>
         </div>
+
 
         <div class="mt-5">
             <h3 class="text-lg font-bold text-Moradote">Información del Paciente</h3>
@@ -132,7 +139,7 @@
 
             <!-- Exámenes y Estudios -->
             <div class="mt-5">
-                <h3 class="text-lg font-bold text-Moradote">Exámenes y Estudios</h3>
+                <h3 class="text-lg font-bold text-Moradito">Exámenes y Estudios</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="condicion_general" class="block font-bold">Condición General</label>
@@ -153,7 +160,7 @@
                 <h3 class="text-lg font-bold text-Moradote">Receta</h3>
                 <table class="w-full border-collapse mt-2">
                     <thead>
-                        <tr class="bg-Moradito">
+                        <tr class="bg-purple-300">
                             <th class="border px-2 py-1">Medicamento</th>
                             <th class="border px-2 py-1">Dosis</th>
                             <th class="border px-2 py-1">Frecuencia</th>

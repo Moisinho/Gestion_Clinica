@@ -1,13 +1,13 @@
 <?php
 // Suponiendo que ya tienes la conexión a la base de datos configurada
 require_once '../includes/Database.php';
-require_once '../models/Cita.php';
+
 
 $database = new Database();
 $db = $database->getConnection();
 
 // Aquí puedes cambiar el id de la cita a lo que necesites, por ejemplo, un parámetro que venga de la sesión o de un formulario.
-$id_cita = 3; // Cambia por la lógica adecuada
+$id_cita = 1; // Cambia por la lógica adecuada
 
 // Consulta para obtener la información de la cita
 $sql  = "
