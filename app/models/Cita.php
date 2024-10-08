@@ -92,7 +92,7 @@ class Cita {
         }
     }
     public function obtener_citas() {
-        $query = "SELECT id_cita, motivo, estado, recordatorio, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM Cita";
+        $query = "SELECT id_cita, motivo, estado, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM cita";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

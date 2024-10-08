@@ -45,6 +45,7 @@
                     if (response.ok) {
                         // Maneja la respuesta del servidor
                         alert('Registro completado con éxito.');
+                        window.location.href = '../agendar_cita.php';
                     } else {
                         alert('Error al registrar, intenta nuevamente.');
                     }

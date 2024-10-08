@@ -14,6 +14,12 @@
     <!-- Encabezado -->
     <?php include '../includes/header.php'; ?>
 
+    <div class="flex justify-end">
+        <a href="medico_inicio.php" class="flex-end">
+            <img src="media/arrow-right.png" alt="siguiente" class="w-12">
+        </a>
+        
+    </div>
     <!-- Título Principal -->
     <section class="my-8">
         <h2 class="text-Moradote text-3xl font-bold text-center">Registro de Reservas de Citas Médicas</h2>
@@ -84,18 +90,24 @@
                         <th class="px-4 py-2"></th>
                     </tr>
                 </thead>
+    <?php include '../controllers/obtenerCitas.php'; ?>
 <tbody>
-    <?php include '../controllers/obtener_citas.php'; ?>
-    <?php foreach ($citas as $cita): ?>
-        <tr class="border-b">
-            <td class="px-4 py-2"><?php echo htmlspecialchars($cita['motivo']); ?></td>
-            <td class="px-4 py-2"><?php echo htmlspecialchars($cita['fecha_cita']); ?></td>
-            <td class="px-4 py-2"><?php echo htmlspecialchars($cita['estado']); ?></td>
-            <td class="px-4 py-2">
-                <button class="bg-Moradote text-white px-4 py-2 rounded-lg hover:bg-purple-500">Detalles</button>
-            </td>
+    <?php if (!empty($citas)): ?>
+        <?php foreach ($citas as $cita): ?>
+            <tr class="border-b">
+                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['motivo']); ?></td>
+                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['fecha_cita']); ?></td>
+                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['estado']); ?></td>
+                <td class="px-4 py-2">
+                    <button class="bg-Moradote text-white px-4 py-2 rounded-lg hover:bg-purple-500">Detalles</button>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="4" class="px-4 py-2 text-center">No hay citas programadas</td>
         </tr>
-    <?php endforeach; ?>
+    <?php endif; ?>
 </tbody>
 
             </table>

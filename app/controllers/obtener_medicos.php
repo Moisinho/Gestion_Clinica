@@ -4,7 +4,7 @@ require '../includes/Database.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-$query = "SELECT id_medico, nombre_medico FROM Medico";
+$query = "SELECT id_medico, nombre_medico FROM medico";
 
 $stmt = $conn->prepare($query);
 $stmt->execute();
