@@ -67,7 +67,6 @@
         <div class="text-white text-lg font-bold">Clínica Condado Real</div>
         <ul class="flex space-x-4 text-white font-semibold">
             <li><a href="#" class="hover:underline">RESERVAS</a></li>
-            <li><a href="#" class="hover:underline">ATENCION VIRTUAL</a></li>
         </ul>
     </nav>
 
