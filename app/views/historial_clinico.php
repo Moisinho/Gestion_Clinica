@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../js/tailwind-config.js"></script>
 </head>
-
 <body class="bg-gray-50 font-sans">
-    <?php include '../includes/header.php'; ?>
+    <!-- Encabezado -->
+    <header class="bg-purple-300 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-purple-900">Clínica Condado Real</h1>
+            <nav>
+                <ul class="flex space-x-4 text-purple-900">
+                    <li><a href="#" class="hover:text-purple-600">Inicio</a></li>
+                    <li><a href="#" class="hover:text-purple-600">Gestión de Citas</a></li>
+                    <li><a href="#" class="hover:text-purple-600">Pacientes</a></li>
+                    <li><a href="#" class="hover:text-purple-600">Datos personales</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <!-- Contenido principal -->
     <div class="container mx-auto p-5">
@@ -78,8 +89,11 @@
             ?>
         </div>
     </div>
-    
-    <?php include '../includes/footer.php'; ?>
+
+    <!-- Pie de página -->
+    <footer class="bg-purple-300 text-Moradote font-bold text-center py-4 mt-5">
+        <p>&copy; 2024 Clínica Condado Real. Todos los derechos reservados.</p>
+    </footer>
 </body>
 
 </html>

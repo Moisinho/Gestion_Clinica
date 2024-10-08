@@ -3,18 +3,20 @@ require_once '../includes/Database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $database = new Database();
-    $db = $database->getConnection();
+    $db = $database->getConnection(); // Conexión usando PDO
 
+    // Recibir los datos del formulario
     $peso = $_POST['peso'];
     $altura = $_POST['altura'];
     $presion_arterial = $_POST['presion_arterial'];
     $frecuencia_cardiaca = $_POST['frecuencia_cardiaca'];
     $tipo_sangre = $_POST['tipo_sangre'];
 
+    // Recoger antecedentes patológicos
     $antecedentes_patologicos = isset($_POST['antecedentes_patologicos']) ? implode(", ", $_POST['antecedentes_patologicos']) : '';
     $otros_antecedentes_patologicos = isset($_POST['otros_antecedentes_patologicos']) ? $_POST['otros_antecedentes_patologicos'] : '';
 
-
+    // Recoger antecedentes no patológicos
     $antecedentes_no_patologicos = isset($_POST['antecedentes_no_patologicos']) ? implode(", ", $_POST['antecedentes_no_patologicos']) : '';
     $otros_antecedentes_no_patologicos = isset($_POST['otros_antecedentes_no_patologicos']) ? $_POST['otros_antecedentes_no_patologicos'] : '';
 
@@ -25,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recomendaciones = $_POST['recomendaciones'];
     $tratamiento = $_POST['tratamiento'];
 
-    $sql = "INSERT INTO historial_medico
+    // Preparar la consulta usando placeholders para evitar SQL injection
+    $sql = "INSERT INTO historial_medico 
             (cedula, id_cita, id_medico, peso, altura, presion_arterial, frecuencia_cardiaca, tipo_sangre, 
             antecedentes_personales, otros_antecedentes, antecedentes_no_patologicos, otros_antecedentes_no_patologicos, 
             condicion_general, examenes, laboratorios, diagnostico, recomendaciones, tratamiento) 
@@ -36,9 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Preparar la consulta con PDO
     $stmt = $db->prepare($sql);
 
-    $stmt->bindValue(':cedula', '123987456');
-    $stmt->bindValue(':id_cita', 3);
-    $stmt->bindValue(':id_medico', 1);
+    // Asignar valores a los placeholders usando bindValue()
+    $stmt->bindValue(':cedula', '8-12903-23'); // Aquí se debería obtener la cédula del paciente
+    $stmt->bindValue(':id_cita', 5); // Aquí se debería obtener el id de la cita
+    $stmt->bindValue(':id_medico', 2); // Aquí se debería obtener el id del médico
     $stmt->bindValue(':peso', $peso);
     $stmt->bindValue(':altura', $altura);
     $stmt->bindValue(':presion_arterial', $presion_arterial);
