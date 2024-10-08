@@ -33,7 +33,7 @@ $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cit
 <body class="flex h-[100vh] font-serif justify-center items-center bg-[#A9A1D4]">
     <div class="flex flex-col bg-white p-4 w-[75vh] h-[85vh] rounded-md shadow-xl border border-black-600 text-center overflow-y-auto">
         <h2 class="text-2xl font-bold mb-4">Registrar Cobro</h2>
-        <form action="./menu_factura.php" method="post" id="form-cobro">
+        <form action="../../controllers/procesar_factura.php" method="post" id="form-cobro">
             <input type="hidden" id="id_cita" name="id_cita" value="<?php echo htmlspecialchars($id_cita);?>">
                 <!-- Método de pago -->
                 <div class="mx-16 mb-4">
