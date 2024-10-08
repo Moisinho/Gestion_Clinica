@@ -2,6 +2,8 @@
 
 $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cita';
 
+        
+
 ?>
 
 <!DOCTYPE html>
@@ -13,22 +15,37 @@ $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cit
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Ocultar todos los campos de pago inicialmente
-            $("#campos-tarjeta, #campo-efectivo").hide();
+    $(document).ready(function() {
+        // Ocultar todos los campos de pago inicialmente
+        $("#campos-tarjeta, #campo-efectivo").hide();
 
-            // Mostrar campos según el método de pago seleccionado
-            $('input[name="metodo_pago"]').change(function() {
-                if ($(this).val() === 'tarjeta') {
-                    $("#campos-tarjeta").show();
-                    $("#campo-efectivo").hide();
-                } else if ($(this).val() === 'efectivo') {
-                    $("#campo-efectivo").show();
-                    $("#campos-tarjeta").hide();
-                }
-            });
+        // Desactivar los campos inicialmente
+        $('#campos-tarjeta input, #campos-tarjeta select').prop('required', false);
+        $('#campo-efectivo input, #campo-efectivo select').prop('required', false);
+
+        // Mostrar campos según el método de pago seleccionado y ajustar los atributos required
+        $('input[name="metodo_pago"]').change(function() {
+            if ($(this).val() === 'tarjeta') {
+                // Mostrar los campos de tarjeta y activar required
+                $("#campos-tarjeta").show();
+                $("#campo-efectivo").hide();
+                
+                // Activar los campos de tarjeta y desactivar los de efectivo
+                $('#campos-tarjeta input, #campos-tarjeta select').prop('required', true);
+                $('#campo-efectivo input, #campo-efectivo select').prop('required', false);
+            } else if ($(this).val() === 'efectivo') {
+                // Mostrar los campos de efectivo y activar required
+                $("#campo-efectivo").show();
+                $("#campos-tarjeta").hide();
+
+                // Activar los campos de efectivo y desactivar los de tarjeta
+                $('#campo-efectivo input, #campo-efectivo select').prop('required', true);
+                $('#campos-tarjeta input, #campos-tarjeta select').prop('required', false);
+            }
         });
-    </script>
+    });
+</script>
+
 </head>
 <body class="flex h-[100vh] font-serif justify-center items-center bg-[#A9A1D4]">
     <div class="flex flex-col bg-white p-4 w-[75vh] h-[85vh] rounded-md shadow-xl border border-black-600 text-center overflow-y-auto">

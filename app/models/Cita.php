@@ -42,6 +42,41 @@ class Cita {
             return [];
         }
     }
+
+    public function mapear_citas_pendientes() {
+        // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
+        $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
+        $stmt = $this->conn->prepare($query);
+        
+        if ($stmt->execute()) {
+            // Si la consulta se ejecuta correctamente, devolver los resultados
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            // Manejo de errores si la ejecución falla
+            return [];
+        }
+    }
+
+    public function buscarCitasPorCriterio($criterio, $valor)
+    {
+        // Agregar los comodines de porcentaje a la variable $valor
+        $valor = "%$valor%";
+
+        // Construir la consulta con PDO
+        $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Confirmada'";
+        
+        // Preparar la consulta
+        $stmt = $this->conn->prepare($query);
+    
+        // Enlazar el valor con bindValue (PDO::PARAM_STR se usa para cadenas)
+        $stmt->bindValue(':valor', $valor, PDO::PARAM_STR);
+    
+        // Ejecutar la consulta
+        $stmt->execute();
+    
+        // Devolver los resultados como un array asociativo
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } 
     
     public function actualizarEstado($id_cita, $nuevo_estado) {
         $sql = "UPDATE cita SET estado = :estado WHERE id_cita = :id_cita";
