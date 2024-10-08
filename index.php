@@ -10,6 +10,6 @@
 <body>
         <?php include 'app/includes/header.php'; ?>
     <h1 class="text-Celestito text-3xl">Hay que hacer una pagina principal</h1>
-    <a href="app/views/registros/registro-usuario.php">Registrar usuario</a>
+    <a href="app/views/registros/registro-usuario.php">Registrar nuevo usuario</a>
 </body>
 </html>
