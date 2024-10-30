@@ -13,7 +13,7 @@ class Registro {
     }
 
     // Método para registrar un nuevo usuario
-    public function registrarUsuario($cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $contrasenia) {
+    public function registrarUsuario($cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $sexo, $seguro, $contrasenia) {
         // Calcular la edad
         $fecha_actual = new DateTime();
         $fecha_nac = new DateTime($fecha_nacimiento);
@@ -27,53 +27,59 @@ class Registro {
             $contraseniaHashed = password_hash($contrasenia, PASSWORD_DEFAULT);
 
             // Insertar en la tabla usuario
-            $sqlUsuario = "INSERT INTO usuario (correo, tipo_usuario, contrasenia) VALUES (?, 'paciente', ?)";
+            $sqlUsuario = "INSERT INTO usuario (correo, tipo_usuario, contrasenia) VALUES (?, 'Paciente', ?)";
             $stmtUsuario = $this->conn->prepare($sqlUsuario);
             $stmtUsuario->execute([$correo, $contraseniaHashed]);
             $id_usuario = $this->conn->lastInsertId(); // Obtener el ID del usuario insertado
 
-            // Preparar la consulta para insertar en paciente
-            $sqlPaciente = "INSERT INTO paciente (cedula, nombre_paciente, correo_paciente, fecha_nacimiento, direccion_paciente, telefono, edad, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmtPaciente = $this->conn->prepare($sqlPaciente);
+            // Obtener el id_seguro a partir del nombre de la aseguradora
+            $sqlSeguro = "SELECT id_seguro FROM seguro WHERE nombre_aseguradora = ?";
+            $stmtSeguro = $this->conn->prepare($sqlSeguro);
+            $stmtSeguro->execute([$seguro]);
+            $resultadoSeguro = $stmtSeguro->fetch(PDO::FETCH_ASSOC);
 
-            // Ejecutar la consulta para paciente
-            if ($stmtPaciente->execute([$cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $edad, $id_usuario])) {
-                // Confirmar la transacción
-                $this->conn->commit();
-                return true; // Registro exitoso
-            } else {
-                throw new Exception("Error al registrar en la tabla paciente");
+            if (!$resultadoSeguro) {
+                throw new Exception("No se encontró el seguro seleccionado.");
             }
+            $id_seguro = $resultadoSeguro['id_seguro']; // Obtener el id_seguro
+
+            // Preparar la consulta para insertar en paciente
+            $sqlPaciente = "INSERT INTO paciente (cedula, nombre_paciente, correo_paciente, fecha_nacimiento, direccion_paciente, telefono, edad, id_usuario, sexo, id_seguro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmtPaciente = $this->conn->prepare($sqlPaciente);
+            $stmtPaciente->execute([$cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $edad, $id_usuario, $sexo, $id_seguro]);
+
+            // Confirmar la transacción
+            $this->conn->commit();
+
+            // Iniciar sesión y almacenar información del usuario
+            session_start(); // Llamar a session_start() aquí, después del éxito del registro
+            $_SESSION['id_usuario'] = $id_usuario; // Almacena el ID del usuario
+            $_SESSION['nombre'] = $nombre; // Almacena el nombre del usuario
+
+            // Mostrar alerta y redirigir
+            echo "<script>
+                    alert('Registro exitoso. Bienvenido, $nombre.');
+                    window.location.href = '../views/Paciente/index_paciente.php'; // Cambia esto a la ruta deseada
+                  </script>";
         } catch (Exception $e) {
-            // Deshacer la transacción en caso de error
+            // Revertir la transacción si ocurre un error
             $this->conn->rollBack();
-            return false; // Error en el registro
+            echo "Error en el registro: " . $e->getMessage();
         }
     }
 }
 
-// Comprobar si el formulario fue enviado
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Depurar los datos recibidos
-    var_dump($_POST); // Muestra los datos recibidos del formulario
-
-    // Obtener datos del formulario
-    $cedula = $_POST['cedula'] ?? null;
-    $nombre = $_POST['nombre'] ?? null;
-    $correo = $_POST['correo'] ?? null;
-    $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? null;
-    $direccion = $_POST['direccion'] ?? null;
-    $telefono = $_POST['telefono'] ?? null;
-    $contrasenia = $_POST['contrasenia'] ?? null; // Obtener la contraseña del formulario
-
-    // Crear una instancia de la clase Registro
-    $registro = new Registro();
-
-    // Registrar al usuario
-    if ($registro->registrarUsuario($cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $contrasenia)) {
-        echo "Registro exitoso";
-    } else {
-        echo "Error en el registro";
-    }
-}
+// Crear una instancia de la clase Registro
+$registro = new Registro();
+$registro->registrarUsuario(
+    $_POST['cedula'],
+    $_POST['nombre'],
+    $_POST['correo'],
+    $_POST['fecha_nacimiento'],
+    $_POST['direccion'],
+    $_POST['telefono'],
+    $_POST['sexo'],
+    $_POST['seguro'],
+    $_POST['contrasenia']
+);
 ?>

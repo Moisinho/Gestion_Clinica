@@ -2,13 +2,13 @@
     <div class="container mx-auto flex items-center justify-between py-4 px-6">
         <!-- Logo de la clínica -->
         <div class="flex items-center">
-            <img src="../media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
+            <img src="http://localhost/Gestion_Clinica/app/views/media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
             <span class="text-2xl font-bold">Clinica Pacoren</span>
         </div>
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6">
-            <a href="index_pciente.php" class="hover:text-purple-800">Inicio</a>
+            <a href="index_paciente.php" class="hover:text-purple-800">Inicio</a>
             <a href="servicios.php" class="hover:text-purple-800">Mis citas</a>
             <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
         </nav>
