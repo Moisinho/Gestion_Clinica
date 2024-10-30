@@ -8,9 +8,7 @@
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6">
-            <a href="index_pciente.php" class="hover:text-purple-800">Inicio</a>
-            <a href="servicios.php" class="hover:text-purple-800">Mis citas</a>
-            <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
+            <a href="../../views/Doctor/medico_inicio.php" class="hover:text-purple-800">Inicio</a>
         </nav>
 
         <!-- Menú móvil -->
@@ -24,9 +22,7 @@
     <!-- Menú móvil expandido -->
     <div id="mobile-menu" class="md:hidden bg-purple-300 py-4 hidden">
         <nav class="space-y-2 px-6">
-            <a href="index_paciente.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
-            <a href="servicios.php" class="block text-white hover:bg-purple-600 py-2 rounded">Mis citas</a>
-            <a href="contacto.php" class="block text-white hover:bg-purple-600 py-2 rounded">Contacto</a>
+            <a href="../../views/Doctor/medico_inicio.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
         </nav>
     </div>
 

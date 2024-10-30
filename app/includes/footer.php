@@ -9,7 +9,7 @@
     <script src="../js/tailwind-config.js"></script>
 </head>
 <body>
-<footer class="bg-purple-300 text-Moradote font-bold text-center py-4 mt-5">
-        <p>&copy; 2024 Clínica Condado Real. Todos los derechos reservados.</p>
+<footer class="bg-purple-300 text-Moradote font-bold text-center py-4">
+        <p>&copy; 2024 Clínica Pacoren. Todos los derechos reservados.</p>
     </footer>
 </body>

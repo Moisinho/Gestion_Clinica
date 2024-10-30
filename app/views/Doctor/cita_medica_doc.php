@@ -5,8 +5,8 @@ include '../../controllers/CitaController.php';
 // Crear instancia del controlador
 $citaController = new CitaController();
 
-// Obtener el ID de la cita de la URL
-$id_cita = isset($_GET['id_cita']) ? (int)$_GET['id_cita'] : 0;
+// Obtener el ID de la cita del método POST
+$id_cita = isset($_POST['id_cita']) ? (int)$_POST['id_cita'] : 0;
 
 // Verificar que se ha proporcionado un ID válido
 if ($id_cita > 0) {
@@ -33,6 +33,7 @@ if ($id_cita > 0) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -46,7 +47,7 @@ if ($id_cita > 0) {
 
 <body class="bg-gray-50 font-sans">
 
-<?php include '../../includes/header.php'; ?>
+<?php include '../../includes/header_doctor.php'; ?>
 
 
     <div class="container mx-auto p-5">

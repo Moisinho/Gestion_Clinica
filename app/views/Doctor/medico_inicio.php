@@ -35,7 +35,7 @@ $citasMedico = $citas->obtener_citas($id_medico);
 </head>
 
 <body class="bg-gray-100 text-gray-800">
-    <?php include '../../includes/header.php'; ?>
+    <?php include '../../includes/header_doctor.php'; ?>
 
     <!-- Contenido principal -->
     <main class="flex flex-col md:flex-row mt-8 mx-4 md:mx-8 mb-8">
@@ -61,14 +61,21 @@ $citasMedico = $citas->obtener_citas($id_medico);
                             echo "<td class='p-3'>" . ($cita['fecha_cita'] ?? 'Sin fecha') . "</td>";
                             echo "<td class='p-3'>" . ($cita['estado'] ?? 'Sin estado') . "</td>";
                             echo "<td class='p-3'>"; // Nueva celda para el botón
-                            echo "<a href='cita_medica_doc.php?id_cita=" . htmlspecialchars($cita['id_cita']) . "' class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>Ver Detalles de Cita</a>";
+
+                            // Crear formulario para enviar datos mediante POST
+                            echo "<form action='cita_medica_doc.php' method='POST'>";
+                            echo "<input type='hidden' name='id_cita' value='" . htmlspecialchars($cita['id_cita']) . "'>";
+                            echo "<button type='submit' class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>Ver Detalles de Cita</button>";
+                            echo "</form>";
+
                             echo "</td>";
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='4' class='p-3 text-center text-gray-500'>No hay citas pendientes para mostrar.</td></tr>"; // Aumenta el colspan a 4
+                        echo "<tr><td colspan='4' class='p-3 text-center text-gray-500'>No hay citas pendientes para mostrar.</td></tr>";
                     }
                     ?>
+
                 </tbody>
             </table>
         </div>
