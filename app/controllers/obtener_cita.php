@@ -6,10 +6,9 @@ require_once '../includes/Database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Aquí puedes cambiar el id de la cita a lo que necesites, por ejemplo, un parámetro que venga de la sesión o de un formulario.
-$id_cita = 1; // Cambia por la lógica adecuada
 
-// Consulta para obtener la información de la cita
+$id_cita = 1; 
+
 $sql  = "
     SELECT 
         c.fecha_cita, 
