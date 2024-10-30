@@ -1,5 +1,6 @@
 <?php
-class Cita {
+class Cita
+{
     private $conn; // Conexión a la base de datos
     private $table_name = "cita"; // Nombre de la tabla
 
@@ -15,17 +16,19 @@ class Cita {
     public $fecha_cita;
 
     // Constructor que recibe la conexión a la base de datos
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
-    public function mapear_citas($input) {
+    public function mapear_citas($input)
+    {
         // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
         $query = "CALL BuscarCitas(?)";
         $stmt = $this->conn->prepare($query);
-    
+
         // Convertir la variable a cadena si es necesario
         $input_str = is_array($input) ? implode(",", $input) : $input;
-    
+
         // Aquí hay un cambio: `bindParam` devuelve verdadero o falso, no el valor
         // Por eso, verifica si `bindParam` fue exitoso
         if ($stmt->bindParam(1, $input_str, PDO::PARAM_STR)) {
@@ -43,11 +46,12 @@ class Cita {
         }
     }
 
-    public function mapear_citas_pendientes() {
+    public function mapear_citas_pendientes()
+    {
         // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
         $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
         $stmt = $this->conn->prepare($query);
-        
+
         if ($stmt->execute()) {
             // Si la consulta se ejecuta correctamente, devolver los resultados
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,21 +68,22 @@ class Cita {
 
         // Construir la consulta con PDO
         $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Confirmada'";
-        
+
         // Preparar la consulta
         $stmt = $this->conn->prepare($query);
-    
+
         // Enlazar el valor con bindValue (PDO::PARAM_STR se usa para cadenas)
         $stmt->bindValue(':valor', $valor, PDO::PARAM_STR);
-    
+
         // Ejecutar la consulta
         $stmt->execute();
-    
+
         // Devolver los resultados como un array asociativo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } 
-    
-    public function actualizarEstado($id_cita, $nuevo_estado) {
+    }
+
+    public function actualizarEstado($id_cita, $nuevo_estado)
+    {
         $sql = "UPDATE cita SET estado = :estado WHERE id_cita = :id_cita";
 
         try {
@@ -91,15 +96,17 @@ class Cita {
             return false;
         }
     }
-    public function obtener_citas() {
+    public function obtener_citas()
+    {
         $query = "SELECT id_cita, motivo, estado, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM cita";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    
-    public function verificarPaciente($cedula) {
+
+
+    public function verificarPaciente($cedula)
+    {
         $query = "SELECT * FROM paciente WHERE cedula = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $cedula);
@@ -107,7 +114,8 @@ class Cita {
         return $stmt->rowCount() > 0;
     }
 
-    public function registrarCita($cedula, $motivo, $id_medico, $fecha_cita) {
+    public function registrarCita($cedula, $motivo, $id_medico, $fecha_cita)
+    {
         $this->cedula = htmlspecialchars(trim($cedula));
         $this->motivo = htmlspecialchars(trim($motivo));
         $this->id_medico = htmlspecialchars(trim($id_medico));
@@ -115,15 +123,68 @@ class Cita {
 
         $query = "INSERT INTO cita (cedula, motivo, id_medico, fecha_cita) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        
+
         $stmt->bindParam(1, $this->cedula);
         $stmt->bindParam(2, $this->motivo);
         $stmt->bindParam(3, $this->id_medico);
         $stmt->bindParam(4, $this->fecha_cita);
-        
+
         return $stmt->execute();
     }
 
-    
+
+    public function obtener_detalles_cita($id_cita)
+    {
+        // Preparar la consulta SQL
+        $sql  = "
+            SELECT 
+                c.fecha_cita, 
+                c.motivo, 
+                p.cedula, 
+                p.nombre_paciente, 
+                p.fecha_nacimiento,
+                p.telefono,
+                p.correo_paciente,
+                p.edad
+            FROM 
+                cita c 
+            JOIN 
+                paciente p ON c.cedula = p.cedula
+            WHERE 
+                c.id_cita = :id_cita
+        ";
+
+        // Cambiar $db por $conn
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id_cita', $id_cita, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    public function obtener_citas_medico($id_medico)
+    {
+        $query = "SELECT id_cita, motivo, estado, fecha_cita, diagnostico, tratamiento, cedula, id_medico 
+              FROM cita 
+              WHERE id_medico = :id_medico AND estado = 'Pendiente'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_medico', $id_medico, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result ?: []; // Retorna un arreglo vacío si no hay resultados
+    }
+
+
+
+
+    public function obtenerTotalCitas()
+    {
+        $query = "SELECT COUNT(*) as total_citas FROM citas WHERE estado = 'Programada'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total_citas'] ?? 0;
+    }
 }
-?>

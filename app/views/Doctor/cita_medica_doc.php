@@ -1,7 +1,13 @@
 <?php
-// Incluye el controlador
-include '../../controllers/CitaController.php';
+require_once '../../includes/Database.php';
+require_once '../../models/Cita.php';
 
+// Obtener la conexión a la base de datos
+$database = new Database();
+$conn = $database->getConnection();
+
+// Crear instancia de Cita
+$cita = new Cita($conn);
 // Crear instancia del controlador
 $citaController = new CitaController();
 
@@ -47,7 +53,7 @@ if ($id_cita > 0) {
 
 <body class="bg-gray-50 font-sans">
 
-<?php include '../../includes/header_doctor.php'; ?>
+    <?php include '../../includes/header_doctor.php'; ?>
 
 
     <div class="container mx-auto p-5">
@@ -56,9 +62,9 @@ if ($id_cita > 0) {
                 <h2 class="text-lg font-bold text-Moradote">Información de cita</h2>
                 <p><strong>Motivo:</strong> <?php echo htmlspecialchars($cita['motivo']); ?></p>
                 <p><strong>Fecha de Cita:</strong> <?php echo htmlspecialchars($cita['fecha_cita']); ?></p>
-                
+
             <?php endif; ?>
-            
+
             <div class="mt-4">
                 <!-- Formulario para actualizar el estado de la cita -->
                 <form method="POST" action="../../controllers/actualizar_cita.php" class="inline">
@@ -86,7 +92,7 @@ if ($id_cita > 0) {
             <p><strong>Fecha de Nacimiento:</strong> <?php echo date("d/m/Y", strtotime($fecha_nacimiento)); ?></p>
             <p><strong>Edad:</strong> <?php echo htmlspecialchars($edad_paciente, ENT_QUOTES, 'UTF-8'); ?> años</p>
         </div>
-    
+
         <form method="POST" action="../../controllers/guardar_historial.php">
             <h3 class="text-lg font-bold text-Moradote mt-5">Datos Médicos del Paciente</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -161,7 +167,7 @@ if ($id_cita > 0) {
                     <label class="inline-flex items-center">
                         <input type="checkbox" name="antecedentes_no_patologicos[]" value="Tabaquismo" class="mr-2"> Tabaquismo
                     </label>
-                    
+
                     <label class="inline-flex items-center">
                         <input type="checkbox" name="antecedentes_no_patologicos[]" value="Drogas" class="mr-2"> Drogas
                     </label>
@@ -232,8 +238,8 @@ if ($id_cita > 0) {
             <div class="mt-5">
                 <button type="submit" class="bg-purple-500 text-white py-2 px-4 rounded">Guardar Información</button>
             </div>
-        </div>
-        </form>
+    </div>
+    </form>
     </div>
 
     <?php include '../../includes/footer.php'; ?>

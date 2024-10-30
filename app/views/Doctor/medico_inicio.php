@@ -1,20 +1,10 @@
 <?php
-$id_medico = 1;
-
-// Incluye el controlador de citas que contiene la conexión a la base de datos
-include '../../controllers/obtenerCitas.php';
-
-// Crea la instancia de Cita pasándole la conexión
-$citas = new Cita($db);
-
-// Llama al método obtener_citas con el id del médico
-$citasMedico = $citas->obtener_citas($id_medico);
-
+$id_medico = 1; // Suponiendo que este ID lo obtienes de sesión o autenticación
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,9 +17,12 @@ $citasMedico = $citas->obtener_citas($id_medico);
             font-weight: bold;
             border-radius: 50%;
         }
+
         .table-container {
-            height: 500px; /* Altura máxima */
-            overflow-y: auto; /* Scroll vertical */
+            height: 500px;
+            /* Altura máxima */
+            overflow-y: auto;
+            /* Scroll vertical */
         }
     </style>
 </head>
@@ -37,10 +30,13 @@ $citasMedico = $citas->obtener_citas($id_medico);
 <body class="bg-gray-100 text-gray-800">
     <?php include '../../includes/header_doctor.php'; ?>
 
+    <!-- Ocultar el ID del médico en un input oculto -->
+    <input type="hidden" id="medicoId" value="<?php echo $id_medico; ?>">
+
     <!-- Contenido principal -->
     <main class="flex flex-col md:flex-row mt-8 mx-4 md:mx-8 mb-8">
         <!-- Tabla de citas -->
-        <div class="bg-white rounded-lg shadow-md p-6 md:w-2/3 lg:w-3/4 mb-6 md:mb-0 overflow-y-auto table-container" >
+        <div class="bg-white rounded-lg shadow-md p-6 md:w-2/3 lg:w-3/4 mb-6 md:mb-0 overflow-y-auto table-container">
             <h2 class="text-2xl font-semibold text-purple-700 mb-4">Citas Programadas</h2>
             <table class="w-full border-collapse">
                 <thead class="bg-purple-600 text-white">
@@ -51,31 +47,8 @@ $citasMedico = $citas->obtener_citas($id_medico);
                         <th class="p-3 text-left"></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php
-                    // Verifica si hay datos de citas para el médico
-                    if (!empty($citasMedico)) {
-                        foreach ($citasMedico as $cita) {
-                            echo "<tr class='border-b hover:bg-purple-50'>";
-                            echo "<td class='p-3'>" . ($cita['motivo'] ?? 'Sin motivo') . "</td>";
-                            echo "<td class='p-3'>" . ($cita['fecha_cita'] ?? 'Sin fecha') . "</td>";
-                            echo "<td class='p-3'>" . ($cita['estado'] ?? 'Sin estado') . "</td>";
-                            echo "<td class='p-3'>"; // Nueva celda para el botón
-
-                            // Crear formulario para enviar datos mediante POST
-                            echo "<form action='cita_medica_doc.php' method='POST'>";
-                            echo "<input type='hidden' name='id_cita' value='" . htmlspecialchars($cita['id_cita']) . "'>";
-                            echo "<button type='submit' class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>Ver Detalles de Cita</button>";
-                            echo "</form>";
-
-                            echo "</td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='4' class='p-3 text-center text-gray-500'>No hay citas pendientes para mostrar.</td></tr>";
-                    }
-                    ?>
-
+                <tbody id="citasBody">
+                    <!-- Aquí se llenarán las citas mediante JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -99,43 +72,8 @@ $citasMedico = $citas->obtener_citas($id_medico);
 
     <?php include '../../includes/footer.php'; ?>
 
-    <script>
-        // Función para construir el calendario
-        function buildCalendar() {
-            const date = new Date();
-            const month = date.getMonth();
-            const year = date.getFullYear();
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const today = date.getDate();
-
-            // Mostrar el mes y el año
-            document.getElementById('monthYear').innerText = `${date.toLocaleString('es-ES', { month: 'long' })} ${year}`;
-
-            const calendarDays = document.getElementById('calendarDays');
-            calendarDays.innerHTML = ''; // Limpiar días anteriores
-
-            // Espacios en blanco para los días antes del inicio del mes
-            for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement('div');
-                calendarDays.appendChild(emptyCell);
-            }
-
-            // Días del mes
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = 'text-center p-2 rounded-full bg-white hover:bg-gray-300 cursor-pointer';
-                dayCell.innerText = day;
-
-                if (day === today) {
-                    dayCell.classList.add('today');
-                }
-
-                calendarDays.appendChild(dayCell);
-            }
-        }
-
-        window.onload = buildCalendar;
-    </script>
+    <!-- Incluir el archivo JavaScript -->
+    <script src="../Js/Doctor/medico_inicio.js"></script>
 </body>
+
 </html>

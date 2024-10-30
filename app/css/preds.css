@@ -1,0 +1,79 @@
+.btn-cancel {
+  width: 8rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #e9d5ff;
+  color: #9333ea;
+  border-radius: 0.375rem;
+  font-weight: 600;
+}
+.btn-cancel:hover {
+  background-color: #c696f8;
+}
+
+.btn {
+  width: 8rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #9333ea;
+  color: white;
+  border-radius: 0.375rem;
+  font-weight: 600;
+}
+.btn:hover {
+  background-color: #7202da;
+}
+
+.prueba {
+  --color: #560bad;
+  font-family: inherit;
+  display: inline-block;
+  width: 8em;
+  height: 2.6em;
+  line-height: 2.5em;
+  margin: 20px;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid var(--color);
+  transition: color 0.5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: var(--color);
+}
+
+.prueba:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--color);
+  height: 150px;
+  width: 200px;
+  border-radius: 50%;
+}
+
+.prueba:hover {
+  color: #fff;
+}
+
+.prueba:before {
+  top: 100%;
+  left: 100%;
+  transition: all 0.7s;
+}
+
+.prueba:hover:before {
+  top: -30px;
+  left: -30px;
+}
+
+.prueba:active:before {
+  background: #9333ea;
+  transition: background 0s;
+}

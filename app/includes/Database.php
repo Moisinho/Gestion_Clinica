@@ -1,25 +1,26 @@
 <?php
-class Database {
+class Database
+{
     private $host = "localhost";
     private $port = "3306"; // Puerto especificado
-    private $db_name = "gestionclinica_db";
+    private $db_name = "gestion_clinicadb";
     private $username = "root"; // Usuario proporcionado
-    private $password = "Taehyung7"; // Contraseña proporcionada
+    private $password = "12345"; // Contraseña proporcionada
     private $conn;
 
     // Método para obtener la conexión a la base de datos
-    public function getConnection() {
+    public function getConnection()
+    {
         $this->conn = null;
 
         try {
             // Incluyendo el puerto en la cadena de conexión
             $this->conn = new PDO("mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Modo de error de PDO
-        } catch(PDOException $exception) {
+        } catch (PDOException $exception) {
             echo "Error de conexión: " . $exception->getMessage();
         }
 
         return $this->conn;
     }
 }
-?>
