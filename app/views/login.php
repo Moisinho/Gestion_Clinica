@@ -62,44 +62,38 @@
 </head>
 
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 max-h-[100vh]">
 
-<!-- Navbar -->
-<nav class="bg-purple-400 p-4 flex justify-between items-center">
-    <div class="text-white text-lg font-bold">Clínica Condado Real</div>
-    <ul class="flex space-x-4 text-white font-semibold">
-        <li><a href="#" class="hover:underline">RESERVAS</a></li>
-    </ul>
-</nav>
+<?php include '../includes/header_sesion.php'; ?>
 
 <div class="flex justify-center items-center h-80% w-80% mr-12 ml-12 mt-10">
-<section class="bg-white p-0 rounded-lg shadow-lg w-full h-[600px]">
+<section class="bg-white p-0 rounded-lg shadow-lg w-full h-[75vh]">
     <div class="flex w-full h-full rounded-lg overflow-hidden "> <!-- Añadir rounded-lg y overflow-hidden -->
         <!-- Primera Imagen -->
         <div class="w-1/2 h-full flex justify-center items-center"> 
-            <img src="/proyectos/Gestion_Clinica/app/views/media/Perron.png" alt="Imagen 1" class="w-full h-full object-cover">
+            <img src="./media/login.jpg" alt="Imagen 1" class="w-full h-full object-cover">
         </div>
         
         <!-- Segunda Imagen con Formulario de Login -->
         <div class="w-1/2 h-full flex flex-col justify-center items-center"> 
-        <form action="/proyectos/Gestion_Clinica/app/models/login.php" method="POST" class="bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-sm flex flex-col"> 
-            <h2 class="text-center text-lg font-semibold mb-4">Iniciar Sesión</h2>
-            <div class="mb-4">
-                <label for="correo" class="block text-gray-700">Correo:</label> <!-- Cambiado de "username" a "correo" -->
-                <input type="email" id="correo" name="correo" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md"> <!-- Cambiado de "username" a "correo" -->
-            </div>
-            <div class="mb-4">
-                <label for="password" class="block text-gray-700">Contraseña:</label>
-                <input type="password" id="password" name="password" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
-            </div>
-            <div class="flex justify-center mt-5">
-                <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-md">Iniciar Sesión</button>
-            </div>
-        </form>
+            <form action="/proyectos/Gestion_Clinica/app/models/login.php" method="POST" class="bg-white p-6 rounded-lg w-4/5 flex flex-col"> 
+                <h2 class="text-center text-3xl font-semibold mb-6">Iniciar Sesión</h2>
+                <div class="mb-6">
+                    <label for="correo" class="text-lg font-bold block text-gray-700">Correo:</label> <!-- Cambiado de "username" a "correo" -->
+                    <input type="email" id="correo" name="correo" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md"> <!-- Cambiado de "username" a "correo" -->
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="text-lg font-bold block text-gray-700">Contraseña:</label>
+                    <input type="password" id="password" name="password" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div class="flex justify-center mt-5">
+                    <button type="submit" class="font-bold text-lg w-full p-3 bg-purple-600 text-white rounded-md hover:bg-purple-800">Ingresar</button>
+                </div>
+            </form>
 
             <!-- Botón de Registrarse fuera del formulario -->
             <div class="flex justify-center mt-4 ml-64">
-                <a href="/proyectos/Gestion_Clinica/app/views/registros/registro-usuario.php" class="text-purple-600 hover:underline">Registrarse →</a>
+                <a href="./registros/registro-usuario.php" class="text-purple-600 hover:underline">Registrarse →</a>
             </div>
         </div>
     </div>

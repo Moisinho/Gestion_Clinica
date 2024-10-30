@@ -16,8 +16,7 @@
 
         <!-- Botones de Login y Registrarse -->
         <div class="flex space-x-4">
-            <a href="login.php" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Iniciar sesión</a>
-            
+            <a href="app\views\login.php" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Iniciar sesión</a>
         </div>
 
         <!-- Menú móvil -->
