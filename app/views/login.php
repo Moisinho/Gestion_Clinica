@@ -82,20 +82,21 @@
         
         <!-- Segunda Imagen con Formulario de Login -->
         <div class="w-1/2 h-full flex flex-col justify-center items-center"> 
-            <form action="/path/to/login" method="POST" class="bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-sm flex flex-col"> 
-                <h2 class="text-center text-lg font-semibold mb-4">Iniciar Sesión</h2>
-                <div class="mb-4">
-                    <label for="username" class="block text-gray-700">Usuario:</label>
-                    <input type="text" id="username" name="username" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700">Contraseña:</label>
-                    <input type="password" id="password" name="password" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
-                </div>
-                <div class="flex justify-center mt-5">
-                    <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-md">Iniciar Sesión</button>
-                </div>
-            </form>
+        <form action="/proyectos/Gestion_Clinica/app/models/login.php" method="POST" class="bg-white p-6 rounded-lg shadow-lg w-4/5 max-w-sm flex flex-col"> 
+            <h2 class="text-center text-lg font-semibold mb-4">Iniciar Sesión</h2>
+            <div class="mb-4">
+                <label for="correo" class="block text-gray-700">Correo:</label> <!-- Cambiado de "username" a "correo" -->
+                <input type="email" id="correo" name="correo" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md"> <!-- Cambiado de "username" a "correo" -->
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700">Contraseña:</label>
+                <input type="password" id="password" name="password" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="flex justify-center mt-5">
+                <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-md">Iniciar Sesión</button>
+            </div>
+        </form>
+
             <!-- Botón de Registrarse fuera del formulario -->
             <div class="flex justify-center mt-4 ml-64">
                 <a href="/proyectos/Gestion_Clinica/app/views/registros/registro-usuario.php" class="text-purple-600 hover:underline">Registrarse →</a>

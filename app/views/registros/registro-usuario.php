@@ -59,7 +59,8 @@
             }
         }
     </script>
-</head><body class="bg-gray-100">
+</head>
+<body class="bg-gray-100">
 
 <!-- Navbar -->
 <nav class="bg-purple-400 p-4 flex justify-between items-center">
@@ -90,10 +91,19 @@
                 <label for="correo" class="block text-gray-700 font-semibold">Correo:</label>
                 <input type="email" id="correo" name="correo" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
             </div>
+            <div class="mb-4">
+                <label for="contrasenia" class="block text-gray-700 font-semibold">Contraseña:</label>
+                <input type="password" id="contrasenia" name="contrasenia" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="confirmar_contrasenia" class="block text-gray-700 font-semibold">Confirmar Contraseña:</label>
+                <input type="password" id="confirmar_contrasenia" name="confirmar_contrasenia" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
+            </div>
             <div class="flex justify-between">
                 <button type="reset" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold">Cancelar</button>
                 <button type="button" onclick="mostrarSegundoFormulario(event)" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold">Siguiente</button>
             </div>
+            
         </form>
 
         <!-- Segundo Formulario -->
@@ -124,6 +134,7 @@
                     <option value="ninguno">Ninguno</option>
                 </select>
             </div>
+            
             <div class="flex justify-between">
                 <button type="reset" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold">Cancelar</button>
                 <button type="submit" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold">Registrar</button>
@@ -133,5 +144,4 @@
 </div>
 
 </body>
-
 </html>
