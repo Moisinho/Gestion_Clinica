@@ -96,6 +96,7 @@ class Cita
             return false;
         }
     }
+
     public function obtener_citas()
     {
         $query = "SELECT id_cita, motivo, estado, fecha_cita, diagnostico, tratamiento, cedula, id_medico FROM cita";

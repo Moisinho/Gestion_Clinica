@@ -14,11 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $cita = new Cita($conn);
 
     if ($cita->actualizarEstado($id_cita, $nuevo_estado)) {
-        header('Location: ../views/medico_inicio.php');
+        header('Location: ../views/medico_aainicio.php');
     } else {
         echo "<script>alert('Error al actualizar la cita.');</script>";
     }
 }
-
-
-?>

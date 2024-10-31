@@ -1,45 +1,3 @@
-<?php
-require_once '../../includes/Database.php';
-require_once '../../models/Cita.php';
-
-// Obtener la conexión a la base de datos
-$database = new Database();
-$conn = $database->getConnection();
-
-// Crear instancia de Cita
-$cita = new Cita($conn);
-// Crear instancia del controlador
-$citaController = new CitaController();
-
-// Obtener el ID de la cita del método POST
-$id_cita = isset($_POST['id_cita']) ? (int)$_POST['id_cita'] : 0;
-
-// Verificar que se ha proporcionado un ID válido
-if ($id_cita > 0) {
-    // Obtener detalles de la cita
-    $cita = $citaController->obtenerDetallesCita($id_cita);
-
-    if ($cita) {
-        // Extraer los datos de la cita
-        $fecha_cita = $cita['fecha_cita'];
-        $motivo = $cita['motivo'];
-        $cedula = $cita['cedula'];
-        $nombre_paciente = $cita['nombre_paciente'];
-        $fecha_nacimiento = $cita['fecha_nacimiento'];
-        $telefono_paciente = $cita['telefono'];
-        $correo_paciente = $cita['correo_paciente'];
-        $edad_paciente = $cita['edad'];
-    } else {
-        echo "No se encontraron detalles de la cita.";
-        exit;
-    }
-} else {
-    echo "ID de cita no válido.";
-    exit;
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -55,23 +13,21 @@ if ($id_cita > 0) {
 
     <?php include '../../includes/header_doctor.php'; ?>
 
-
     <div class="container mx-auto p-5">
         <div class="bg-white p-5 rounded-lg shadow-md mb-5">
-            <?php if (isset($cita)): ?>
-                <h2 class="text-lg font-bold text-Moradote">Información de cita</h2>
-                <p><strong>Motivo:</strong> <?php echo htmlspecialchars($cita['motivo']); ?></p>
-                <p><strong>Fecha de Cita:</strong> <?php echo htmlspecialchars($cita['fecha_cita']); ?></p>
-
-            <?php endif; ?>
+            <h2 class="text-lg font-bold text-Moradote">Información de cita</h2>
+            <div id="cita-info">
+                <!-- Detalles de la cita -->
+            </div>
 
             <div class="mt-4">
                 <!-- Formulario para actualizar el estado de la cita -->
-                <form method="POST" action="../../controllers/actualizar_cita.php" class="inline">
-                    <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
-                    <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- Estado que desees actualizar -->
-                    <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
+                <form id="actualizar-cita-form" class="inline">
+                    <input type="hidden" name="id_cita" id="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
+                    <input type="hidden" name="nuevo_estado" value="Confirmada">
+                    <button type="button" id="finalizar-cita-btn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
                 </form>
+
 
                 <!-- Formulario para ver el expediente -->
                 <form method="POST" action="../../controllers/obtener_historial.php" class="inline ml-2">
@@ -82,21 +38,18 @@ if ($id_cita > 0) {
             </div>
         </div>
 
-
         <div class="mt-5">
             <h3 class="text-lg font-bold text-Moradote">Información del Paciente</h3>
-            <p><strong>Nombre:</strong> <?php echo htmlspecialchars($nombre_paciente, ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong>Cédula:</strong> <?php echo htmlspecialchars($cedula, ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($telefono_paciente, ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong>Correo:</strong> <?php echo htmlspecialchars($correo_paciente, ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong>Fecha de Nacimiento:</strong> <?php echo date("d/m/Y", strtotime($fecha_nacimiento)); ?></p>
-            <p><strong>Edad:</strong> <?php echo htmlspecialchars($edad_paciente, ENT_QUOTES, 'UTF-8'); ?> años</p>
+            <div id="paciente-info">
+                <!-- Información del paciente se inyectará aquí -->
+            </div>
         </div>
 
+        <!-- El resto de tu formulario se mantiene igual -->
         <form method="POST" action="../../controllers/guardar_historial.php">
+            <!-- Campos para datos médicos y otros formularios -->
             <h3 class="text-lg font-bold text-Moradote mt-5">Datos Médicos del Paciente</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Campos para datos médicos -->
                 <div><label class="block font-bold">Peso (kg)</label><input type="number" name="peso" placeholder="Ej. 70" class="border border-gray-300 rounded p-2 w-full"></div>
                 <div><label class="block font-bold">Altura (cm)</label><input type="number" name="altura" placeholder="Ej. 170" class="border border-gray-300 rounded p-2 w-full"></div>
                 <div><label class="block font-bold">Presión Arterial</label><input type="text" name="presion_arterial" placeholder="Ej. 120/80" class="border border-gray-300 rounded p-2 w-full"></div>
@@ -243,6 +196,7 @@ if ($id_cita > 0) {
     </div>
 
     <?php include '../../includes/footer.php'; ?>
+    <script src="../Js/Doctor/detalles_cita_medica.js"></script>
 </body>
 
 </html>

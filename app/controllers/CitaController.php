@@ -29,16 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
     }
     // MANEJO DE ACTUALIZACION DE CITA
-    elseif ($_POST['action'] == 'actualizar') {
-        $id_cita = $_POST['id_cita'];
-        $nuevo_estado = $_POST['nuevo_estado'];
+    elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+        if ($_POST['action'] == 'actualizar') {
+            $id_cita = $_POST['id_cita'];
+            $nuevo_estado = $_POST['nuevo_estado'];
 
-        if ($cita->actualizarEstado($id_cita, $nuevo_estado)) {
-            header('Location: ../views/medico_inicio.php');
-        } else {
-            echo "<script>alert('Error al actualizar la cita.');</script>";
+            if ($cita->actualizarEstado(
+                $id_cita,
+                $nuevo_estado
+            )) {
+                echo json_encode(['success' => true, 'message' => 'Cita actualizada exitosamente.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al actualizar la cita.']);
+            }
+            exit();
         }
     }
+
+    //PETICIONES GET
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     // MANEJO DE OBTENCION DE CITAS POR MÉDICO
     if ($_GET['action'] == 'obtenerPorMedico') {
