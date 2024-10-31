@@ -43,15 +43,20 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facturar Citas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .table-container {
+            height: 500px; /* Altura máxima */
+            overflow-y: auto; /* Scroll vertical */
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <!-- Encabezado -->
+<body class="bg-gray-100 text-gray-800">
+    <?php include '../../includes/header.php'; ?>
     <div class="bg-[#6A5492] text-white p-4 flex items-center justify-center w-full">
         <div class="flex items-center w-full justify-center">
             <form method="POST" class="flex items-center space-x-2 w-3/4">
-                <!-- Select con opción seleccionada reiniciada -->
                 <select name="criterio" class="p-2 bg-white text-black rounded-md w-1/3">
                     <option value="" disabled <?php echo $criterioSeleccionado == '' ? 'selected' : ''; ?>>Seleccione una opción</option>
                     <option value="Fecha" <?php echo $criterioSeleccionado == 'Fecha' ? 'selected' : ''; ?>>Fecha</option>
@@ -64,55 +69,53 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
     </div>
 
     <!-- Contenido principal -->
-    <div class="flex">
-        <div class="flex flex-col mt-4 mx-8">
-            <!-- Tabla de citas -->
-            <h2 class="flex text-xl font-bold text-gray-700 p-4">CITAS SIN COBRAR</h2>
-            <div class="flex-1 bg-white shadow-md rounded-lg">
-                <table class="min-w-full table-auto">
-                    <thead class="bg-purple-600 text-white text-center">
-                        <tr>
-                            <th class="p-2">id_cita</th>
-                            <th class="p-2">Estado</th>
-                            <th class="p-2">Motivo</th>
-                            <th class="p-2">Fecha Cita</th>
-                            <th class="p-2">Diagnóstico</th>
-                            <th class="p-2">Tratamiento</th>
-                            <th class="p-2">Cédula</th>
-                            <th class="p-2">id_medico</th>
-                            <th class="p-2">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($citas)):?>
-                            <?php foreach ($citas as $row): ?>
-                                <tr class="border-b text-center">
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['id_cita']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['estado']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['motivo']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['fecha_cita']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['diagnostico']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['tratamiento']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['cedula']); ?></td>
-                                    <td class="border-r p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
-                                    <td class="border-r p-2">
-                                        <!-- Formulario para enviar el id_cita al menú de cobro -->
-                                        <form action="menu_cobro.php" method="post">
-                                            <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($row['id_cita']); ?>">
-                                            <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="9" class="p-2 text-center">No se encontraron registros</td>
+    <main class="flex flex-col mt-8 mx-4 md:mx-8 mb-8">
+        <!-- Tabla de citas -->
+        <div class="bg-white rounded-lg shadow-md p-6 w-full mb-6 overflow-y-auto table-container">
+            <h2 class="text-2xl font-semibold text-purple-700 mb-4">Citas Sin Cobrar</h2>
+            <table class="w-full border-collapse">
+                <thead class="bg-purple-600 text-white">
+                    <tr>
+                        <th class="p-3 text-left">id_cita</th>
+                        <th class="p-3 text-left">Estado</th>
+                        <th class="p-3 text-left">Motivo</th>
+                        <th class="p-3 text-left">Fecha Cita</th>
+                        <th class="p-3 text-left">Diagnóstico</th>
+                        <th class="p-3 text-left">Tratamiento</th>
+                        <th class="p-3 text-left">Cédula</th>
+                        <th class="p-3 text-left">id_medico</th>
+                        <th class="p-3 text-left">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($citas)):?>
+                        <?php foreach ($citas as $row): ?>
+                            <tr class="border-b text-center">
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['id_cita']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['estado']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['motivo']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['fecha_cita']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['diagnostico']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['tratamiento']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['cedula']); ?></td>
+                                <td class="border-r p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
+                                <td class="border-r p-2">
+                                    <form action="menu_cobro.php" method="post">
+                                        <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($row['id_cita']); ?>">
+                                        <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button>
+                                    </form>
+                                </td>
                             </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9" class="p-2 text-center">No se encontraron registros</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-    </div>
+    </main>
 </body>
 </html>
+

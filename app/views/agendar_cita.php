@@ -25,7 +25,7 @@
     </section>
 
     <!-- Contenido Principal -->
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <!-- Formulario de Reserva de Cita -->
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>

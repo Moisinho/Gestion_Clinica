@@ -3,9 +3,9 @@ class Database
 {
     private $host = "localhost";
     private $port = "3306"; // Puerto especificado
-    private $db_name = "gestion_clinicadb";
+    private $db_name = "gestionclinica_db";
     private $username = "root"; // Usuario proporcionado
-    private $password = "12345"; // Contraseña proporcionada
+    private $password = "Taehyung7"; // Contraseña proporcionada
     private $conn;
 
     // Método para obtener la conexión a la base de datos
