@@ -1,35 +1,60 @@
 <?php
 require_once '../includes/Database.php';
+require_once '../models/registro.php';
 
-// Verifica si el formulario se ha enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibe los datos del formulario
-    $cedula = $_POST['cedula'];
-    $nombre_medico = $_POST['nombre_medico'];
-    $correo_medico = $_POST['correo_medico'];
-    $id_hora = $_POST['id_hora'];
-    $id_departamento = $_POST['id_departamento'];
+    // Identify user type
+    $tipo_usuario = $_POST['tipo_usuario']; // This will be either 'medico' or 'paciente'
+    $correo = $_POST['correo'];
+    $contrasena = $_POST['contrasena']; // Assuming password is submitted as well
 
-    // Crear instancia de la conexión
+    $registro = new Registro();
+
     $database = new Database();
     $conn = $database->getConnection();
 
-    // Preparar la consulta
-    $query = "INSERT INTO medico (nombre_medico, correo_medico, id_hora, id_departamento, id_usuario) VALUES (:nombre_medico, :correo_medico, :id_hora, :id_departamento, NULL)";
-    $stmt = $conn->prepare($query);
+    try {
+    /************** DEBEMOS CREAR LA FUNCION PARA REGISTRAR MEDICO, RECEPCIONISTA 
+     * Y ADMIN EN EL MODELO REGISTRO PARA TENER UN ORDEN, HASTA AHORA TENEMOS PACIENTE ****************/
+        if ($tipo_usuario === 'medico') {
+            // Insert into medico table
+            $nombre_medico = $_POST['nombre_medico'];
+            $id_hora = $_POST['id_hora'];
+            $id_departamento = $_POST['id_departamento'];
 
-    // Asigna valores a los parámetros
-    $stmt->bindParam(':nombre_medico', $nombre_medico);
-    $stmt->bindParam(':correo_medico', $correo_medico);
-    $stmt->bindParam(':id_hora', $id_hora, PDO::PARAM_INT);
-    $stmt->bindParam(':id_departamento', $id_departamento, PDO::PARAM_INT);
+            $queryMedico = "INSERT INTO medico (nombre_medico, correo_medico, id_hora, id_departamento, id_usuario) 
+                            VALUES (:nombre_medico, :correo, :id_hora, :id_departamento, :id_usuario)";
+            $stmtMedico = $conn->prepare($queryMedico);
+            $stmtMedico->bindParam(':nombre_medico', $nombre_medico);
+            $stmtMedico->bindParam(':correo', $correo);
+            $stmtMedico->bindParam(':id_hora', $id_hora);
+            $stmtMedico->bindParam(':id_departamento', $id_departamento);
+            $stmtMedico->bindParam(':id_usuario', $id_usuario);
+            $stmtMedico->execute();
 
-    // Ejecuta la consulta y verifica si se inserta correctamente
-    if ($stmt->execute()) {
-        // Redirige con un mensaje de éxito
-        echo "<script>alert('Médico añadido exitosamente.'); window.location.href='/proyectos/Gestion_Clinica/app/views/admin_soli.php';</script>";
-    } else {
-        echo "<script>alert('Error al añadir el médico.'); window.location.href='/proyectos/Gestion_Clinica/app/views/admin_soli.php';</script>";
+        } elseif ($tipo_usuario === 'paciente') {
+            //Ya existe una función para registrar paciente en el modelo registro.php, asi que la reutilizamos
+
+            $cedula = $_POST['cedula'];
+            $nombre_paciente = $_POST['nombre'];
+            $fecha_nacimiento = $_POST['fecha_nacimiento'];
+            $direccion_paciente = $_POST['direccion'];
+            $telefono = $_POST['telefono'];
+            $sexo = $_POST['sexo'];
+            $seguro = $_POST['seguro'];
+            $seguro = $_POST['contrasenia'];
+
+            $registro->registrarPaciente($cedula, $nombre, $correo, $fecha_nacimiento, $direccion, $telefono, $sexo, $seguro, $contrasenia);
+
+        }
+
+        // Commit transaction
+        $conn->commit();
+        echo "<script>alert('Usuario añadido exitosamente.'); window.location.href='/proyectos/Gestion_Clinica/app/views/admin_soli.php';</script>";
+    } catch (PDOException $e) {
+        // Rollback transaction in case of error
+        $conn->rollBack();
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>

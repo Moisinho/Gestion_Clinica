@@ -1,3 +1,32 @@
+<?php
+include '../includes/Database.php';
+
+$db = new Database();
+$conn = $db->getConnection();
+
+$query_horario = "CALL ObtenerHorarios()";
+$query_departamento = "SELECT DISTINCT nombre_departamento from departamento";
+$query_seguro = "SELECT DISTINCT nombre_aseguradora FROM seguro";
+
+try {
+    $stmt = $conn->prepare($query_horario);
+    $stmt->execute();
+    $horarios = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener horarios
+
+    $stmt = $conn->prepare($query_departamento);
+    $stmt->execute();
+    $departamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);//Obtener departamentos
+
+    $stmt = $conn->prepare($query_seguro);
+    $stmt->execute();
+    $aseguradoras = $stmt->fetchAll(PDO::FETCH_ASSOC); //Obtener aseguradoras
+
+
+} catch(PDOException $exception) {
+    echo "Error al ejecutar la consulta: " . $exception->getMessage();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,24 +36,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../js/tailwind-config.js"></script>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Encabezado -->
-    <header class="bg-purple-300 py-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-purple-900">Clínica Condado Real</h1>
-            <nav>
-                <ul class="flex space-x-4 text-purple-900">
-                    <li><a href="#" class="hover:text-purple-600">Inicio</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Gestión de Citas</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Pacientes</a></li>
-                    <li><a href="#" class="hover:text-purple-600">Datos personales</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+
+<?php include 'C:\xampp\htdocs\Gestion_Clinica\app\includes\header_sesion.php'; ?>
 
     <!-- Contenido principal -->
-    <div class="container mx-auto p-5">
+    <div class="container mx-auto p-5 flex-grow">
         <div class="bg-purple-300 p-5 rounded-lg shadow-md mt-8">
             <!-- Barra de búsqueda y botón de añadir -->
             <form method="GET" action="">
@@ -103,56 +120,172 @@
         </div>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="bg-purple-300 text-Moradote font-bold text-center py-4 mt-5">
-        <p>&copy; 2024 Clínica Condado Real. Todos los derechos reservados.</p>
-    </footer>
-
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+        <div class="bg-white h-3/4 p-6 rounded-lg shadow-lg max-w-md w-full relative overflow-y-auto">
             <button class="absolute top-2 right-2 text-gray-600 hover:text-gray-800" onclick="closeModal()">&times;</button>
-            <h2 class="text-xl font-semibold mb-4">Añadir nuevo médico</h2>
+            <h2 class="text-xl font-semibold mb-4">Añadir nuevo usuario</h2>
             
            <!-- Formulario dentro del modal -->
-            <form action="/proyectos/Gestion_Clinica/app/controllers/anadir_medico.php" method="POST">
-                <label class="block mb-2">Cédula:</label>
-                <input type="text" name="cedula" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la cédula" required>
-
-                <label class="block mb-2">Nombre del Médico:</label>
-                <input type="text" name="nombre_medico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre del médico" required>
-
-                <label class="block mb-2">Correo del Médico:</label>
-                <input type="email" name="correo_medico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo del médico" required>
-
-                <label class="block mb-2">Hora:</label>
-                <select name="id_hora" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
-                    <option value="1">08:00</option> <!-- 08:00:00 = 1 -->
-                    <option value="2">09:00</option> <!-- 09:00:00 = 2 -->
-                    <option value="3">13:00</option> <!-- 13:00:00 = 3 -->
+                
+                <label class="block mb-2">Tipo de Usuario: </label>
+                <select name="select_opcion" onchange="formOption()" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
+                    <option value="" disabled selected>Seleccione un usuario</option>
+                    <option id="op_paciente" value="paciente">Paciente</option>
+                    <option id="op_medico" value="medico">Médico</option>
+                    <option id="op_recepcionista" value="recepcionista">Recepcionista</option>
+                    <option id="op_administrador" value="administrador">Administrador</option>
                 </select>
 
-                <label class="block mb-2">Departamento:</label>
-                <select name="id_departamento" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
-                    <option value="1">Pediatría</option> <!-- Pediatría = 1 -->
-                    <option value="2">Cardiología</option> <!-- Cardiología = 2 -->
-                    <option value="3">Oncología</option> <!-- Oncología = 3 -->
-                </select>
+            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_medico.php" method="POST">
+                <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="paciente">
+                <!-- Formulario para paciente -->
+                <div id="form_paciente" class="modal hidden">
+                    <label class="block mb-2">Correo:</label>
+                    <input type="email" name="correo" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo" required>
 
-                <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                    <label class="block mb-2">Contraseña:</label>
+                    <input type="password" name="contrasena" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña" required>
+
+                    <label class="block mb-2">Cédula:</label>
+                    <input type="text" name="cedula" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la cédula" required>
+
+                    <label class="block mb-2">Nombre Completo:</label>
+                    <input type="text" name="nombre" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre" required>
+
+                    <label class="block mb-2">Fecha de Nacimiento:</label>
+                    <input type="date" name="fecha_nacimiento" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la fecha de nacimiento" required>
+
+                    <label class="block mb-2">Dirección:</label>
+                    <input type="text" name="direccion" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la dirección" required>
+
+                    <label class="block mb-2">Teléfono:</label>
+                    <input type="number" name="telefono" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa su telefono" required>
+
+                    <label for="sexo" class="block mb-2">Sexo:</label>
+                    <select name="sexo" id="sexo" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                    </select>
+
+                    <label for="seguro" class="block mb-2">Seguro:</label>
+                    <select name="seguro" id="seguro" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <?php
+                    // Llenar el select con las aseguradoras obtenidas
+                    foreach ($aseguradoras as $aseguradora) {
+                        echo '<option value="' . htmlspecialchars($aseguradora['nombre_aseguradora']) . '">' . htmlspecialchars($aseguradora['nombre_aseguradora']) . '</option>';
+                    }
+                    ?>
+                </select>
+                    <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                </div>
+            </form>
+
+
+                <!-- Formulario para médico -->
+            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_medico.php" method="POST">
+                <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="medico">
+                <div id="form_medico" class="modal hidden">
+                    <label class="block mb-2">Nombre del Médico:</label>
+                    <input type="text" name="nombre_medico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre del médico" required>
+
+                    <label class="block mb-2">Correo del Médico:</label>
+                    <input type="email" name="correo_medico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo del médico" required>
+
+                    <label class="block mb-2">Contraseña:</label>
+                    <input type="password" name="contrasena" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña para el médico" required>
+
+                    <label class="block mb-2">Horario: </label>
+                    <select name="id_hora" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
+                        <option value="" disabled selected>Seleccione un horario</option>
+                        <?php
+                        // Llenar el select con los horarios obtenidos
+                        foreach ($horarios as $horario) {
+                            echo '<option value="' . htmlspecialchars($horario['Horario']) . '">' . htmlspecialchars($horario['Horario']) . '</option>';
+                        }
+                        ?>
+                    </select>
+
+                    <label class="block mb-2">Departamento:</label>
+                    <select name="id_departamento" id="departamento" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
+                        <option value="" disabled selected>Seleccione un departamento</option>
+                        <?php
+                        // Llenar el select con las aseguradoras obtenidas
+                        foreach ($departamentos as $departamento) {
+                            echo '<option value="' . htmlspecialchars($departamento['nombre_departamento']) . '">' . htmlspecialchars($departamento['nombre_departamento']) . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                </div>
+            </form>
+
+                <!-- Formulario para recepcionista -->
+            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_medico.php" method="POST">
+                <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="recepcionista">
+                <div id="form_recepcionista" class="modal hidden">
+                    <label class="block mb-2">Nombre:</label>
+                    <input type="text" name="nombre_recepcionista" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre" required>
+
+                    <label class="block mb-2">Correo:</label>
+                    <input type="email" name="correo_recepcionista" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo" required>
+
+                    <label class="block mb-2">Contraseña:</label>
+                    <input type="password" name="contrasena_recepcionista" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña" required>
+
+                    <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                </div>
+            </form>
+            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_medico.php" method="POST">
+                <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="administrador">
+                <!-- Formulario para Administrador -->
+                <div id="form_administrador" class="modal hidden">
+                    <label class="block mb-2">Nombre:</label>
+                    <input type="text" name="nombre_administrador" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre" required>
+
+                    <label class="block mb-2">Correo:</label>
+                    <input type="email" name="correo_administrador" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo" required>
+
+                    <label class="block mb-2">Contraseña:</label>
+                    <input type="password" name="contrasena_administrador" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña" required>
+
+                    <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Scripts para abrir y cerrar el modal -->
+
+    <?php include '../includes/footer.php'; ?>
+
     <script>
-        function openModal() {
-            document.getElementById('modal').classList.remove('hidden');
-        }
-        
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-        }
-    </script>
+    function openModal() {
+        document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.add('hidden');
+    }
+
+    function formOption() {
+    const tipoUsuario = document.querySelector('select[name="select_opcion"]').value;
+    const forms = ['form_paciente', 'form_medico', 'form_recepcionista', 'form_administrador'];
+
+    // Oculta todos los formularios
+    forms.forEach(form => {
+        document.getElementById(form).classList.add('hidden');
+    });
+
+    // Muestra el formulario correspondiente
+    if (tipoUsuario) {
+        document.getElementById(`form_${tipoUsuario}`).classList.remove('hidden');
+        document.getElementById('tipo_usuario_hidden').value = tipoUsuario; // Guarda el tipo de usuario en un campo oculto
+    }
+}
+
+</script>
+
 </body>
 </html>
