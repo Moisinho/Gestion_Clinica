@@ -180,12 +180,31 @@ class Cita
 
 
 
-    public function obtenerTotalCitas()
+    public function obtenerCantidadCitas()
     {
-        $query = "SELECT COUNT(*) as total_citas FROM citas WHERE estado = 'Programada'";
+        $query = "SELECT COUNT(*) as total_citas FROM cita WHERE estado = 'Programada'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total_citas'] ?? 0;
+    }
+
+    public function obtenerCitasPorPeriodo($periodo = 'semana')
+    {
+        if ($periodo === 'semana') {
+            $query = "SELECT DATE(fecha_cita) AS fecha, COUNT(*) AS cantidad 
+                  FROM cita 
+                  WHERE fecha_cita >= CURDATE() - INTERVAL 7 DAY 
+                  GROUP BY DATE(fecha_cita)";
+        } elseif ($periodo === 'mes') {
+            $query = "SELECT DATE(fecha_cita) AS fecha, COUNT(*) AS cantidad 
+                  FROM cita 
+                  WHERE fecha_cita >= CURDATE() - INTERVAL 1 MONTH 
+                  GROUP BY DATE(fecha_cita)";
+        }
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

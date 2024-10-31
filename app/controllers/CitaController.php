@@ -64,8 +64,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     }
 
     // MANEJO DE OBTENCION DE TODAS LAS CITAS
-    elseif ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    elseif ($_SERVER['action'] == 'obtenerCitas') {
         $citas = $cita->obtener_citas();
         echo json_encode($citas);
+        exit();
+    }
+
+    //MANEJO PARA LA CANTIDAD DE CITAS PROGRAMAMDAS
+    elseif ($_GET['action'] == 'cantidadCitasProgramadas') {
+        $cantidad = $cita->obtenerCantidadCitas();
+        echo json_encode(['success' => true, 'message' => $cantidad]);
+        exit();
     }
 }

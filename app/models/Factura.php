@@ -68,14 +68,14 @@ class Factura
         }
     }
 
-    public function obtenerTotalIngresosRecientes()
+    public function obtenerIngresosRecientes()
     {
-        $query = "SELECT SUM(monto) AS total_ingresos 
+        $query = "SELECT SUM(monto) as ingresos_recientes 
               FROM factura 
-              WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 20 DAY)";
-
+              WHERE fecha_creacion >= CURDATE() - INTERVAL 20 DAY";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['ingresos_recientes'] ?? 0;
     }
 }

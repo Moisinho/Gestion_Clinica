@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Administración</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../Js/Admin/dashboard.js"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -22,17 +23,17 @@
             <!-- Tarjeta Citas Programadas -->
             <div class="bg-white shadow-lg rounded-lg p-4 text-center">
                 <h3 class="text-xl font-bold text-gray-700">Citas Programadas</h3>
-                <p class="text-3xl font-bold text-purple-700">123</p>
+                <p id="cantidadCitas" class="text-3xl font-bold text-purple-700"></p>
             </div>
             <!-- Tarjeta Usuarios Activos -->
             <div class="bg-white shadow-lg rounded-lg p-4 text-center">
                 <h3 class="text-xl font-bold text-gray-700">Usuarios Activos</h3>
-                <p class="text-3xl font-bold text-purple-700">45</p>
+                <p id="usuariosActivos" class="text-3xl font-bold text-purple-700"></p>
             </div>
             <!-- Tarjeta Ingresos Recientes -->
             <div class="bg-white shadow-lg rounded-lg p-4 text-center">
                 <h3 class="text-xl font-bold text-gray-700">Ingresos Recientes</h3>
-                <p class="text-3xl font-bold text-purple-700">$5,000</p>
+                <p id="ingresosRecientes" class="text-3xl font-bold text-purple-700"></p>
             </div>
 
         </div>
@@ -59,7 +60,7 @@
 
         <!-- Botones de Acceso Rápido -->
         <div class="flex justify-center mt-8 space-x-4">
-            <a href="gestionar_citas.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
+            <a href="../admin_soli.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
             <a href="gestionar_servicios.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Servicios</a>
         </div>
     </div>
