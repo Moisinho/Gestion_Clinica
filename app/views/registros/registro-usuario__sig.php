@@ -33,7 +33,9 @@ try {
 <!-- Form Section -->
 <div class="flex justify-center items-center h-80%">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg h-[75vh] my-10 overflow-y-auto">
-        <form action="../../models/registro.php" method="POST">
+        <form action="../../controllers/anadir_usuario.php" method="POST">
+            <input type="hidden" name="tipo_usuario" value="paciente">
+            <input type="hidden" name="source" value="registro_principal"><!--Identificador para el método registrarPaciente-->
             <input type="hidden" name="correo" value="<?php echo $_POST['correo']; ?>">
             <input type="hidden" name="contrasenia" value="<?php echo $_POST['contrasenia']; ?>">
             <div class="mb-4">
