@@ -26,14 +26,17 @@ class AuthController {
     
             // Redirigir según el tipo de usuario
             switch ($tipo_usuario) {
-                case 'admin':
+                case 'Administrador':
                     $pagina_inicio = ''; // Definir la página para admin
                     break;
-                case 'medico':
+                case 'Médico':
                     $pagina_inicio = '../views/Doctor/medico_inicio.php';
                     break;
-                case 'paciente':
+                case 'Paciente':
                     $pagina_inicio = '../views/Paciente/index_paciente.php';
+                    break;
+                case 'Recepcionista':
+                    $pagina_inicio = '../views/facturacion/facturacion_cita.php';
                     break;
                 default:
                     $pagina_inicio = '../../index.php';

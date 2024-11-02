@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $telefono = $_POST['telefono'];
             $sexo = $_POST['sexo'];
             $seguro = $_POST['seguro'];
-            $contrasena = $_POST['contrasena'];
+            $contrasena = $_POST['contrasenia'];
             $source = $_POST['source'];
 
             $registro->registrarPaciente($cedula, $nombre_paciente, $correo, $fecha_nacimiento, $direccion_paciente, $telefono, $sexo, $seguro, $contrasena, $source);
