@@ -19,7 +19,7 @@
         <h2 class="text-3xl font-bold text-center text-Moradote mb-6">Dashboard de Administración</h2>
 
         <!-- Sección de Resumen -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <!-- Tarjeta Citas Programadas -->
             <div class="bg-white shadow-lg rounded-lg p-4 text-center">
                 <h3 class="text-xl font-bold text-gray-700">Citas Programadas</h3>

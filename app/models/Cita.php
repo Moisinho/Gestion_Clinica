@@ -192,18 +192,20 @@ class Cita
         return $result['total_citas'] ?? 0;
     }
 
-    public function obtenerCitasPorPeriodo($periodo = 'semana')
+    public function obtenerCitasPorPeriodo($periodo)
     {
         if ($periodo === 'semana') {
             $query = "SELECT DATE(fecha_cita) AS fecha, COUNT(*) AS cantidad 
                   FROM cita 
                   WHERE fecha_cita >= CURDATE() - INTERVAL 7 DAY 
-                  GROUP BY DATE(fecha_cita)";
+                  GROUP BY DATE(fecha_cita)
+                  ORDER BY fecha ASC;";
         } elseif ($periodo === 'mes') {
             $query = "SELECT DATE(fecha_cita) AS fecha, COUNT(*) AS cantidad 
                   FROM cita 
                   WHERE fecha_cita >= CURDATE() - INTERVAL 1 MONTH 
-                  GROUP BY DATE(fecha_cita)";
+                  GROUP BY DATE(fecha_cita) 
+                  ORDER BY fecha ASC;";
         }
 
         $stmt = $this->conn->prepare($query);

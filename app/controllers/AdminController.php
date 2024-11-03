@@ -30,7 +30,7 @@ class AdminController
         ]);
     }
 
-    public function obtenerDatosGrafica($periodo = 'semana')
+    public function obtenerDatosGrafica($periodo)
     {
         $datosGrafica = $this->cita->obtenerCitasPorPeriodo($periodo);
         echo json_encode($datosGrafica);
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     }
     //DATOS PARA LA GRAFICA
     elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action']) && $_GET['action'] == 'obtenerDatosGrafica') {
-        $periodo = $_GET['periodo'] ?? 'semana';
+        $periodo = $_GET['periodo'];
         $adminController->obtenerDatosGrafica($periodo);
     }
 }
