@@ -2,10 +2,6 @@
 session_start();
 $id_usuario = $_SESSION['id_usuario'] ?? null;
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
