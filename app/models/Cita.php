@@ -13,6 +13,7 @@ class Cita
     public $cedula;
     public $motivo;
     public $id_medico;
+    public $id_servicio;
     public $fecha_cita;
 
     // Constructor que recibe la conexión a la base de datos
@@ -115,20 +116,22 @@ class Cita
         return $stmt->rowCount() > 0;
     }
 
-    public function registrarCita($cedula, $motivo, $id_medico, $fecha_cita)
+    public function registrarCita($cedula, $motivo, $id_medico, $id_servicio, $fecha_cita)
     {
         $this->cedula = htmlspecialchars(trim($cedula));
         $this->motivo = htmlspecialchars(trim($motivo));
         $this->id_medico = htmlspecialchars(trim($id_medico));
+        $this->id_servicio = htmlspecialchars(trim($id_servicio));
         $this->fecha_cita = htmlspecialchars(trim($fecha_cita));
 
-        $query = "INSERT INTO cita (cedula, motivo, id_medico, fecha_cita) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?,?, ?)";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(1, $this->cedula);
         $stmt->bindParam(2, $this->motivo);
         $stmt->bindParam(3, $this->id_medico);
-        $stmt->bindParam(4, $this->fecha_cita);
+        $stmt->bindParam(4, $this->id_servicio);
+        $stmt->bindParam(5, $this->fecha_cita);
 
         return $stmt->execute();
     }
@@ -207,4 +210,34 @@ class Cita
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function obtenerCitasPorPaciente($id_usuario) {
+        // Consulta SQL
+        $query = "
+            SELECT 
+                motivo, 
+                fecha_cita, 
+                estado, 
+                (SELECT nombre_medico FROM medico WHERE id_medico = cita.id_medico) AS Doctor
+            FROM cita 
+            WHERE cedula = (
+                SELECT cedula
+                FROM paciente 
+                WHERE id_usuario = :id_usuario
+            )
+        ";
+    
+        // Preparar y ejecutar
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+
+        $stmt->execute();
+    
+        // Obtener resultados
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result ? $result : []; // Asegúrate de que devuelves un array vacío si no hay resultados
+    }
+    
+    
+
 }

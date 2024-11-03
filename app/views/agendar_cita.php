@@ -1,20 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Reservas de Citas Médicas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/tailwind-config.js"></script>
+    <script src="../../js/tailwind-config.js"></script>
 </head>
 
 <body class="bg-gray-100">
     <!-- Encabezado -->
-    <?php include '../includes/header.php'; ?>
+    <?php include '../../includes/header.php'; ?>
 
     <div class="flex justify-end">
-        <a href="medico_inicio.php" class="flex-end">
+        <a href="index_paciente.php" class="flex-end">
             <img src="media/arrow-right.png" alt="siguiente" class="w-12">
         </a>
     </div>
@@ -25,11 +25,11 @@
     </section>
 
     <!-- Contenido Principal -->
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+    <div class="container mx-auto w-6/12 mb-10">
         <!-- Formulario de Reserva de Cita -->
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>
-            <form method="POST" action="../controllers/procesar_cita.php">
+            <form method="POST" action="../../controllers/procesar_cita.php">
                 <input type="hidden" name="action" value="registrar"> <!-- Campo oculto para la acción -->
 
                 <div class="mb-4">
@@ -38,12 +38,23 @@
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="mb-4">
+                    <label for="servicio" class="block text-gray-700">Servicios</label>
+                    <select id="servicio" name="servicio" required class="w-full px-4 py-2 border rounded-lg">
+                        <option value="">Seleccione un servicio</option>
+                        <?php foreach ($servicios as $servicio): ?>
+                            <option value="<?php echo htmlspecialchars($servicio['id_servicio']); ?>">
+                                <?php echo htmlspecialchars($servicio['nombre_servicio']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="mb-4">
                     <label for="motivo" class="block text-gray-700">Motivo de cita</label>
                     <input type="text" id="motivo" name="motivo" required
                         class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
 
-                <?php include '../controllers/obtener_medicos.php'; ?>
                 <div class="mb-4">
                     <label for="medico" class="block text-gray-700">Médico de atención</label>
                     <select id="medico" name="medico" required
@@ -76,43 +87,9 @@
             </form>
         </div>
 
-        <!-- Tabla de Citas Programadas -->
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-lg font-bold text-Moradote mb-4">Citas Programadas</h3>
-            <table class="min-w-full table-auto">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2 text-left text-gray-600">Motivo</th>
-                        <th class="px-4 py-2 text-left text-gray-600">Fecha</th>
-                        <th class="px-4 py-2 text-left text-gray-600">Estado</th>
-                        <th class="px-4 py-2"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    // Llama al controlador consolidado para obtener las citas
-                    require_once '../controllers/CitaController.php'; // Asegúrate de que aquí esté el código para obtener citas
-                    if (!empty($citas)): ?>
-                        <?php foreach ($citas as $cita): ?>
-                            <tr class="border-b">
-                                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['motivo']); ?></td>
-                                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['fecha_cita']); ?></td>
-                                <td class="px-4 py-2"><?php echo htmlspecialchars($cita['estado']); ?></td>
-                                <td class="px-4 py-2">
-                                    <button class="bg-Moradote text-white px-4 py-2 rounded-lg hover:bg-purple-500">Detalles</button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="px-4 py-2 text-center">No hay citas programadas</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+        
     </div>
-    <?php include '../includes/footer.php'; ?>
+    
 </body>
 
 </html>

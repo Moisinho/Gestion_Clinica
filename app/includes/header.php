@@ -8,8 +8,9 @@
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="index_pciente.php" class="hover:text-purple-800">Inicio</a>
-            <a href="servicios.php" class="hover:text-purple-800">Mis citas</a>
+            <a href="index_paciente.php" class="hover:text-purple-800">Inicio</a>
+            <a href="citas.php" class="hover:text-purple-800">Mis citas</a>
+            <a href="historial_clinico.php" class="hover:text-purple-800">Mi historial clínico</a>
             <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
             <div class="flex justify-end p-4">
                 <form action="../../controllers/logout.php" method="post">
