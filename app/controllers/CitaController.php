@@ -52,14 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 // PETICIONES GET
 elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     // MANEJO DE OBTENCION DE CITAS POR MÉDICO
-    if ($_GET['action'] == 'obtenerPorMedico') {
-        $id_medico = $_GET['id_medico'];
-        $citasMedico = $cita->obtener_citas_medico($id_medico);
+    if ($_GET['action'] == 'obtenerPorMedico' && $id_usuario !== null) {
+        $citasMedico = $cita->obtener_citas_medico($id_usuario);
         echo json_encode($citasMedico);
         exit();
     }
     // MANEJO DE OBTENCION DE DETALLES DE CITA
-    elseif ($_GET['action'] == 'obtenerDetallesCita') {
+    elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
         $id_cita = $_GET['id_cita'];
         $detallesCita = $cita->obtener_detalles_cita($id_cita);
         echo json_encode($detallesCita);
@@ -104,6 +103,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode(['error' => 'Solicitud no válida.']);
         exit();
     }
+    
 }
 ?>
 

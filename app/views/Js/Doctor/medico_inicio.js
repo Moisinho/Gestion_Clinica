@@ -37,13 +37,14 @@ function buildCalendar() {
 
 // Función para cargar las citas del médico
 function loadCitas() {
-  const idMedico = document.getElementById("medicoId").value; // Obtener el ID del médico de un input oculto
-  const url = `../../controllers/CitaController.php?action=obtenerPorMedico&id_medico=${idMedico}`;
-
+  const citasBody = document.getElementById("citasBody");
+  const url = '../../controllers/CitaController.php?action=obtenerPorMedico';
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      const citasBody = document.getElementById("citasBody");
+      console.log(data); // Verifica la respuesta aquí
+            // Asegúrate de que data sea un array
+      
       citasBody.innerHTML = ""; // Limpiar el contenido previo
 
       if (data.length === 0) {
@@ -54,22 +55,27 @@ function loadCitas() {
           const row = document.createElement("tr");
           row.className = "border-b hover:bg-purple-50";
           row.innerHTML = `
-                        <td class='p-3'>${cita.motivo || "Sin motivo"}</td>
-                        <td class='p-3'>${cita.fecha_cita || "Sin fecha"}</td>
-                        <td class='p-3'>${cita.estado || "Sin estado"}</td>
-                        <td class='p-3'>
-                            <form action='cita_medica_doc.php' method='POST'>
-                                <input type='hidden' name='id_cita' value='${cita.id_cita}'>
-                                <button type='submit' class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>Ver Detalles de Cita</button>
-                            </form>
-                        </td>
-                    `;
+            <td class='p-3'>${cita.motivo || "Sin motivo"}</td>
+            <td class='p-3'>${cita.fecha_cita || "Sin fecha"}</td>
+            <td class='p-3'>${cita.estado || "Sin estado"}</td>
+            <td class='p-3'>
+              <button onclick="verDetallesCita(${cita.id_cita})" class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>
+                Ver Detalles de Cita
+              </button>
+            </td>
+          `;
           citasBody.appendChild(row);
         });
+        
       }
     })
     .catch((error) => console.error("Error fetching citas:", error));
 }
+function verDetallesCita(idCita) {
+  window.location.href = `cita_medica_doc.php?id_cita=${idCita}`;
+}
+
+
 
 // Función para inicializar el calendario y cargar las citas
 window.onload = function () {

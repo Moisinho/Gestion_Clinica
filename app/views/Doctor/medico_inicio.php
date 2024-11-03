@@ -1,14 +1,7 @@
 <?php
-// Iniciar la sesión
 session_start();
-
-// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
-if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
-    exit();
-}
+$id_usuario = $_SESSION['id_usuario'] ?? null;
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -36,9 +29,6 @@ if (!isset($_SESSION['id_usuario'])) {
 
 <body class="bg-gray-100 text-gray-800">
     <?php include '../../includes/header_doctor.php'; ?>
-
-    <!-- Ocultar el ID del médico en un input oculto -->
-    <input type="hidden" id="medicoId" value="<?php echo $id_medico=1; ?>">
 
     <!-- Contenido principal -->
     <main class="flex flex-col md:flex-row mt-8 mx-4 md:mx-8 mb-8">
@@ -81,6 +71,9 @@ if (!isset($_SESSION['id_usuario'])) {
     <?php include '../../includes/footer.php'; ?>
 
     <!-- Incluir el archivo JavaScript -->
+    <script>
+        const idUsuario = <?php echo json_encode($id_usuario); ?>; // Pasar el ID de usuario a JavaScript
+    </script>
     <script src="../Js/Doctor/medico_inicio.js"></script>
 </body>
 

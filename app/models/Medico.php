@@ -9,18 +9,28 @@ class Medico
     }
 
     public function obtenerMedicos()
-    {
-        $query = "SELECT id_medico, nombre_medico FROM Medico";
-        $stmt = $this->conn->prepare($query);
+{
+    $query = "SELECT id_medico, nombre_medico FROM Medico";
+    $stmt = $this->conn->prepare($query);
+    
+    // Quita o comenta la línea de depuración
+    // echo "Ejecutando la consulta: $query\n"; 
 
-        if (!$stmt->execute()) {
-            // Muestra el error de SQL si hay uno
-            print_r($stmt->errorInfo());
-            return [];
-        }
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!$stmt->execute()) {
+        print_r($stmt->errorInfo());
+        return [];
     }
+
+    $medicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Devuelve el JSON
+    echo json_encode($medicos);
+    exit();
+}
+
+
+
+
 
     public function agregarMedico($nombre_medico)
     {

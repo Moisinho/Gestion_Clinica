@@ -1,3 +1,18 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['id_cita'])) {
+        $idCita = $_POST['id_cita'];
+        // Aquí puedes incluir la lógica para obtener los detalles de la cita usando $idCita
+        // Ejemplo: $detallesCita = obtenerDetallesCita($idCita);
+    } else {
+        // Manejar el caso en que no se recibe el id_cita
+        echo "ID de cita no recibido.";
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,43 +28,44 @@
 
     <?php include '../../includes/header_doctor.php'; ?>
 
+
     <div class="container mx-auto p-5">
         <div class="bg-white p-5 rounded-lg shadow-md mb-5">
             <h2 class="text-lg font-bold text-Moradote">Información de cita</h2>
-            <div id="cita-info">
-                <!-- Detalles de la cita -->
-            </div>
-
+            <div id="cita-info"></div>
             <div class="mt-4">
                 <!-- Formulario para actualizar el estado de la cita -->
-                <form id="actualizar-cita-form" class="inline">
-                    <input type="hidden" name="id_cita" id="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
-                    <input type="hidden" name="nuevo_estado" value="Confirmada">
-                    <button type="button" id="finalizar-cita-btn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
-                </form>
-
-
-                <!-- Formulario para ver el expediente -->
-                <form method="POST" action="../../controllers/obtener_historial.php" class="inline ml-2">
-                    <input type="hidden" name="cedula" value="<?php echo htmlspecialchars($paciente['cedula']); ?>">
+                <form id="actualizar-cita-form" method="POST" action="../../controllers/actualizar_cita.php" class="inline">
                     <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
-                    <button type="submit" name="accion" value="ver" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
+                    <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- Estado que desees actualizar -->
+                    <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
                 </form>
+                <form id="verExpedienteForm" class="inline ml-2">
+    <input type="hidden" name="id_paciente" value="">
+    <button type="button" id="verExpedienteBtn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
+</form>
+
+
+                
+                
+
+
+
+
             </div>
         </div>
+
 
         <div class="mt-5">
             <h3 class="text-lg font-bold text-Moradote">Información del Paciente</h3>
-            <div id="paciente-info">
-                <!-- Información del paciente se inyectará aquí -->
-            </div>
+            <div id="paciente-info"></div>
+
         </div>
 
-        <!-- El resto de tu formulario se mantiene igual -->
         <form method="POST" action="../../controllers/guardar_historial.php">
-            <!-- Campos para datos médicos y otros formularios -->
             <h3 class="text-lg font-bold text-Moradote mt-5">Datos Médicos del Paciente</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Campos para datos médicos -->
                 <div><label class="block font-bold">Peso (kg)</label><input type="number" name="peso" placeholder="Ej. 70" class="border border-gray-300 rounded p-2 w-full"></div>
                 <div><label class="block font-bold">Altura (cm)</label><input type="number" name="altura" placeholder="Ej. 170" class="border border-gray-300 rounded p-2 w-full"></div>
                 <div><label class="block font-bold">Presión Arterial</label><input type="text" name="presion_arterial" placeholder="Ej. 120/80" class="border border-gray-300 rounded p-2 w-full"></div>
@@ -197,6 +213,7 @@
 
     <?php include '../../includes/footer.php'; ?>
     <script src="../Js/Doctor/detalles_cita_medica.js"></script>
+    <script src="../../js/tailwind-config.js"></script>
 </body>
 
 </html>
