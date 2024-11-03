@@ -26,9 +26,12 @@ CREATE TABLE `administrador` (
   `id_admin` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_admin` varchar(100) NOT NULL,
   `correo_admin` varchar(100) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_admin`),
-  UNIQUE KEY `correo_admin` (`correo_admin`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  UNIQUE KEY `correo_admin` (`correo_admin`),
+  KEY `fk_id_usuario_admin` (`id_usuario`),
+  CONSTRAINT `fk_id_usuario_admin` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +40,7 @@ CREATE TABLE `administrador` (
 
 LOCK TABLES `administrador` WRITE;
 /*!40000 ALTER TABLE `administrador` DISABLE KEYS */;
-INSERT INTO `administrador` VALUES (1,'Admin1','admin1@example.com'),(2,'Admin2','admin2@example.com'),(3,'Admin3','admin3@example.com');
+INSERT INTO `administrador` VALUES (1,'Admin1','admin1@example.com',NULL),(2,'Admin2','admin2@example.com',NULL),(3,'Admin3','admin3@example.com',NULL),(4,'Elon Musk','elon@x.com',14);
 /*!40000 ALTER TABLE `administrador` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -415,7 +418,7 @@ CREATE TABLE `medico` (
   CONSTRAINT `medico_ibfk_1` FOREIGN KEY (`id_hora`) REFERENCES `horario` (`id_hora`),
   CONSTRAINT `medico_ibfk_2` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`),
   CONSTRAINT `medico_usuario_fk` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +427,7 @@ CREATE TABLE `medico` (
 
 LOCK TABLES `medico` WRITE;
 /*!40000 ALTER TABLE `medico` DISABLE KEYS */;
-INSERT INTO `medico` VALUES (1,'Dr. Juan Pérez','juan.perez@example.com',1,1,NULL),(2,'Dra. María López','maria.lopez@example.com',2,2,NULL),(3,'Dr. Carlos Fernández','carlos.fernandez@example.com',3,3,NULL),(4,'Dr. Pereira','pereira@gmail.com',1,2,NULL);
+INSERT INTO `medico` VALUES (1,'Dr. Juan Pérez','juan.perez@example.com',1,1,NULL),(2,'Dra. María López','maria.lopez@example.com',2,2,NULL),(3,'Dr. Carlos Fernández','carlos.fernandez@example.com',3,3,NULL),(4,'Dr. Pereira','pereira@gmail.com',1,2,NULL),(5,'a','aasdasda@gm.com',1,1,12);
 /*!40000 ALTER TABLE `medico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -533,8 +536,11 @@ CREATE TABLE `recepcionista` (
   `id_recepcionista` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_recepcionista` varchar(100) NOT NULL,
   `correo_recepcionista` varchar(100) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_recepcionista`),
-  UNIQUE KEY `correo_recepcionista` (`correo_recepcionista`)
+  UNIQUE KEY `correo_recepcionista` (`correo_recepcionista`),
+  KEY `fk_id_usuario` (`id_usuario`),
+  CONSTRAINT `fk_id_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -544,7 +550,7 @@ CREATE TABLE `recepcionista` (
 
 LOCK TABLES `recepcionista` WRITE;
 /*!40000 ALTER TABLE `recepcionista` DISABLE KEYS */;
-INSERT INTO `recepcionista` VALUES (1,'Recepcionista1','recepcionista1@example.com'),(2,'Recepcionista2','recepcionista2@example.com'),(3,'Recepcionista3','recepcionista3@example.com');
+INSERT INTO `recepcionista` VALUES (1,'Recepcionista1','recepcionista1@example.com',NULL),(2,'Recepcionista2','recepcionista2@example.com',NULL),(3,'Recepcionista3','recepcionista3@example.com',NULL);
 /*!40000 ALTER TABLE `recepcionista` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -707,11 +713,11 @@ CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
   `correo` varchar(100) NOT NULL,
   `contrasenia` varchar(100) NOT NULL,
-  `tipo_usuario` enum('medico','paciente') NOT NULL,
+  `tipo_usuario` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `correo` (`correo`),
   UNIQUE KEY `contrasenia` (`contrasenia`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -720,7 +726,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente');
+INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente'),(12,'aasdasda@gm.com','$2y$10$fQaDODArmp9CleCW/px4lu8WFaN0xIP2Wj3OkJSIALS.dvovEnAwK','medico'),(14,'elon@x.com','$2y$10$mqO3Z4sTuy8co/.mDYGLHuzXfUcdjzk6uFQvb0TI4Y61ZBJ/mcIcS','Administrador');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -761,4 +767,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-31 18:59:41
+-- Dump completed on 2024-11-03 14:32:23
