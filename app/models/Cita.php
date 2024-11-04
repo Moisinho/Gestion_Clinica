@@ -21,6 +21,7 @@ class Cita
     {
         $this->conn = $db;
     }
+
     public function mapear_citas($input)
     {
         // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
@@ -30,56 +31,36 @@ class Cita
         // Convertir la variable a cadena si es necesario
         $input_str = is_array($input) ? implode(",", $input) : $input;
 
-        // Aquí hay un cambio: `bindParam` devuelve verdadero o falso, no el valor
-        // Por eso, verifica si `bindParam` fue exitoso
         if ($stmt->bindParam(1, $input_str, PDO::PARAM_STR)) {
-            // Ejecutar la consulta
             if ($stmt->execute()) {
-                // Si la consulta se ejecuta correctamente, devolver los resultados
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                // Manejo de errores si la ejecución falla
                 return [];
             }
         } else {
-            // Manejo de errores si bindParam falla
             return [];
         }
     }
 
     public function mapear_citas_pendientes()
     {
-        // Llamar al procedimiento almacenado con un solo parámetro de búsqueda
         $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
         $stmt = $this->conn->prepare($query);
 
         if ($stmt->execute()) {
-            // Si la consulta se ejecuta correctamente, devolver los resultados
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
-            // Manejo de errores si la ejecución falla
             return [];
         }
     }
 
     public function buscarCitasPorCriterio($criterio, $valor)
     {
-        // Agregar los comodines de porcentaje a la variable $valor
         $valor = "%$valor%";
-
-        // Construir la consulta con PDO
         $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Confirmada'";
-
-        // Preparar la consulta
         $stmt = $this->conn->prepare($query);
-
-        // Enlazar el valor con bindValue (PDO::PARAM_STR se usa para cadenas)
         $stmt->bindValue(':valor', $valor, PDO::PARAM_STR);
-
-        // Ejecutar la consulta
         $stmt->execute();
-
-        // Devolver los resultados como un array asociativo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -106,7 +87,6 @@ class Cita
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function verificarPaciente($cedula)
     {
         $query = "SELECT * FROM paciente WHERE cedula = ?";
@@ -124,9 +104,8 @@ class Cita
         $this->id_servicio = htmlspecialchars(trim($id_servicio));
         $this->fecha_cita = htmlspecialchars(trim($fecha_cita));
 
-        $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?,?, ?)";
+        $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-
         $stmt->bindParam(1, $this->cedula);
         $stmt->bindParam(2, $this->motivo);
         $stmt->bindParam(3, $this->id_medico);
@@ -136,11 +115,9 @@ class Cita
         return $stmt->execute();
     }
 
-
     public function obtener_detalles_cita($id_cita)
     {
-        // Preparar la consulta SQL
-        $sql  = "
+        $sql = "
             SELECT 
                 c.fecha_cita, 
                 c.motivo, 
@@ -158,14 +135,12 @@ class Cita
                 c.id_cita = :id_cita
         ";
 
-        // Cambiar $db por $conn
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':id_cita', $id_cita, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
 
     public function obtener_citas_medico($id_medico)
     {
@@ -174,14 +149,9 @@ class Cita
               WHERE id_medico = :id_medico AND estado = 'Pendiente'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_medico', $id_medico, PDO::PARAM_INT);
-
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result ?: []; // Retorna un arreglo vacío si no hay resultados
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
-
-
-
 
     public function obtenerCantidadCitas()
     {
@@ -212,9 +182,9 @@ class Cita
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    public function obtenerCitasPorPaciente($id_usuario) {
-        // Consulta SQL
+
+    public function obtenerCitasPorPaciente($id_usuario)
+    {
         $query = "
             SELECT 
                 motivo, 
@@ -228,18 +198,36 @@ class Cita
                 WHERE id_usuario = :id_usuario
             )
         ";
-    
-        // Preparar y ejecutar
+
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
-
         $stmt->execute();
-    
-        // Obtener resultados
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $result ? $result : []; // Asegúrate de que devuelves un array vacío si no hay resultados
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
-    
-    
 
+    // Nuevas funciones para gestionar recetas
+    public function registrarReceta($id_cita, $id_medicamento, $dosis, $duracion, $frecuencia)
+    {
+        $query = "INSERT INTO receta (id_cita, id_medicamento, dosis, duracion, frecuencia) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $id_cita);
+        $stmt->bindParam(2, $id_medicamento);
+        $stmt->bindParam(3, $dosis);
+        $stmt->bindParam(4, $duracion);
+        $stmt->bindParam(5, $frecuencia);
+        return $stmt->execute();
+    }
+
+    public function obtenerRecetasPorCita($id_cita)
+    {
+        $query = "SELECT r.id_receta, r.dosis, r.duracion, r.frecuencia, m.nombre_medicamento 
+                  FROM receta r 
+                  JOIN medicamento m ON r.id_medicamento = m.id_medicamento 
+                  WHERE r.id_cita = :id_cita";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
 }
+?>
