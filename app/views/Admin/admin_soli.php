@@ -1,5 +1,12 @@
 <?php
-include '../includes/Database.php';
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../../../index.php');
+    exit();
+}
+include '../../includes/Database.php';
 
 $db = new Database();
 $conn = $db->getConnection();
@@ -41,6 +48,9 @@ try {
             case 'administrador':
                 $query = "SELECT * FROM administrador WHERE nombre_admin LIKE :buscar LIMIT 1";
                 break;
+            case 'farmaceutico':
+                $query = "SELECT * FROM farmaceutico WHERE nombre_farmaceutico LIKE :buscar LIMIT 1";
+                break;
             default:
                 $query = "";
                 break;
@@ -53,7 +63,10 @@ try {
             $stmt->bindParam(':buscar', $buscar_param, PDO::PARAM_STR);
             
             if ($stmt->execute()) {
-                $columnNames = array_keys($stmt->fetch(PDO::FETCH_ASSOC)); // Obtiene los nombres de columnas
+                $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($resultado) {
+                    $columnNames = array_keys($resultado); // Obtiene los nombres de columnas
+                }
             }
         }
     }
@@ -73,9 +86,7 @@ try {
     <script src="../js/tailwind-config.js"></script>
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col">
-
-<?php include 'C:\xampp\htdocs\Gestion_Clinica\app\includes\header_sesion.php'; ?>
-
+    <?php include('../../includes/header_admin.php'); ?>
     <!-- Contenido principal -->
     <div class="container mx-auto p-5 flex-grow">
         <div class="bg-purple-300 p-5 rounded-lg shadow-md mt-8">
@@ -90,6 +101,7 @@ try {
                         <option value="medico" <?php echo (isset($_GET['tipo_usuario']) && $_GET['tipo_usuario'] == 'medico') ? 'selected' : ''; ?>>Médicos</option>
                         <option value="recepcionista" <?php echo (isset($_GET['tipo_usuario']) && $_GET['tipo_usuario'] == 'recepcionista') ? 'selected' : ''; ?>>Recepcionistas</option>
                         <option value="administrador" <?php echo (isset($_GET['tipo_usuario']) && $_GET['tipo_usuario'] == 'administrador') ? 'selected' : ''; ?>>Administrador</option>
+                        <option value="farmaceutico" <?php echo (isset($_GET['tipo_usuario']) && $_GET['tipo_usuario'] == 'farmaceutico') ? 'selected' : ''; ?>>Farmacéutico</option>
                     </select>
 
                     <!-- Botón de añadir -->
@@ -121,6 +133,7 @@ try {
 
                             if ($stmt->execute()) {
                                 // Mostrar los datos en la tabla
+                                
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     echo "<tr>";
                                     foreach ($columnNames as $column) {
@@ -156,9 +169,10 @@ try {
                     <option id="op_medico" value="medico">Médico</option>
                     <option id="op_recepcionista" value="recepcionista">Recepcionista</option>
                     <option id="op_administrador" value="administrador">Administrador</option>
+                    <option id="op_farmaceutico" value="farmaceutico">Farmacéutico</option>
                 </select>
 
-            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_usuario.php" method="POST">
+            <form action="../../controllers/anadir_usuario.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="paciente">
                 <input type="hidden" name="source" value="registro_admin"><!--Identificador para el método registrarPaciente-->
                 <!-- Formulario para paciente -->
@@ -207,7 +221,7 @@ try {
 
 
                 <!-- Formulario para médico -->
-            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_usuario.php" method="POST">
+            <form action="../../controllers/anadir_usuario.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="medico">
                 <div id="form_medico" class="modal hidden">
                     <label class="block mb-2">Nombre del Médico:</label>
@@ -245,7 +259,7 @@ try {
             </form>
 
                 <!-- Formulario para recepcionista -->
-            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_usuario.php" method="POST">
+            <form action="../../controllers/anadir_usuario.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="recepcionista">
                 <div id="form_recepcionista" class="modal hidden">
                     <label class="block mb-2">Nombre:</label>
@@ -260,7 +274,7 @@ try {
                     <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
                 </div>
             </form>
-            <form action="http://localhost/Gestion_Clinica/app/controllers/anadir_usuario.php" method="POST">
+            <form action="../../controllers/anadir_usuario.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="administrador">
                 <!-- Formulario para Administrador -->
                 <div id="form_administrador" class="modal hidden">
@@ -272,6 +286,21 @@ try {
 
                     <label class="block mb-2">Contraseña:</label>
                     <input type="password" name="contrasena_administrador" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña" required>
+
+                    <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
+                </div>
+            </form>
+            <form action="../../controllers/anadir_usuario.php" method="POST">
+                <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="farmaceutico">
+                <div id="form_farmaceutico" class="modal hidden">
+                    <label class="block mb-2">Nombre:</label>
+                    <input type="text" name="nombre_farmaceutico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el nombre" required>
+
+                    <label class="block mb-2">Correo:</label>
+                    <input type="email" name="correo_farmaceutico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa el correo" required>
+
+                    <label class="block mb-2">Contraseña:</label>
+                    <input type="password" name="contrasena_farmaceutico" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la contraseña" required>
 
                     <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
                 </div>
@@ -293,7 +322,7 @@ try {
 
     function formOption() {
     const tipoUsuario = document.querySelector('select[name="select_opcion"]').value;
-    const forms = ['form_paciente', 'form_medico', 'form_recepcionista', 'form_administrador'];
+    const forms = ['form_paciente', 'form_medico', 'form_recepcionista', 'form_administrador', 'form_farmaceutico'];
 
     // Oculta todos los formularios
     forms.forEach(form => {

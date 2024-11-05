@@ -64,7 +64,7 @@ class Registro {
             }
             else if($source === 'registro_admin'){
                 echo "<script>alert('Registro exitoso del paciente: $nombre.');
-                window.location.href = '../views/admin_soli.php';</script>";
+                window.location.href = '../views/Admin/admin_soli.php';</script>";
             }
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -96,7 +96,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del medico: $nombre_medico.');
-            window.location.href = '../views/admin_soli.php';</script>";
+            window.location.href = '../views/Admin/admin_soli.php';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -128,7 +128,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del recepcionista: $nombre_recepcionista.');
-            window.location.href = '../views/admin_soli.php';</script>";
+            window.location.href = '../views/Admin/admin_soli.php';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -160,7 +160,38 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del administrador: $nombre_administrador.');
-            window.location.href = '../views/admin_soli.php';</script>";
+            window.location.href = '../views/Admin/admin_soli.php';</script>";
+
+        } catch (Exception $e) {
+            // Revertir la transacción si ocurre un error
+            $this->conn->rollBack();
+            echo "Error en el registro: " . $e->getMessage();
+        }
+    }
+    public function registrarFarmaceutico($nombre_farmaceutico, $correo_farmaceutico, $contrasena_farmaceutico) {
+        try {
+            // Iniciar una transacción
+            $this->conn->beginTransaction();
+
+            // Hashear la contraseña
+            $contraseniaHashed = password_hash($contrasena_farmaceutico, PASSWORD_DEFAULT);
+
+            // Insertar en la tabla usuario
+            $sqlUsuario = "INSERT INTO usuario (correo, tipo_usuario, contrasenia) VALUES (?, 'Farmaceutico', ?)";
+            $stmtUsuario = $this->conn->prepare($sqlUsuario);
+            $stmtUsuario->execute([$correo_farmaceutico, $contraseniaHashed]);
+            $id_usuario = $this->conn->lastInsertId(); // Obtener el ID del usuario insertado
+
+
+            $sqlFarmaceutico = "INSERT INTO farmaceutico (nombre_farmaceutico, correo_farmaceutico, id_usuario) VALUES (?, ?, ?)";
+            $stmtFarmaceutico = $this->conn->prepare($sqlFarmaceutico);
+            $stmtFarmaceutico->execute([$nombre_farmaceutico, $correo_farmaceutico, $id_usuario]);
+
+            // Confirmar la transacción
+            $this->conn->commit();
+
+            echo "<script>alert('Registro exitoso del Farmaceutico: $nombre_farmaceutico.');
+            window.location.href = '../views/Admin/admin_soli.php';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error

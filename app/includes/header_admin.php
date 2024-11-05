@@ -2,13 +2,16 @@
     <div class="container mx-auto flex items-center justify-between py-4 px-6">
         <!-- Logo de la clínica -->
         <div class="flex items-center">
-            <img src="http://localhost/Gestion_Clinica/app/views/media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
+            <img src="../media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
             <span class="text-2xl font-bold">Clinica Pacoren</span>
         </div>
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="../../views/Doctor/medico_inicio.php" class="hover:text-purple-800">Inicio</a>
+            <a href="dashboard.php" class="hover:text-purple-800">Inicio</a>
+            <a href="admin_soli.php" class="hover:text-purple-800">Usuarios</a>
+            <a href="gestion_servicios.php" class="hover:text-purple-800">Servicios</a>
+            <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
             <div class="flex justify-end p-4">
                 <form action="../../controllers/logout.php" method="post">
                     <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>
@@ -27,7 +30,9 @@
     <!-- Menú móvil expandido -->
     <div id="mobile-menu" class="md:hidden bg-purple-300 py-4 hidden">
         <nav class="space-y-2 px-6">
-            <a href="../../views/Doctor/medico_inicio.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
+            <a href="index_paciente.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
+            <a href="servicios.php" class="block text-white hover:bg-purple-600 py-2 rounded">Mis citas</a>
+            <a href="contacto.php" class="block text-white hover:bg-purple-600 py-2 rounded">Contacto</a>
         </nav>
     </div>
 

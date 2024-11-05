@@ -142,15 +142,30 @@ class Cita
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtener_citas_medico($id_medico)
+    public function obtener_citas_medico($id_usuario)
     {
-        $query = "SELECT id_cita, motivo, estado, fecha_cita, diagnostico, tratamiento, cedula, id_medico 
-              FROM cita 
-              WHERE id_medico = :id_medico AND estado = 'Pendiente'";
+        $query = "
+        SELECT
+            c.id_cita,
+            c.motivo,
+            c.fecha_cita,
+            c.estado,
+            p.nombre_paciente,
+            p.cedula AS id_paciente  -- Traemos la cédula del paciente como su ID
+        FROM cita AS c
+        JOIN paciente AS p ON p.cedula = c.cedula
+        WHERE c.id_medico = (
+            SELECT id_medico
+            FROM medico
+            WHERE id_usuario = :id_usuario
+        ) AND c.estado = 'Pendiente'";
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_medico', $id_medico, PDO::PARAM_INT);
+        $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result ? $result : [];
     }
 
     public function obtenerCantidadCitas()

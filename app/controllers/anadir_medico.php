@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Ejecuta la consulta y verifica si se inserta correctamente
     if ($stmt->execute()) {
         // Redirige con un mensaje de éxito
-        echo "<script>alert('Médico añadido exitosamente.'); window.location.href='/proyectos/Gestion_Clinica/app/views/admin_soli.php';</script>";
+        echo "<script>alert('Médico añadido exitosamente.'); window.location.href='../views/Admin/admin_soli.php';</script>";
     } else {
-        echo "<script>alert('Error al añadir el médico.'); window.location.href='/proyectos/Gestion_Clinica/app/views/admin_soli.php';</script>";
+        echo "<script>alert('Error al añadir el médico.'); window.location.href='../views/Admin/admin_soli.php';</script>";
     }
 }
 ?>

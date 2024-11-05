@@ -5,20 +5,25 @@
             <img src="http://localhost/Gestion_Clinica/app/views/media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
             <span class="text-2xl font-bold">Clinica Pacoren</span>
         </div>
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
             <!-- Navegación -->
             <nav class="hidden md:flex space-x-6 px-6">
                 <a href="../../views/Farmaceutico/farmacia_inicio.php" class="hover:text-purple-800">Inicio</a>
             </nav>
 
             <div class="flex items-center space-x-4">
-                <span class="text-white">Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'] ?? 'Usuario'); ?></span>
+                <div class="flex justify-end p-4">
+                    <form action="../../controllers/logout.php" method="post">
+                        <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>
+                    </form>
+                </div>
                 <button onclick="window.location.href='configuracion.php'" class="text-white hover:text-secondary flex items-center">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37.836-1.372.068-3.166-1.065-2.572c-1.756.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
                 </button>
+
             </div>
         </div>
         <!-- Menú móvil -->

@@ -66,6 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $contrasena_administrador = $_POST['contrasena_administrador'];
 
             $registro->registrarAdministrador($nombre_administrador, $correo_administrador, $contrasena_administrador);
+
+        }elseif ($tipo_usuario === 'farmaceutico') {
+            $nombre_farmaceutico = $_POST['nombre_farmaceutico'];
+            $correo_farmaceutico = $_POST['correo_farmaceutico'];
+            $contrasena_farmaceutico = $_POST['contrasena_farmaceutico'];
+
+            $registro->registrarFarmaceutico($nombre_farmaceutico, $correo_farmaceutico, $contrasena_farmaceutico);
         }
         
     } catch (PDOException $e) {

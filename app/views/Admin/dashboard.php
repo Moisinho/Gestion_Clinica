@@ -1,3 +1,13 @@
+<?php
+// Iniciar la sesión
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../../../index.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -12,7 +22,7 @@
 <body class="bg-gray-100">
 
     <!-- Encabezado -->
-    <?php include('../../includes/header.php'); ?>
+    <?php include('../../includes/header_admin.php'); ?>
 
     <!-- Contenedor Principal -->
     <div class="container mx-auto my-8">
@@ -60,7 +70,7 @@
 
         <!-- Botones de Acceso Rápido -->
         <div class="flex justify-center mt-8 space-x-4">
-            <a href="../admin_soli.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
+            <a href="admin_soli.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
             <a href="gestionar_servicios.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Servicios</a>
         </div>
     </div>

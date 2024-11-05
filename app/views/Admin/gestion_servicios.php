@@ -1,3 +1,13 @@
+<?php
+// Iniciar la sesión
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../../../index.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -11,7 +21,7 @@
 
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col">
 
-    <?php include 'C:\xampp\htdocs\Gestion_Clinica\app\includes\header_sesion.php'; ?>
+    <?php include('../../includes/header_admin.php'); ?>
 
     <div class="container mx-auto p-5 flex-grow">
         <div class="bg-purple-300 p-5 rounded-lg shadow-md mt-8">
@@ -77,9 +87,7 @@
             </div>
         </div>
     </div>
-
-
-
+    <?php include '../../includes/footer.php'; ?>
     <script src="../js/Admin/gestion_servicios.js"></script>
 </body>
 

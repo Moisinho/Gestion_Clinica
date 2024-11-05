@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../../../index.php');
+    exit();
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['id_cita'])) {
         $idCita = $_POST['id_cita'];
@@ -9,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "ID de cita no recibido.";
     }
 }
-
 ?>
 
 
