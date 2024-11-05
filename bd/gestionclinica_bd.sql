@@ -289,7 +289,7 @@ CREATE TABLE `farmaceutico` (
   UNIQUE KEY `correo_farmaceutico` (`correo_farmaceutico`),
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `farmaceutico_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,6 +298,7 @@ CREATE TABLE `farmaceutico` (
 
 LOCK TABLES `farmaceutico` WRITE;
 /*!40000 ALTER TABLE `farmaceutico` DISABLE KEYS */;
+INSERT INTO `farmaceutico` VALUES (1,'Nicolas Tesla','nicotes33@gmail.com',15);
 /*!40000 ALTER TABLE `farmaceutico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -412,6 +413,7 @@ CREATE TABLE `medicamento` (
   `descripcion` text COLLATE utf8mb4_general_ci,
   `cant_stock` int DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
+  `fecha_expiracion` date DEFAULT NULL,
   PRIMARY KEY (`id_medicamento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -422,7 +424,7 @@ CREATE TABLE `medicamento` (
 
 LOCK TABLES `medicamento` WRITE;
 /*!40000 ALTER TABLE `medicamento` DISABLE KEYS */;
-INSERT INTO `medicamento` VALUES (1,'Paracetamol','Analgésico general',100,5.99),(2,'Amoxicilina','Antibiótico',50,12.99),(3,'Ibuprofeno','Antiinflamatorio',75,8.99);
+INSERT INTO `medicamento` VALUES (1,'Paracetamol','Analgésico general',100,5.99,NULL),(2,'Amoxicilina','Antibiótico',50,12.99,NULL),(3,'Ibuprofeno','Antiinflamatorio',75,8.99,NULL);
 /*!40000 ALTER TABLE `medicamento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -612,7 +614,7 @@ CREATE TABLE `receta` (
 
 LOCK TABLES `receta` WRITE;
 /*!40000 ALTER TABLE `receta` DISABLE KEYS */;
-INSERT INTO `receta` VALUES (1,3,1,'500mg','5 días','Cada 8 horas','Rechazada'),(2,4,2,'250mg','7 días','Cada 12 horas','Confirmada'),(3,5,3,'400mg','3 días','Cada 8 horas','Pendiente');
+INSERT INTO `receta` VALUES (1,3,1,'500mg','5 días','Cada 8 horas','Pendiente'),(2,4,2,'250mg','7 días','Cada 12 horas','Pendiente'),(3,5,3,'400mg','3 días','Cada 8 horas','Pendiente');
 /*!40000 ALTER TABLE `receta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -748,7 +750,7 @@ CREATE TABLE `usuario` (
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `correo` (`correo`),
   UNIQUE KEY `contrasenia` (`contrasenia`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -757,7 +759,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente'),(12,'aasdasda@gm.com','$2y$10$fQaDODArmp9CleCW/px4lu8WFaN0xIP2Wj3OkJSIALS.dvovEnAwK','medico'),(14,'elon@x.com','$2y$10$mqO3Z4sTuy8co/.mDYGLHuzXfUcdjzk6uFQvb0TI4Y61ZBJ/mcIcS','Administrador');
+INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente'),(12,'aasdasda@gm.com','$2y$10$fQaDODArmp9CleCW/px4lu8WFaN0xIP2Wj3OkJSIALS.dvovEnAwK','medico'),(14,'elon@x.com','$2y$10$mqO3Z4sTuy8co/.mDYGLHuzXfUcdjzk6uFQvb0TI4Y61ZBJ/mcIcS','Administrador'),(15,'nicotes33@gmail.com','$2y$10$5lcOrZe62y0WMQlz.1Jz0uKtkPs8680UZkYhS595t3qs6QW5Tqu1O','Farmaceutico');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -781,6 +783,7 @@ BEGIN
         c.fecha_cita AS fecha,
         p.nombre_paciente,
         m.nombre AS nombre_medicamento,
+        m.cant_stock,
         med.nombre_medico,
         r.estado
     FROM receta r
@@ -825,4 +828,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-04 20:27:55
+-- Dump completed on 2024-11-05 16:58:49
