@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Funciones para el modal
     window.mostrarModal = function(receta) {
+        console.log(receta);
         recetaSeleccionada = receta;
         document.getElementById('modalTitle').textContent = `Confirmar Receta ${receta.id_receta}`;
         document.getElementById('modalContent').innerHTML = `
@@ -16,10 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Medicamento:</strong> ${receta.nombre_medicamento}</p>
             <p><strong>Médico:</strong> ${receta.nombre_medico}</p>
             <p><strong>Fecha:</strong> ${new Date(receta.fecha).toLocaleDateString()}</p>
+            <p><strong>Cantidad en Stock:</strong> ${receta.cant_stock}</p>
         `;
+        
         modal.classList.remove('hidden');
     }
-
     function ocultarModal() {
         modal.classList.add('hidden');
         recetaSeleccionada = null;
