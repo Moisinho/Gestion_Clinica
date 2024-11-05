@@ -55,7 +55,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         </div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Administrar Medicamentos</h3>
                         <p class="text-gray-600 mb-4">Consulta y gestiona el inventario actual de medicamentos.</p>
-                        <a href="reportes.php" class="inline-block bg-purple-300 text-purple-900 px-4 py-2 rounded-lg font-bold hover:bg-purple-400 transition-colors duration-300">
+                        <a href="gestionar_medicamentos.php" class="inline-block bg-purple-300 text-purple-900 px-4 py-2 rounded-lg font-bold hover:bg-purple-400 transition-colors duration-300">
                             Ver Medicamentos
                         </a>
                     </div>
