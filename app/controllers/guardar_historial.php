@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recomendaciones = $_POST['recomendaciones'];
     $tratamiento = $_POST['tratamiento'];
 
-    // Preparar la consulta usando placeholders para evitar SQL injection
-    $sql = "INSERT INTO historial_medico 
+    // Preparar la consulta para insertar la cita
+        $sql = "INSERT INTO historial_medico 
             (cedula, id_cita, id_medico, peso, altura, presion_arterial, frecuencia_cardiaca, tipo_sangre, 
             antecedentes_personales, otros_antecedentes, antecedentes_no_patologicos, otros_antecedentes_no_patologicos, 
             condicion_general, examenes, laboratorios, diagnostico, recomendaciones, tratamiento) 
@@ -59,13 +59,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(':recomendaciones', $recomendaciones);
     $stmt->bindValue(':tratamiento', $tratamiento);
 
-    // Ejecutar la consulta
+    // Ejecutar la consulta de inserción de cita
     if ($stmt->execute()) {
-        echo "Registro guardado con éxito.";
+        // Obtener el id_cita generado automáticamente
+        $id_cita = $db->lastInsertId();
+        echo "Cita registrada con éxito. id_cita: " . $id_cita;
+
+        // Ahora insertar los datos de la receta
+        if (isset($_POST['medicamento']) && isset($_POST['dosis']) && isset($_POST['frecuencia']) && isset($_POST['duracion'])) {
+            $medicamentos = $_POST['medicamento'];
+            $dosis = $_POST['dosis'];
+            $frecuencia = $_POST['frecuencia'];
+            $duracion = $_POST['duracion'];
+
+            // Insertar receta en la tabla `receta`
+            $receta_sql = "INSERT INTO receta (id_cita, id_medicamento, dosis, duracion, frecuencia) 
+                           VALUES (:id_cita, :id_medicamento, :dosis, :duracion, :frecuencia)";
+
+            $receta_stmt = $db->prepare($receta_sql);
+
+            // Insertar cada receta
+            for ($i = 0; $i < count($medicamentos); $i++) {
+                $receta_stmt->bindValue(':id_cita', $id_cita); // Usar el id_cita generado
+                $receta_stmt->bindValue(':id_medicamento', $medicamentos[$i]);
+                $receta_stmt->bindValue(':dosis', $dosis[$i]);
+                $receta_stmt->bindValue(':duracion', $duracion[$i]);
+                $receta_stmt->bindValue(':frecuencia', $frecuencia[$i]);
+
+                // Ejecutar la consulta de inserción para cada medicamento
+                $receta_stmt->execute();
+            }
+            echo "Recetas guardadas con éxito.";
+        }
     } else {
-        echo "Error al guardar el registro.";
+        echo "Error al guardar el registro de la cita.";
     }
 }
 ?>
-
-
