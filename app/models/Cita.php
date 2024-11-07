@@ -42,7 +42,7 @@ class Cita
         }
     }
 
-    public function mapear_citas_pendientes()
+    public function mapear_citas_confirmadas()
     {
         $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
         $stmt = $this->conn->prepare($query);
@@ -85,6 +85,28 @@ class Cita
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtener_detalles_modal($id_cita) {
+        // Consulta para obtener el diagnóstico y el servicio de la cita
+        $query = "SELECT c.diagnostico, s.servicio 
+                  FROM cita c
+                  JOIN servicio s ON c.id_servicio = s.id_servicio
+                  WHERE c.id_cita = :id_cita";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_cita', $id_cita);
+        $stmt->execute();
+
+        // Obtener el resultado
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Verificar si se encontró la cita
+        if ($row) {
+            return $row;
+        }
+
+        return null; // Si no se encuentra, devolver null
     }
 
     public function verificarPaciente($cedula)

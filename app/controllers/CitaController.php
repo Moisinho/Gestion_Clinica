@@ -72,6 +72,20 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         exit();
     }
 
+    //OBTENER DETALLES DE CITAS PARA EL MODAL DE RECEPCIONISTA
+    elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
+        $id_cita = $_GET['id_cita'];
+        $detallesCita = $cita->obtener_detalles_cita($id_cita);
+        
+        // Verificar si se obtuvieron detalles
+        if ($detallesCita) {
+            echo json_encode($detallesCita);
+        } else {
+            echo json_encode(['error' => 'No se encontraron detalles para esta cita.']);
+        }
+        exit();
+    }
+
     // MANEJO PARA LA CANTIDAD DE CITAS PROGRAMADAS
     elseif ($_GET['action'] == 'cantidadCitasProgramadas') {
         $cantidad = $cita->obtenerCantidadCitas();

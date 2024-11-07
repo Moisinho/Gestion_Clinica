@@ -1,8 +1,7 @@
 <?php
-
-$id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cita';
-
-        
+// Asumimos que el id_cita viene del POST o ha sido previamente definido
+$id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : null;
+$diagnostico = isset($_POST['diagnostico']) ? $_POST['diagnostico'] : null;
 
 ?>
 
@@ -68,29 +67,11 @@ $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cit
                 <!-- Campos para Tarjeta -->
                 <div id="campos-tarjeta" class="mx-16 mb-4">
                     
-                    <label class="mb-2 mt-8 block text-left text-md font-bold" for="monto_tarjeta">Monto:</label>
-                    <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="number" id="monto_tarjeta" name="monto_tarjeta" placeholder="Ingrese monto" required>
-
-                    <label class="mb-2 block text-left text-md font-bold" for="detalles_tarjeta">Detalles:</label>
-                    <select class="bg-[#E5E8ED] p-2 w-full mb-2" id="detalles_tarjeta" name="detalles_tarjeta" required>
-                        <option value="">Seleccione un diagnóstico</option>
-                        <?php
-                            require_once '../../includes/Database.php'; // Incluir la conexión a la base de datos
-
-                            // Crear una instancia de la clase Database y obtener la conexión
-                            $database = new Database();
-                            $conn = $database->getConnection();
-
-                            // Consulta para obtener todas las marcas
-                            $stmt = $conn->prepare("SELECT DISTINCT diagnostico FROM cita");
-                            $stmt->execute();
-
-                            // Generar las opciones del combobox de marcas
-                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<option value='" . htmlspecialchars($row['diagnostico']) . "'>" . htmlspecialchars($row['diagnostico']) . "</option>";
-                            }
-                        ?>
-                    </select>
+                <label class="mb-2 mt-8 block text-left text-md font-bold" for="monto_tarjeta">Monto:</label>
+                <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="number" id="monto_tarjeta" name="monto_tarjeta" placeholder="Ingrese monto" value="" readonly required>
+                    
+                <label class="mb-2 block text-left text-md font-bold" for="detalles_tarjeta">Detalles:</label>
+                <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="text" id="detalles_tarjeta" name="detalles_tarjeta" value="<?php echo htmlspecialchars($diagnostico);?>" readonly required> 
 
                     <label class="mb-2  block text-left text-md font-bold" for="numero_tarjeta">Número de Tarjeta:</label>
                     <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="text" id="numero_tarjeta" name="numero_tarjeta" placeholder="Ingrese número de tarjeta" required>
@@ -109,34 +90,38 @@ $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : 'No se recibió id_cit
                 <!-- Campo para Efectivo -->
                 <div id="campo-efectivo" class="mx-16 mb-4">
                     <label class="mb-2 mt-8 block text-left text-md font-bold" for="monto_efectivo">Monto:</label>
-                    <input class="bg-[#E5E8ED] p-2 w-full mb-12" type="number" id="monto_efectivo" name="monto_efectivo" placeholder="Ingrese monto" required>
+                    <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="number" id="monto_efectivo" name="monto_efectivo" placeholder="Ingrese monto" value="" readonly required>
 
                     <label class="mb-2 block text-left text-md font-bold" for="detalles_efectivo">Detalles:</label>
-                    <select class="bg-[#E5E8ED] p-2 w-full mb-2" id="detalles_efectivo" name="detalles_efectivo" required>
-                    <option value="">Seleccione un diagnóstico</option>
-                        <?php
-                            require_once '../../includes/Database.php'; // Incluir la conexión a la base de datos
+                    <input class="bg-[#E5E8ED] p-2 w-full mb-2" type="text" id="detalles_efectivo" name="detalles_efectivo" placeholder="Ingrese detalles" value="<?php echo htmlspecialchars($diagnostico);?>" readonly required>          
 
-                            // Crear una instancia de la clase Database y obtener la conexión
-                            $database = new Database();
-                            $conn = $database->getConnection();
-
-                            // Consulta para obtener todas las marcas
-                            $stmt = $conn->prepare("SELECT DISTINCT diagnostico FROM cita");
-                            $stmt->execute();
-
-                            // Generar las opciones del combobox de marcas
-                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<option value='" . htmlspecialchars($row['diagnostico']) . "'>" . htmlspecialchars($row['diagnostico']) . "</option>";
-                            }
-                        ?>
-                    </select>
                 </div>
-
                 <div class="mx-32">
                     <input class="bg-[#6A62D2] text-white p-2 w-full hover:cursor-pointer hover:bg-[#5852A7]" type="submit" id="registrar" value="Registrar">
                 </div>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var idCita = "<?php echo htmlspecialchars($id_cita); ?>"; // Definir id_cita en JS
+            
+            // Asegúrate de que esta variable tiene el valor esperado
+            llamarMonto(idCita);
+        });
+
+        function llamarMonto(idCita){
+            fetch(`../../controllers/ServicioController.php?action=obtenerMonto&id_cita=${idCita}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("monto_tarjeta").value = data.monto;
+                    document.getElementById("monto_efectivo").value = data.monto;
+                } else {
+                    console.error("Error:", data.message);
+                }
+            })
+            .catch(error => console.error("Error en la solicitud:", error));
+        }
+    </script>
 </body>
 </html>

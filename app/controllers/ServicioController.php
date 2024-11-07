@@ -64,6 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             echo json_encode(['success' => false, 'message' => 'No se encontró el servicio']);
         }
     }
+
+    // OBTENER MONTO POR ID_CITA
+    elseif ($_GET['action'] == 'obtenerMonto' && isset($_GET['id_cita'])) {
+        $id_cita = $_GET['id_cita'];
+        $resultado = $servicioModel->obtenerMonto($id_cita);
+
+        if ($resultado) {
+            echo json_encode(['success' => true, 'monto' => $resultado['costo']]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontró el monto para la cita especificada']);
+        }
+    }
+
 } else {
     echo json_encode(['success' => false, 'message' => 'Solicitud no válida']);
 }
