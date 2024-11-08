@@ -5,7 +5,7 @@ class Database
     private $port = "3317"; // Puerto especificado
     private $db_name = "gestionclinica_db";
     private $username = "root"; // Usuario proporcionado
-    private $password = "1234"; // Contraseña proporcionada
+    private $password = "12345"; // Contraseña proporcionada
     private $conn;
 
     // Método para obtener la conexión a la base de datos
