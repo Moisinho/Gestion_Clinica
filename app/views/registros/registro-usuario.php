@@ -13,7 +13,7 @@
 <!-- Form Section -->
 <div class="flex justify-center items-center h-80%">
     <div class="bg-white my-10 p-12 rounded-lg shadow-lg w-full max-w-xl h-[80vh] overflow-y-auto">
-        <form id="formulario-1" action="./registro-usuario__sig.php" method="POST" onsubmit="return validarContrasena()">
+        <form id="formulario-1" action="registro-usuario__sig.php" method="POST" onsubmit="return validarContrasena()">
             <h2 class="text-center text-3xl font-semibold mb-6">Registrarse</h2>
             <div class="mb-4">
                 <label for="correo" class="block text-gray-700 font-semibold">Correo:</label>
