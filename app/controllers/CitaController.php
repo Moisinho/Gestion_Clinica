@@ -1,6 +1,7 @@
 <?php
 session_start();
-$id_usuario = $_SESSION['id_usuario'] ?? null; // Asigna null si no está definido
+// $id_usuario = $_SESSION['id_usuario'] ?? null; // Asigna null si no está definido
+$id_usuario = 12; // BORRAR DESPUES DE PRUEBAS
 require_once '../includes/Database.php';
 require_once '../models/Cita.php';
 require_once '../models/Medico.php';
@@ -47,6 +48,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
         exit();
     }
+
+    // AGREGAR UNA NUEVA REFERENCIA
+    elseif ($_POST['action'] == 'agregarReferencia') {
+        error_log("Iniciando proceso de agregar referencia...");
+        $cedula_paciente = $_POST['cedula_paciente'];
+        $id_departamento = $_POST['id_departamento'];
+        $id_medico = $_POST['id_medico'];
+
+        if ($cita->registrarReferenciaEspecialidad($cedula_paciente, $id_departamento, $id_medico)) {
+            echo json_encode(['success' => true, 'message' => 'Referencia de especialidad registrada exitosamente.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'El paciente ya tiene una referencia para esta especialidad.']);
+        }
+        exit();
+    }
 }
 
 // PETICIONES GET
@@ -55,13 +71,6 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     if ($_GET['action'] == 'obtenerPorMedico' && $id_usuario !== null) {
         $citasMedico = $cita->obtener_citas_medico($id_usuario);
         echo json_encode($citasMedico);
-        exit();
-    }
-    // MANEJO DE OBTENCION DE DETALLES DE CITA
-    elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
-        $id_cita = $_GET['id_cita'];
-        $detallesCita = $cita->obtener_detalles_cita($id_cita);
-        echo json_encode($detallesCita);
         exit();
     }
 
@@ -76,7 +85,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
         $id_cita = $_GET['id_cita'];
         $detallesCita = $cita->obtener_detalles_cita($id_cita);
-        
+
         // Verificar si se obtuvieron detalles
         if ($detallesCita) {
             echo json_encode($detallesCita);
@@ -97,9 +106,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         $servicios = $servicioModel->obtenerServicios();
         echo json_encode($servicios);
         exit();
-    }
-    
-    elseif ($_GET['action'] == 'obtenerMedicos') {
+    } elseif ($_GET['action'] == 'obtenerMedicos') {
         $medicos = $medicoModel->obtenerMedicos();
         echo json_encode($medicos);
         exit();
@@ -117,8 +124,4 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode(['error' => 'Solicitud no válida.']);
         exit();
     }
-    
 }
-?>
-
-

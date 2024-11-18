@@ -1,48 +1,20 @@
 <?php
 session_start();
 
-// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
-if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
-    exit();
-}
-
+//Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+//if (!isset($_SESSION['id_usuario'])) {
+//   header('Location: ../../../index.php');
+//    exit();
+//}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['id_cita'])) {
         $idCita = $_POST['id_cita'];
-        
-        // Redirigir al controlador con el id_cita en la URL
-        header("Location: ../controllers/guardar_historial.php?id_cita=" . urlencode($idCita));
-        exit();
+        // Aquí puedes incluir la lógica para obtener los detalles de la cita usando $idCita
+        // Ejemplo: $detallesCita = obtenerDetallesCita($idCita);
     } else {
         // Manejar el caso en que no se recibe el id_cita
         echo "ID de cita no recibido.";
     }
-}
-
-// Incluye la conexión a la base de datos
-require_once '../../includes/Database.php';
-
-// Variables de conexión
-$host = "localhost";
-$port = "3317"; // Puerto especificado
-$db_name = "gestionclinica_bd";
-$username = "root"; // Usuario proporcionado
-$password = "1234"; // Contraseña proporcionada
-
-// Crear una conexión PDO con puerto especificado
-try {
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Obtener medicamentos desde la base de datos
-    $query = "SELECT id_medicamento, nombre, cant_stock FROM medicamento"; // Asegúrate de que el nombre de la columna sea correcto
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
-    $medicamentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Error de conexión: " . $e->getMessage();
-    exit();
 }
 ?>
 
@@ -59,7 +31,6 @@ try {
 </head>
 
 <body class="bg-gray-50 font-sans">
-    
 
     <?php include '../../includes/header_doctor.php'; ?>
 
@@ -76,13 +47,13 @@ try {
                     <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
                 </form>
                 <form id="verExpedienteForm" class="inline ml-2">
-    <input type="hidden" name="id_paciente" value="">
-    <button type="button" id="verExpedienteBtn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
-</form>
+                    <input type="hidden" name="id_paciente" value="">
+                    <button type="button" id="verExpedienteBtn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
+                </form>
 
 
-                
-                
+
+
 
 
 
@@ -97,7 +68,7 @@ try {
 
         </div>
 
-        <form method="POST" action="../../controllers/guardar_historial.php">
+        <form id="guardar_historial_form">
             <h3 class="text-lg font-bold text-Moradote mt-5">Datos Médicos del Paciente</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Campos para datos médicos -->
@@ -204,79 +175,32 @@ try {
             </div>
 
             <div class="mt-5">
-            <h3 class="text-lg font-bold text-Moradote">Receta</h3>
-            <table class="w-full border-collapse mt-2" id="receta-table">
-    <thead>
-        <tr class="bg-purple-300">
-            <th class="border px-2 py-1">Medicamento</th>
-            <th class="border px-2 py-1">Dosis</th>
-            <th class="border px-2 py-1">Frecuencia</th>
-            <th class="border px-2 py-1">Duración</th>
-            <th class="border px-2 py-1">Stock</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="border">
-                <select name="medicamento[]" class="w-full p-1" onchange="updateStock(this)">
-                    <option value="" disabled selected>Seleccione --</option>
-                    <?php foreach ($medicamentos as $medicamento): ?>
-                        <option value="<?= $medicamento['id_medicamento'] ?>" data-stock="<?= $medicamento['cant_stock'] ?>">
-                            <?= $medicamento['nombre'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </td>
-            <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
-            <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
-            <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
-            <td class="border"><input type="text" name="stock[]" placeholder="Stock" class="w-full p-1 " readonly></td>
-        </tr>
-    </tbody>
-</table>
-
-<script>
-function updateStock(selectElement) {
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const stock = selectedOption.getAttribute("data-stock");
-
-    const row = selectElement.closest("tr");
-    const stockField = row.querySelector("input[name='stock[]']");
-    stockField.value = stock ? stock : "N/A"; // Mostrar "N/A" si no hay stock
-}
-</script>
-
-            <button type="button" onclick="agregarFila()" class="mt-2 bg-purple-500 text-white font-bold py-2 px-4 rounded hover:bg-purple-600">
-                Agregar Receta
-            </button>
-
-            <script>
-                function agregarFila() {
-                    const recetaTable = document.getElementById('receta-table').getElementsByTagName('tbody')[0];
-                    
-                    const newRow = document.createElement('tr');
-                    
-                    // Contenido HTML de la nueva fila
-                    newRow.innerHTML = `
-                        <td class="border">
-                            <select name="medicamento[]" class="w-full p-1">
-                                <?php foreach ($medicamentos as $medicamento): ?>
-                                    <option value="<?= $medicamento['id_medicamento'] ?>">
-                                        <?= $medicamento['nombre_medicamento'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </td>
-                        <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
-                        <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
-                        <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
-                    `;                    
-                    recetaTable.appendChild(newRow);
-                }
-            </script>
-
-            <input type="hidden" name="id_cita" value="<?php echo $idCita; ?>"> <!-- Asignar aquí el valor de id_cita -->
-
+                <h3 class="text-lg font-bold text-Moradote">Receta</h3>
+                <table class="w-full border-collapse mt-2">
+                    <thead>
+                        <tr class="bg-purple-300">
+                            <th class="border px-2 py-1">Medicamento</th>
+                            <th class="border px-2 py-1">Dosis</th>
+                            <th class="border px-2 py-1">Frecuencia</th>
+                            <th class="border px-2 py-1">Duración</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border"><input type="text" name="medicamento[]" placeholder="Medicamento" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
+                        </tr>
+                        <tr>
+                            <td class="border"><input type="text" name="medicamento[]" placeholder="Medicamento" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="mt-5">
                 <h3 class="text-lg font-bold text-Moradote">Diagnostico</h3>
                 <textarea name="diagnostico" id="diagnostico" class="border border-gray-300 rounded p-2 w-full h-24" placeholder="Especifique las recomendaciones..."></textarea>
@@ -288,15 +212,22 @@ function updateStock(selectElement) {
             </div>
 
             <div class="mt-5">
-                <button type="submit" class="bg-purple-500 text-white py-2 px-4 rounded">Guardar Información</button>
+                <label class="block font-bold">Referencia</label>
+                <select name="referencia" id="selectServicios" class="border border-gray-300 rounded p-2 w-full">
+                    <option value="">Sin referencia</option>
+                    <!-- Los servicios se llenarán dinámicamente con JavaScript -->
+                </select>
+            </div>
+
+            <div class="mt-5">
+                <button type="submit" id="guardarHistorialBtn" class="bg-purple-500 text-white py-2 px-4 rounded">Guardar Información</button>
             </div>
     </div>
     </form>
     </div>
 
     <?php include '../../includes/footer.php'; ?>
-    <script src="../Js/Doctor/detalles_cita_medica.js"></script>
-    <script src="../../js/tailwind-config.js"></script>
+    <script src="../Js/Doctor/detalles_cita_medica.js" defer></script>
 </body>
 
 </html>

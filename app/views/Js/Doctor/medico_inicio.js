@@ -38,13 +38,13 @@ function buildCalendar() {
 // Función para cargar las citas del médico
 function loadCitas() {
   const citasBody = document.getElementById("citasBody");
-  const url = '../../controllers/CitaController.php?action=obtenerPorMedico';
+  const url = "../../controllers/CitaController.php?action=obtenerPorMedico";
+
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data); // Verifica la respuesta aquí
-            // Asegúrate de que data sea un array
-      
+      console.log("Citas: ", data); // Verifica la respuesta aquí
+
       citasBody.innerHTML = ""; // Limpiar el contenido previo
 
       if (data.length === 0) {
@@ -59,23 +59,24 @@ function loadCitas() {
             <td class='p-3'>${cita.fecha_cita || "Sin fecha"}</td>
             <td class='p-3'>${cita.estado || "Sin estado"}</td>
             <td class='p-3'>
-              <button onclick="verDetallesCita(${cita.id_cita})" class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>
+              <button onclick="verDetallesCita(${
+                cita.id_cita
+              })" class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>
                 Ver Detalles de Cita
               </button>
             </td>
           `;
           citasBody.appendChild(row);
         });
-        
       }
     })
     .catch((error) => console.error("Error fetching citas:", error));
 }
+
+// Función para ver los detalles de la cita
 function verDetallesCita(idCita) {
   window.location.href = `cita_medica_doc.php?id_cita=${idCita}`;
 }
-
-
 
 // Función para inicializar el calendario y cargar las citas
 window.onload = function () {

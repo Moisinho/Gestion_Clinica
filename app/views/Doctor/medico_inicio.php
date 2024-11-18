@@ -2,13 +2,12 @@
 // Iniciar la sesión
 session_start();
 
-// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
-if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
-    exit();
-}
-?>
 
+//if (!isset($_SESSION['id_usuario'])) {
+//    header('Location: ../../../index.php');
+//    exit();
+//}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -45,7 +44,7 @@ if (!isset($_SESSION['id_usuario'])) {
             <table class="w-full border-collapse">
                 <thead class="bg-purple-600 text-white">
                     <tr>
-                        
+
                         <th class="p-3 text-left">Motivo</th>
                         <th class="p-3 text-left">Fecha</th>
                         <th class="p-3 text-left">Estado</th>
@@ -76,11 +75,6 @@ if (!isset($_SESSION['id_usuario'])) {
     </main>
 
     <?php include '../../includes/footer.php'; ?>
-
-    <!-- Incluir el archivo JavaScript -->
-    <script>
-        const idUsuario = <?php echo json_encode($id_usuario); ?>; // Pasar el ID de usuario a JavaScript
-    </script>
     <script src="../Js/Doctor/medico_inicio.js"></script>
 </body>
 

@@ -12,11 +12,13 @@ class Historial
     {
         try {
             $sql = "SELECT p.nombre_paciente, p.cedula, p.fecha_nacimiento, p.telefono, p.correo_paciente, 
-                    c.fecha_cita, m.nombre_medico AS medico, h.diagnostico, h.tratamiento, h.receta, h.examenes, h.recomendaciones
+                    c.fecha_cita, m.nombre_medico AS medico, h.diagnostico, h.tratamiento, h.receta, h.examenes, h.recomendaciones,
+                    d.nombre_departamento AS departamento_referencia
                     FROM paciente AS p
                     JOIN cita AS c ON p.cedula = c.cedula
                     JOIN medico AS m ON c.id_medico = m.id_medico
                     JOIN historial_medico AS h ON h.id_cita = c.id_cita
+                    LEFT JOIN departamento AS d ON h.id_departamento_referencia = d.ide_departamento
                     WHERE p.id_usuario = :id_usuario";
 
             $stmt = $this->conn->prepare($sql);
@@ -36,10 +38,10 @@ class Historial
             $sql = "INSERT INTO historial_medico 
                     (cedula, id_cita, id_medico, peso, altura, presion_arterial, frecuencia_cardiaca, tipo_sangre, 
                     antecedentes_personales, otros_antecedentes, antecedentes_no_patologicos, otros_antecedentes_no_patologicos, 
-                    condicion_general, examenes, laboratorios, diagnostico, recomendaciones, tratamiento) 
+                    condicion_general, examenes, laboratorios, diagnostico, recomendaciones, tratamiento, id_departamento_referencia) 
                     VALUES (:cedula, :id_cita, :id_medico, :peso, :altura, :presion_arterial, :frecuencia_cardiaca, :tipo_sangre, 
                     :antecedentes_patologicos, :otros_antecedentes_patologicos, :antecedentes_no_patologicos, 
-                    :otros_antecedentes_no_patologicos, :condicion_general, :examenes_sangre, :laboratorios, :diagnostico, :recomendaciones, :tratamiento)";
+                    :otros_antecedentes_no_patologicos, :condicion_general, :examenes_sangre, :laboratorios, :diagnostico, :recomendaciones, :tratamiento, :id_departamento_referencia)";
 
             $stmt = $this->conn->prepare($sql);
 

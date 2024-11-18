@@ -16,6 +16,7 @@ class Cita
     public $id_medico;
     public $id_servicio;
     public $fecha_cita;
+    public $id_departamento;
 
     // Constructor que recibe la conexión a la base de datos
     public function __construct($db)
@@ -106,28 +107,28 @@ class Cita
             $this->id_medico = htmlspecialchars(trim($id_medico));
             $this->id_servicio = htmlspecialchars(trim($id_servicio));
             $this->fecha_cita = htmlspecialchars(trim($fecha_cita));
-    
+
             // Query para insertar la cita
             $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
-    
+
             $stmt->bindParam(1, $this->cedula);
             $stmt->bindParam(2, $this->motivo);
             $stmt->bindParam(3, $this->id_medico);
             $stmt->bindParam(4, $this->id_servicio);
             $stmt->bindParam(5, $this->fecha_cita);
-    
+
             // Intentar ejecutar la consulta
             if ($stmt->execute()) {
                 // Obtener el último ID insertado
                 $id_cita = $this->conn->lastInsertId();
-    
+
                 // Obtener la información de la cita
                 $info_cita = $this->obtenerInformacionCita($id_cita);
-    
+
                 // Enviar correo de confirmación
                 $resultadoEnvio = $this->enviarCorreoCita($id_cita);
-    
+
                 if (!$resultadoEnvio) {
                     echo "<script>
                     Swal.fire({
@@ -137,7 +138,7 @@ class Cita
                     });
                 </script>";
                 }
-    
+
                 return true;
             } else {
                 echo "<script>alert('Error al ejecutar la consulta para registrar la cita.');</script>";
@@ -148,7 +149,7 @@ class Cita
             return false;
         }
     }
-    
+
 
 
     public function obtener_detalles_cita($id_cita)
@@ -255,7 +256,8 @@ class Cita
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
-    public function obtener_detalles_modal($id_cita) {
+    public function obtener_detalles_modal($id_cita)
+    {
         // Consulta para obtener el diagnóstico y el servicio de la cita
         $query = "SELECT c.diagnostico, s.servicio 
                   FROM cita c
@@ -277,8 +279,8 @@ class Cita
         return null; // Si no se encuentra, devolver null
     }
 
-   
-    
+
+
 
     // Nuevas funciones para gestionar recetas
     public function registrarReceta($id_cita, $id_medicamento, $dosis, $duracion, $frecuencia)
@@ -304,10 +306,10 @@ class Cita
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
-    
+
     public function obtenerInformacionCita($id_cita)
-{
-    $query = "
+    {
+        $query = "
         SELECT 
             p.correo_paciente AS correo,
             c.fecha_cita,
@@ -323,46 +325,107 @@ class Cita
             c.id_cita = :id_cita
     ";
 
-    try {
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_INT);
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_INT);
 
-        if ($stmt->execute()) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } else {
-            echo "Error en la ejecución de la consulta.";
+            if ($stmt->execute()) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                echo "Error en la ejecución de la consulta.";
+                return null;
+            }
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
             return null;
         }
-    } catch (PDOException $e) {
-        echo "Error en la consulta: " . $e->getMessage();
-        return null;
     }
-}
 
-public function enviarCorreoCita($id_cita)
-{
+    public function enviarCorreoCita($id_cita)
+    {
 
-    $infoCita = $this->obtenerInformacionCita($id_cita);
+        $infoCita = $this->obtenerInformacionCita($id_cita);
 
-    if (!$infoCita) {
-        echo "<script>alert('No se pudo obtener la información de la cita.');</script>";
-        return false;
-    }
-    $asunto = 'Recordatorio de Cita Medica';
-    $mensaje = "
+        if (!$infoCita) {
+            echo "<script>alert('No se pudo obtener la información de la cita.');</script>";
+            return false;
+        }
+        $asunto = 'Recordatorio de Cita Medica';
+        $mensaje = "
         <h1>Estimado(a) {$infoCita['nombre_paciente']}</h1>
         <p>Su cita ha sido programada para la fecha: <strong>{$infoCita['fecha_cita']}</strong></p>
         <p>El médico que lo(a) atenderá es: <strong>{$infoCita['doctor']}</strong></p>
         <p>Por favor, contacte a la clínica si necesita más información.</p>
     ";
-    
-    require_once '../helpers/correo.php';
-    if (enviarCorreoSMTP($infoCita['correo'], $asunto, $mensaje)) {
-        return true;
-    } else {
-        return false;
+
+        require_once '../helpers/correo.php';
+        if (enviarCorreoSMTP($infoCita['correo'], $asunto, $mensaje)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function registrarReferenciaEspecialidad($cedula_paciente, $id_departamento, $id_medico)
+    {
+        error_log("Intentando registrar referencia para el paciente: " . $cedula_paciente);
+
+        if ($this->verificarReferencia($cedula_paciente, $id_departamento)) {
+            error_log("El paciente ya tiene una referencia para esta especialidad.");
+            return false;
+        }
+
+        $fecha_referencia = date("Y-m-d");
+        $query = "INSERT INTO referencia_especialidad (cedula_paciente, id_departamento, fecha_referencia, id_medico) 
+              VALUES (?, ?, ?, ?)";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $cedula_paciente);
+        $stmt->bindParam(2, $id_departamento);
+        $stmt->bindParam(3, $fecha_referencia);
+        $stmt->bindParam(4, $id_medico);
+
+        $resultado = $stmt->execute();
+        error_log("Resultado de la inserción: " . ($resultado ? "éxito" : "fallo"));
+        return $resultado;
+    }
+
+
+    // Método para verificar si el paciente ya tiene una referencia de especialidad
+    public function verificarReferencia($cedula_paciente, $id_departamento)
+    {
+        $query = "SELECT * FROM referencia_especialidad WHERE cedula_paciente = ? AND id_departamento = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $cedula_paciente);
+        $stmt->bindParam(2, $id_departamento);
+        $stmt->execute();
+        return $stmt->rowCount() > 0; // Si ya tiene una referencia, retorna verdadero
+    }
+
+    // Método para registrar la cita y asociar una especialidad (referencia) al paciente
+    public function registrarCitaConReferencia($cedula, $motivo, $id_medico, $id_servicio, $fecha_cita, $id_departamento)
+    {
+        // Llamar al método para registrar la referencia de especialidad
+        if (!$this->registrarReferenciaEspecialidad($cedula, $id_departamento, $id_medico)) {
+            return false; // Si no se pudo registrar la referencia, detener el proceso
+        }
+
+        $this->cedula = htmlspecialchars(trim($cedula));
+        $this->motivo = htmlspecialchars(trim($motivo));
+        $this->id_medico = htmlspecialchars(trim($id_medico));
+        $this->id_servicio = htmlspecialchars(trim($id_servicio));
+        $this->fecha_cita = htmlspecialchars(trim($fecha_cita));
+
+        // Inserción de la cita
+        $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $this->cedula);
+        $stmt->bindParam(2, $this->motivo);
+        $stmt->bindParam(3, $this->id_medico);
+        $stmt->bindParam(4, $this->id_servicio);
+        $stmt->bindParam(5, $this->fecha_cita);
+
+        return $stmt->execute();
     }
 }
-
-}
-?>
