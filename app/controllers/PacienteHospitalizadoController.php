@@ -22,7 +22,14 @@ class PacienteHospitalizadoController {
     }
 
     public function createPacienteHospitalizado($data) {
-        return $this->model->create($data);
+        try {
+            // Intenta crear el paciente hospitalizado
+            $this->model->create($data);
+            return ["success" => true, "message" => "Paciente hospitalizado creado con éxito."];
+        } catch (Exception $e) {
+            // Maneja la excepción y devuelve el mensaje de error
+            return ["success" => false, "message" => $e->getMessage()];
+        }
     }
 
     public function patchPacienteHospitalizado($cedula, $data) {

@@ -67,7 +67,7 @@ switch ($method) {
         // Crear un nuevo recurso
         if ($resource == 'paciente_hospitalizado' && isset($inputData['cedula'], $inputData['id_cama'], $inputData['id_medico'], $inputData['fecha_ingreso'], $inputData['motivo'])) {
             $result = $controller->createPacienteHospitalizado($inputData);
-            echo json_encode(["message" => $result ? "Paciente hospitalizado creado" : "Error al crear paciente hospitalizado"]);
+            echo json_encode($result); // Envía el resultado directamente
         } elseif ($resource == 'cama' && isset($inputData['estado'], $inputData['id_habitacion'], $inputData['tipo_cama'])) {
             $result = $controller->createCama($inputData);
             echo json_encode(["message" => $result ? "Cama creada" : "Error al crear cama"]);
@@ -75,8 +75,13 @@ switch ($method) {
             $result = $controller->createHabitacion($inputData);
             echo json_encode(["message" => $result ? "Habitación creada" : "Error al crear habitación"]);
         } else {
-            echo json_encode(["message" => "Datos inválidos"]);
-        }
+            // Respuesta para datos inválidos
+            if ($resource == 'paciente_hospitalizado') {
+                echo json_encode(["success" => false, "message" => "Datos inválidos"]);
+            } else {
+                echo json_encode(["message" => "Datos inválidos"]);
+            }
+        }    
         break;
 
         case 'PUT':
