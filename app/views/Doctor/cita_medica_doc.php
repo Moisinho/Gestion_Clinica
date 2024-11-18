@@ -160,6 +160,7 @@ try {
                 <textarea name="otros_antecedentes_patologicos" id="otros_antecedentes_patologicos" placeholder="Especifique otros antecedentes patológicos"
                     class="border border-gray-300 rounded p-2 w-full h-24"></textarea>
             </div>
+            <!-- Antecedentes Personales no Patológicos -->
 
             <!-- Antecedentes Personales no Patológicos -->
             <div class="mt-5">
