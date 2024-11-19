@@ -16,7 +16,7 @@
         <p class="text-gray-700 text-center mb-6">
             Introduce tu dirección de correo electrónico y te enviaremos un enlace para que restablezcas la contraseña.
         </p>
-        <form action="../../controllers/reset_passController.php" method="POST">
+        <form action="/Gestion_clinica/app/controllers/reset_passController.php" method="POST">
             <div class="mb-6">
                 <label for="correo" class="block text-gray-700 font-semibold">Correo Electrónico <span class="text-red-500">*</span></label>
                 <input type="email" id="correo" name="correo" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" placeholder="ejemplo@correo.com" required>

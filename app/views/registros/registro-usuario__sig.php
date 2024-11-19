@@ -33,7 +33,7 @@ try {
 <!-- Form Section -->
 <div class="flex justify-center items-center h-80%">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg h-[75vh] my-10 overflow-y-auto">
-        <form action="../../controllers/anadir_usuario.php" method="POST">
+        <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
             <input type="hidden" name="tipo_usuario" value="paciente">
             <input type="hidden" name="source" value="registro_principal"><!--Identificador para el método registrarPaciente-->
             <input type="hidden" name="correo" value="<?php echo $_POST['correo']; ?>">
@@ -79,7 +79,7 @@ try {
                 </select>
             </div>
             <div class="flex justify-between mt-6">
-                <a href="registro-usuario.php" class="w-full mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded-md text-center hover:bg-gray-400">Volver</a>
+                <a href="/Gestion_clinica/registro" class="w-full mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded-md text-center hover:bg-gray-400">Volver</a>
                 <button type="submit" class="w-full ml-2 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-800">Registrar</button>
             </div>
         </form>

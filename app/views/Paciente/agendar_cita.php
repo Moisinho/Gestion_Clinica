@@ -1,3 +1,13 @@
+<?php
+// Iniciar la sesión
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: ../../../index.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Reservas de Citas Médicas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../../js/tailwind-config.js"></script>
+    <script src="/Gestion_clinica/app/js/tailwind-config.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100">
@@ -20,7 +30,7 @@
     <div class="container mx-auto w-6/12 mb-10">
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>
-            <form id="reservaForm" method="POST" action="../../controllers/citaController.php">
+            <form id="reservaForm" method="POST" action="/Gestion_clinica/app/controllers/citaController.php">
                 <input type="hidden" name="action" value="registrar">
 
                 <div class="mb-4">
@@ -69,7 +79,7 @@
         // Cargar servicios dinámicamente
         $(document).ready(function() {
             $.ajax({
-                url: '../../controllers/citaController.php',
+                url: '/Gestion_clinica/app/controllers/citaController.php',
                 type: 'GET',
                 data: { action: 'obtenerServicios' },
                 dataType: 'json',
@@ -90,7 +100,7 @@
 
             // Cargar médicos dinámicamente
             $.ajax({
-                url: '../../controllers/citaController.php',
+                url: '/Gestion_clinica/app/controllers/citaController.php',
                 type: 'GET',
                 data: { action: 'obtenerMedicos' },
                 dataType: 'json',

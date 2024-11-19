@@ -13,7 +13,7 @@
 <!-- Form Section -->
 <div class="flex justify-center items-center h-80%">
     <div class="bg-white my-10 p-12 rounded-lg shadow-lg w-full max-w-xl h-[80vh] overflow-y-auto">
-        <form id="formulario-1" action="registro-usuario__sig.php" method="POST" onsubmit="return validarContrasena()">
+        <form id="formulario-1" action="/Gestion_clinica/registro_sig" method="POST" onsubmit="return validarContrasena()">
             <h2 class="text-center text-3xl font-semibold mb-6">Registrarse</h2>
             <div class="mb-4">
                 <label for="correo" class="block text-gray-700 font-semibold">Correo:</label>
@@ -29,7 +29,7 @@
                 <p id="error-mensaje" class="text-red-500 mt-2 hidden">Las contraseñas no coinciden.</p>
             </div>
             <div class="flex justify-between">
-                <button type="button" onclick="window.location.href='../login.php'" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold hover:bg-purple-400 hover:text-white">Volver</button>
+                <button type="button" onclick="window.location.href='/Gestion_clinica/login'" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold hover:bg-purple-400 hover:text-white">Volver</button>
                 <button type="submit" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold hover:bg-purple-800">Siguiente</button>
             </div>
         </form>

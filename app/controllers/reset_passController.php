@@ -1,6 +1,6 @@
 <?php
 require_once '../includes/Database.php';
-require_once '../helpers/reestablecer_contrasenia.php';
+require_once '../helpers/restablecer_contrasenia.php';
 require_once '../helpers/crear_token.php';
 
 // Manejo de la solicitud desde el formulario
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (enviarEnlaceRestablecimiento($correo, $token)) {
                 echo '<script>
                 alert("Hemos enviado un enlace para restablecer tu contraseña. Revisa tu correo.");
-                window.location.href = "../views/login.php";
+                window.location.href = "/Gestion_clinica/login";
                 </script>';
             } else {
                 echo '<script>

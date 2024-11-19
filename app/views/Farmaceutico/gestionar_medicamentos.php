@@ -92,14 +92,14 @@ if (!isset($_SESSION['id_usuario'])) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.text(); // Cambia a text() para la depuración
+            return response.text();
         })
         .then(data => {
-            console.log('Raw response:', data); // Log para ver la respuesta sin procesar
+            
             try {
-                const jsonData = JSON.parse(data); // Intentar analizar el JSON
+                const jsonData = JSON.parse(data);
                 if (jsonData.error) {
-                    throw new Error(jsonData.error); // Lanza un error si hay uno en la respuesta JSON
+                    throw new Error(jsonData.error);
                 }
                 renderMedicamentos(jsonData);
             } catch (e) {

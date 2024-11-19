@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -83,7 +84,7 @@
         $(document).ready(function() {
             // Redirigir a la página de login al hacer clic en "Agendar Cita"
             $('#agendarCita').on('click', function() {
-                window.location.href = 'app/views/login.php'; // Asegúrate de que este sea el nombre correcto del archivo de login
+                window.location.href = '/Gestion_clinica/login'; // Asegúrate de que este sea el nombre correcto del archivo de login
             });
 
             // Mostrar los servicios adicionales al hacer clic en "Ver más servicios"

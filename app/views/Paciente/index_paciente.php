@@ -21,7 +21,7 @@ if (!isset($_SESSION['id_usuario'])) {
 <body class="bg-gray-100 text-gray-800">
     <?php include '../../includes/header.php'; ?>
     <main class="text-center bg-purple-50">
-        <section class="py-12 bg-cover bg-center relative" style="background-image: url('../media/historia-clinica.jpg');">
+        <section class="py-12 bg-cover bg-center relative" style="background-image: url('/Gestion_clinica/app/views/media/historia-clinica.jpg');">
             <!-- Superposición oscura para mejorar la legibilidad -->
             <div class="absolute inset-0 bg-purple-800 opacity-50"></div>
 
@@ -36,7 +36,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 <!-- Tarjeta 1 -->
                 <div class="bg-white bg-opacity-90 shadow-lg rounded-lg p-6">
                     <div class="flex justify-center mb-4">
-                        <img src="../media/pediatria.png" alt="" class="w-20 h-20">
+                        <img src="/Gestion_clinica/app/views/media/pediatria.png" alt="" class="w-20 h-20">
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 text-center">Pediatría</h3>
                     <p class="text-gray-600 text-center mt-2">Departamento encargado del cuidado de niños y adolescentes.</p>
@@ -45,7 +45,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 <!-- Tarjeta 2 -->
                 <div class="bg-white bg-opacity-90 shadow-lg rounded-lg p-6">
                     <div class="flex justify-center mb-4">
-                        <img src="../media/cardiologia.png" alt="" class="w-20 h-20">
+                        <img src="/Gestion_clinica/app/views/media/cardiologia.png" alt="" class="w-20 h-20">
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 text-center">Cardiología</h3>
                     <p class="text-gray-600 text-center mt-2">Departamento especializado en el diagnóstico y tratamiento de enfermedades del corazón.</p>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 <!-- Tarjeta 3 -->
                 <div class="bg-white bg-opacity-90 shadow-lg rounded-lg p-6">
                     <div class="flex justify-center mb-4">
-                        <img src="../media/oncologia.png" alt="" class="w-20 h-20">
+                        <img src="/Gestion_clinica/app/views/media/oncologia.png" alt="" class="w-20 h-20">
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 text-center">Oncología</h3>
                     <p class="text-gray-600 text-center mt-2">Departamento dedicado al diagnóstico y tratamiento del cáncer.</p>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['id_usuario'])) {
             
             <!-- Botón Agendar Cita -->
             <div class="relative z-20 mt-10 text-center flex justify-center">
-                <form action="agendar_cita.php" method="get">
+                <form action="/Gestion_clinica/agendar_cita" method="get">
                     <button type="submit" class="bg-purple-700 text-white px-4 py-2 rounded">Agendar Cita</button>
                     
                 </form>
@@ -72,7 +72,7 @@ if (!isset($_SESSION['id_usuario'])) {
             </div>
         </section>
 
-        <section id="contenedorServicios" class="py-12 bg-cover bg-center relative hidden" style="background-image: url('../media/1000_F_972809743_Tyxew3qEga43WMblXper8EqJq0wX9qwA.jpg'); z-index: 20;">
+        <section id="contenedorServicios" class="py-12 bg-cover bg-center relative hidden" style="background-image: url('/Gestion_clinica/app/views/media/1000_F_972809743_Tyxew3qEga43WMblXper8EqJq0wX9qwA.jpg'); z-index: 20;">
             
             <div class="absolute inset-0 bg-purple-800 opacity-50" style="z-index: 10;"></div>
             <!-- Contenedor para la lista de servicios adicionales -->
@@ -102,7 +102,7 @@ if (!isset($_SESSION['id_usuario'])) {
         // Mostrar los servicios adicionales al hacer clic en "Ver más servicios"
         $('#verMasServicios').on('click', function() {
             $.ajax({
-                url: '../../controllers/citaController.php',
+                url: '/Gestion_clinica/app/controllers/citaController.php',
                 type: 'GET',
                 data: { action: 'obtenerServicios' },
                 dataType: 'json',

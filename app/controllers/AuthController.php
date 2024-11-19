@@ -8,7 +8,7 @@ class AuthController {
 
     public function __construct() {
         $database = new Database();
-        $this->db = $database->getConnection(); // Obtiene la conexión
+        $this->db = $database->getConnection();
         $this->userModel = new UserModel($this->db);
     }
 
@@ -30,10 +30,10 @@ class AuthController {
                     $pagina_inicio = '../views/Admin/dashboard.php'; // Definir la página para admin
                     break;
                 case 'Médico':
-                    $pagina_inicio = '../views/Doctor/medico_inicio.php';
+                    $pagina_inicio = '/Gestion_clinica/home_medico';
                     break;
                 case 'Paciente':
-                    $pagina_inicio = '../views/Paciente/index_paciente.php';
+                    $pagina_inicio = '/Gestion_clinica/home_paciente';
                     break;
                 case 'Farmaceutico':
                     $pagina_inicio = '../views/Farmaceutico/farmacia_inicio.php';

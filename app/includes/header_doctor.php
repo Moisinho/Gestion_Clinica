@@ -8,9 +8,9 @@
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="../../views/Doctor/medico_inicio.php" class="hover:text-purple-800">Inicio</a>
+            <a href="/Gestion_clinica/home_medico" class="hover:text-purple-800">Inicio</a>
             <div class="flex justify-end p-4">
-                <form action="../../controllers/logout.php" method="post">
+                <form action="/Gestion_clinica/app/controllers/logout.php" method="post">
                     <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>
                 </form>
             </div>
@@ -27,7 +27,7 @@
     <!-- Menú móvil expandido -->
     <div id="mobile-menu" class="md:hidden bg-purple-300 py-4 hidden">
         <nav class="space-y-2 px-6">
-            <a href="../../views/Doctor/medico_inicio.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
+            <a href="/Gestion_clinica/home_medico" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
         </nav>
     </div>
 

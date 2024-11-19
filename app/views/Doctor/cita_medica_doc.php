@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="bg-gray-50 font-sans">
 
     <?php include '../../includes/header_doctor.php'; ?>
-
+   
 
     <div class="container mx-auto p-5">
         <div class="bg-white p-5 rounded-lg shadow-md mb-5">
@@ -41,22 +41,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div id="cita-info"></div>
             <div class="mt-4">
                 <!-- Formulario para actualizar el estado de la cita -->
-                <form id="actualizar-cita-form" method="POST" action="../../controllers/actualizar_cita.php" class="inline">
+                <form id="actualizar-cita-form" method="POST" action="Gestion_clinica/app/controllers/actualizar_cita.php" class="inline">
                     <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
                     <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- Estado que desees actualizar -->
                     <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
                 </form>
+
                 <form id="verExpedienteForm" class="inline ml-2">
-                    <input type="hidden" name="id_paciente" value="">
+                    <input type="hidden" name="id_paciente" value="<?php echo $id_paciente; ?>">
+
                     <button type="button" id="verExpedienteBtn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Ver Expediente</button>
                 </form>
-
-
-
-
-
-
-
+                <button id="volverBtn" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400 ml-2">Volver</button>
 
             </div>
         </div>
@@ -227,7 +223,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <?php include '../../includes/footer.php'; ?>
-    <script src="../Js/Doctor/detalles_cita_medica.js" defer></script>
+    <script src="/Gestion_clinica/app/views/Js/Doctor/historial.js"></script>
+    <script src="/Gestion_clinica/detalles_cita_js"></script>
+    <script>
+    document.getElementById("volverBtn").addEventListener("click", function() {
+        window.location.href = "/Gestion_clinica/home_medico";
+    });
+</script>
+
 </body>
 
 </html>

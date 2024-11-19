@@ -1,13 +1,14 @@
 <?php
-// Iniciar la sesión
 session_start();
+var_dump($_SESSION);
+// Verificar si el id_usuario existe en la sesión
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: /Gestion_clinica/'); // Cambia a la ruta correcta de tu login
+    exit();
+}
 
-
-//if (!isset($_SESSION['id_usuario'])) {
-//    header('Location: ../../../index.php');
-//    exit();
-//}
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -44,7 +45,7 @@ session_start();
             <table class="w-full border-collapse">
                 <thead class="bg-purple-600 text-white">
                     <tr>
-
+                        <th class="p-3 text-left">Paciente</th>
                         <th class="p-3 text-left">Motivo</th>
                         <th class="p-3 text-left">Fecha</th>
                         <th class="p-3 text-left">Estado</th>
@@ -73,9 +74,9 @@ session_start();
             </div>
         </div>
     </main>
-
     <?php include '../../includes/footer.php'; ?>
-    <script src="../Js/Doctor/medico_inicio.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/Gestion_clinica/app/views/Js/Doctor/inicio.js"></script>
 </body>
 
 </html>

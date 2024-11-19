@@ -1,5 +1,4 @@
-// Función para cargar las citas del paciente
-// Función para construir el calendario
+
 function buildCalendar() {
     const date = new Date();
     const month = date.getMonth();
@@ -38,11 +37,10 @@ function buildCalendar() {
 
 // Función para cargar citas
 function loadCitas() {
-    fetch('../../controllers/CitaController.php?action=obtenerPorPaciente') // Cambia esta ruta por la adecuada
+    fetch('/Gestion_clinica/app/controllers/CitaController.php?action=obtenerPorPaciente')
         .then(response => response.json())
         .then(data => {
-            console.log(data); // Verifica la respuesta aquí
-            // Asegúrate de que data sea un array
+            console.log(data);
             if (Array.isArray(data)) {
                 mostrarCitas(data);
             } else {
@@ -89,8 +87,6 @@ function mostrarCitas(citas) {
         contenedorCitas.appendChild(fila);
     });
 }
-
-
 
 // Inicializar al cargar la página
 window.onload = function () {

@@ -30,7 +30,7 @@ function generarToken($correo) {
         $query->bindValue(':correo', $correo, PDO::PARAM_STR);
         $query->execute();
     }
-    $token = bin2hex(random_bytes(32));
+    $token = bin2hex(random_bytes(12));
     $query = $conn->prepare("INSERT INTO restablecimiento_tokens (correo, token, fecha_expiracion) VALUES (:correo, :token, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
     $query->bindValue(':correo', $correo, PDO::PARAM_STR);
     $query->bindValue(':token', $token, PDO::PARAM_STR);
@@ -41,9 +41,10 @@ function generarToken($correo) {
 }
 
 function enviarEnlaceRestablecimiento($correo, $token) {
-    $url = "http://localhost/Gestion_clinica/app/views/registros/reset_password.php?token=" . $token;
+    $url = "http://localhost/Gestion_clinica/reset-password?token=" . $token;
     $mensaje = "Haz clic en el siguiente enlace para restablecer tu contraseña: <a href='$url'>$url</a>";
     
     return enviarCorreoSMTP($correo, "Restablecimiento de Contrasena", $mensaje);
 }
+
 ?>

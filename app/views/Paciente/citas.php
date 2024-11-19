@@ -1,6 +1,12 @@
 <?php
+// Iniciar la sesión
 session_start();
-$id_usuario = $_SESSION['id_usuario'] ?? null;
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: /Gestion_clinica/index.php');
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -63,11 +69,8 @@ $id_usuario = $_SESSION['id_usuario'] ?? null;
 
     <?php include '../../includes/footer.php'; ?>
     <script>
-        const idUsuario = <?php echo json_encode($id_usuario); ?>; // Pasar el ID de usuario a JavaScript
+        const idUsuario = <?php echo json_encode($id_usuario); ?>;
     </script>
-    <script src="../Js/Paciente/citas.js">
-        
-    </script>
-    
+    <script src="/Gestion_clinica/citas_paciente_js"></script>
 </body>
 </html>

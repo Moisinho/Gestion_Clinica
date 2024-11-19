@@ -12,7 +12,7 @@
 
 <div class="flex justify-center items-center h-screen">
     <div class="bg-white my-10 p-12 rounded-lg shadow-lg w-full max-w-xl h-auto">
-        <form id="formulario-reset" action="../../helpers/procesar_reetablecimiento_contrasenia.php?token=<?php echo htmlspecialchars($_GET['token']); ?>" method="POST" onsubmit="return validarContrasena()">
+        <form id="formulario-reset" action="/Gestion_clinica/app/helpers/procesar_restablecimiento_contrasenia.php?token=<?php echo htmlspecialchars($_GET['token']); ?>" method="POST" onsubmit="return validarContrasena()">
             <h2 class="text-center text-3xl font-semibold mb-6">Restablecer Contraseña</h2>
             <div class="mb-4">
                 <label for="nueva_contrasenia" class="block text-gray-700 font-semibold">Nueva Contraseña:</label>
@@ -24,7 +24,7 @@
                 <p id="error-mensaje" class="text-red-500 mt-2 hidden">Las contraseñas no coinciden.</p>
             </div>
             <div class="flex justify-between">
-                <button type="button" onclick="window.location.href='../../login.php'" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold hover:bg-purple-400 hover:text-white">Cancelar</button>
+                <button type="button" onclick="window.location.href='/Gestion_clinica/index.php'" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold hover:bg-purple-400 hover:text-white">Cancelar</button>
                 <button type="submit" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold hover:bg-purple-800">Restablecer</button>
             </div>
         </form>

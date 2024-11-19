@@ -18,10 +18,11 @@
             <div class="flex w-full h-full rounded-lg overflow-hidden ">
                 
                 <div class="w-1/2 h-full flex justify-center items-center"> 
-                    <img src="./media/login.jpg" alt="Imagen 1" class="w-full h-full object-cover">
+                <img src="/Gestion_clinica/app/views/media/login.jpg" alt="Imagen 1" class="w-full h-full object-cover">
+
                 </div>
                 <div class="w-1/2 h-full flex flex-col justify-center items-center"> 
-                    <form action="../controllers/AuthController.php" method="POST" class="bg-white p-6 rounded-lg w-4/5 flex flex-col"> 
+                    <form action="/Gestion_clinica/app/controllers/AuthController.php" method="POST" class="bg-white p-6 rounded-lg w-4/5 flex flex-col"> 
                         <h2 class="text-center text-3xl font-semibold mb-6">Iniciar Sesión</h2>
                         <div class="mb-6">
                             <label for="correo" class="text-lg font-bold block text-gray-700">Correo:</label>
@@ -37,8 +38,8 @@
                     </form>
 
                     <div class="flex justify-around w-full">
-                        <a href="./registros/correo_reestablecimiento.php" class="text-purple-600 hover:underline">¿Has olvidado tu contraseña?</a>
-                        <a href="./registros/registro-usuario.php" class="text-purple-600 hover:underline">Registrarse →</a>
+                        <a href="/Gestion_clinica/restablecer_contrasena" class="text-purple-600 hover:underline">¿Has olvidado tu contraseña?</a>
+                        <a href="/Gestion_clinica/registro" class="text-purple-600 hover:underline">Registrarse →</a>
                     </div>
                 </div>
             </div>

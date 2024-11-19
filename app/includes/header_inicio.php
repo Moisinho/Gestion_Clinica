@@ -9,14 +9,13 @@
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6">
             <a href="index.php" class="hover:text-purple-800">Inicio</a>
-            <a href="servicios.php" class="hover:text-purple-800">Servicios</a>
             <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
             <a href="about.php" class="hover:text-purple-800">Sobre Nosotros</a>
         </nav>
 
         <!-- Botones de Login y Registrarse -->
         <div class="flex space-x-4">
-            <a href="app/views/login.php" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Iniciar sesión</a>
+            <a href="/Gestion_clinica/login" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Iniciar sesión</a>
             
         </div>
 

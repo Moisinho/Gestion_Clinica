@@ -9,6 +9,9 @@
             <!-- Navegación -->
             <nav class="hidden md:flex space-x-6 px-6">
                 <a href="../../views/Farmaceutico/farmacia_inicio.php" class="hover:text-purple-800">Inicio</a>
+                <a href="../../views/Farmaceutico/gestionar_medicamentos.php" class="hover:text-purple-800">Gestionar Medicina</a>
+                <a href="../../views/Farmaceutico/farmacia_inicio.php" class="hover:text-purple-800">Proveedores</a>
+                <a href="../../views/Farmaceutico/farmacia_inicio.php" class="hover:text-purple-800">Reportes</a>
             </nav>
 
             <div class="flex items-center space-x-4">

@@ -79,4 +79,24 @@ class Historial
             return false;
         }
     }
+    public function obtenerHistorialPorCedula($cedula) {
+        $query = "SELECT p.nombre_paciente, p.cedula, p.fecha_nacimiento, p.telefono, p.correo_paciente, 
+                c.fecha_cita, m.nombre_medico AS medico, h.diagnostico, h.tratamiento, h.receta, h.examenes, h.recomendaciones
+                FROM paciente AS p
+                JOIN cita AS c ON p.cedula = c.cedula
+                JOIN medico AS m ON c.id_medico = m.id_medico
+                JOIN historial_medico AS h ON h.id_cita = c.id_cita
+                WHERE p.cedula = :cedula";
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':cedula', $cedula);
+    
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devuelve todos los historiales como un arreglo
+        }
+    
+        return []; // Devuelve un arreglo vacío si no hay resultados
+    }
+    
+    
 }
