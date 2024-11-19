@@ -23,3 +23,20 @@ RewriteRule ^cita_medica$ /Gestion_clinica/app/views/Doctor/cita_medica_doc.php 
 RewriteRule ^historial_medico$ /Gestion_clinica/app/views/Doctor/historial_clinico.php [L]
 RewriteRule ^detalles_cita_js$ /Gestion_clinica/app/views/Js/Doctor/detalles_cita.js [L]
 RewriteRule ^home_medico$ /Gestion_clinica/app/views/Doctor/medico_inicio.php [L]
+
+#Paginas de recepcionista
+RewriteRule ^home_recepcionista$ /Gestion_clinica/app/views/Recepcionista/index_recepcionista.php [L]
+RewriteRule ^menu_cobro$ /Gestion_clinica/app/views/Recepcionista/menu_cobro.php [L]
+RewriteRule ^factura$ /Gestion_clinica/app/views/Recepcionista/menu_factura.php [L]
+RewriteRule ^reservar_cita$ /Gestion_clinica/app/views/Recepcionista/agendar_cita.php [L]
+
+#Paginas de farmacéutico
+RewriteRule ^home_farmacia$ /Gestion_clinica/app/views/Farmaceutico/farmacia_inicio.php [L]
+RewriteRule ^recetas$ /Gestion_clinica/app/views/Farmaceutico/consultar_recetas.php [L]
+RewriteRule ^gestionar_medicamentos$ /Gestion_clinica/app/views/Farmaceutico/gestionar_medicamentos.php [L]
+
+#Paginas de admin
+RewriteRule ^home_admin$ /Gestion_clinica/app/views/Admin/dashboard.php [L]
+RewriteRule ^gestion_usuarios$ /Gestion_clinica/app/views/Admin/admin_soli.php [L]
+RewriteRule ^gestion_servicios$ /Gestion_clinica/app/views/Admin/gestion_servicios.php [L]
+

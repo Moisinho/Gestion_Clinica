@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: /Gestion_clinica/index.php');
+    exit();
+}
 // Inicializa la variable de selección del criterio
 $criterioSeleccionado = isset($_POST['criterio']) ? $_POST['criterio'] : '';
 $valorBusqueda = isset($_POST['busqueda']) ? $_POST['busqueda'] : '';
@@ -53,7 +60,7 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-    <?php include '../../includes/header.php'; ?>
+    <?php include '../../includes/header_recepcionista.php'; ?>
     <div class="bg-[#6A5492] text-white p-4 flex items-center justify-center w-full">
         <div class="flex items-center w-full justify-center">
             <form method="POST" action="" class="flex items-center space-x-2 w-3/4">
@@ -102,7 +109,7 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
                                 <td class="border-r p-2"><?php echo htmlspecialchars($row['id_medico']); ?></td>
                                 <td class="border-r p-2"><?php echo htmlspecialchars($row['id_servicio']); ?></td>
                                 <td class="border-r p-2">
-                                    <form action="menu_cobro.php" method="POST">
+                                    <form action="/Gestion_clinica/menu_cobro" method="POST">
                                         <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($row['id_cita']); ?>">
                                         <input type="hidden" name="diagnostico" value="<?php echo htmlspecialchars($row['diagnostico']); ?>">
                                         <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">COBRAR</button>

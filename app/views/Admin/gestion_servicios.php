@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
+    header('Location: /Gestion_clinica/');
     exit();
 }
 ?>
@@ -88,7 +88,7 @@ if (!isset($_SESSION['id_usuario'])) {
         </div>
     </div>
     <?php include '../../includes/footer.php'; ?>
-    <script src="../js/Admin/gestion_servicios.js"></script>
+    <script src="/Gestion_clinica/app/views/Js/Admin/gestion_servicios.js"></script>
 </body>
 
 </html>

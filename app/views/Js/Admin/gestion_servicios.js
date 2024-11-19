@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadServicios() {
-  fetch("../../controllers/ServicioController.php?action=obtenerTodos")
+  fetch("/Gestion_clinica/app/controllers/ServicioController.php?action=obtenerTodos")
     .then((response) => response.json())
     .then((data) => {
       const tbody = document.getElementById("serviciosTbody");
@@ -39,7 +39,7 @@ function saveServicio(event) {
   console.log("accion: ", action);
   formData.append("action", action);
 
-  fetch(`../../controllers/ServicioController.php?`, {
+  fetch(`/Gestion_clinica/app/controllers/ServicioController.php?`, {
     method: "POST",
     body: formData,
   })
@@ -82,7 +82,7 @@ document.getElementById("confirmDelete").addEventListener("click", function () {
   formData.append("action", "borrar");
   formData.append("id_servicio", servicioIdToDelete);
 
-  fetch(`../../controllers/ServicioController.php`, {
+  fetch(`/Gestion_clinica/app/controllers/ServicioController.php`, {
     method: "POST",
     body: formData,
   })
@@ -99,7 +99,7 @@ document.getElementById("confirmDelete").addEventListener("click", function () {
 });
 
 function editServicio(id) {
-  fetch(`../../controllers/ServicioController.php?action=obtenerPorId&id_servicio=${id}`)
+  fetch(`/Gestion_clinica/app/controllers/ServicioController.php?action=obtenerPorId&id_servicio=${id}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {

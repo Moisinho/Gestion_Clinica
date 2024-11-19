@@ -39,7 +39,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         </div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Solicitudes de Recetas</h3>
                         <p class="text-gray-600 mb-4">Gestiona las solicitudes de recetas digitales enviadas por los médicos.</p>
-                        <a href="consultar_recetas.php" class="inline-block bg-purple-300 text-purple-900 px-4 py-2 rounded-lg font-bold hover:bg-purple-400 transition-colors duration-300">
+                        <a href="/gestion_clinica/recetas" class="inline-block bg-purple-300 text-purple-900 px-4 py-2 rounded-lg font-bold hover:bg-purple-400 transition-colors duration-300">
                             Gestionar Solicitudes
                         </a>
                     </div>

@@ -6,6 +6,7 @@ require_once '../includes/Database.php';
 require_once '../models/Cita.php';
 require_once '../models/Medico.php';
 require_once '../models/ServicioModel.php';
+require_once '../models/UserModel.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -15,6 +16,7 @@ $conn = $database->getConnection();
 $cita = new Cita($conn);
 $servicioModel = new ServicioModel($conn);
 $medicoModel = new Medico($conn);
+$userModel = new UserModel($conn);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     // MANEJO DE REGISTRO DE CITA
@@ -28,15 +30,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         if ($cita->verificarPaciente($cedula)) {
             $resultado = $cita->registrarCita($cedula, $motivo, $id_medico, $id_servicio, $fecha_cita);
             if ($resultado) {
-                echo "<script>alert('Cita registrada exitosamente.');
-                window.location.href='/Gestion_clinica/agendar_cita';
-                </script>";
+                // Obtén el rol del usuario actual
+                $rol = $userModel->obtenerRolUsuario($id_usuario);
+
+                // Redirige según el rol
+                if ($rol === 'Paciente') {
+                    echo "<script>alert('Cita registrada exitosamente.');
+                    window.location.href='/Gestion_clinica/agendar_cita'; // Página del paciente
+                    </script>";
+                } elseif ($rol === 'Recepcionista') {
+                    echo "<script>alert('Cita registrada exitosamente.');
+                    window.location.href='/Gestion_clinica/reservar_cita'; // Página del recepcionista
+                    </script>";
+                } else {
+                    echo "<script>alert('Cita registrada exitosamente.');
+                    window.location.href='/Gestion_clinica/'; // Página por defecto
+                    </script>";
+                }
             } else {
                 echo "<script>alert('Hubo un error al registrar la cita.');</script>";
             }
         } else {
             echo "<script>alert('El paciente no está registrado. Por favor, regístrese primero.');</script>";
         }
+
     }
     // MANEJO DE ACTUALIZACION DE CITA
     elseif ($_POST['action'] == 'actualizar') {
@@ -103,6 +120,19 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
     elseif ($_GET['action'] == 'obtenerMedicos') {
         $medicos = $medicoModel->obtenerMedicos();
         echo json_encode($medicos);
+        exit();
+    }
+    elseif ($_POST['action'] == 'agregarReferencia') {
+        error_log("Iniciando proceso de agregar referencia...");
+        $cedula_paciente = $_POST['cedula_paciente'];
+        $id_departamento = $_POST['id_departamento'];
+        $id_medico = $_POST['id_medico'];
+
+        if ($cita->registrarReferenciaEspecialidad($cedula_paciente, $id_departamento, $id_medico)) {
+            echo json_encode(['success' => true, 'message' => 'Referencia de especialidad registrada exitosamente.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'El paciente ya tiene una referencia para esta especialidad.']);
+        }
         exit();
     }
 

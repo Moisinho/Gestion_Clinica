@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!recetaSeleccionada) return;
     
         try {
-            const response = await fetch('Gestion_Clinica/app/controllers/FarmaciaController.php?action=actualizar', {
+            const response = await fetch('/Gestion_Clinica/app/controllers/FarmaciaController.php?action=actualizar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

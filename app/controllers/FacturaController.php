@@ -69,7 +69,7 @@ if (count($result) > 0) {
         $cita_actualizada = $cita->actualizarEstado($id_cita, 'Pagada');
         
         // Redirigir a menu_factura.php pasando el id_factura en la URL
-        header("Location: ../views/facturacion/menu_factura.php?id_factura=$id_factura");
+        header("Location: /Gestion_clinica/factura?id_factura=$id_factura");
         exit(); // Asegúrate de detener el script después de la redirección
 
     } catch (Exception $e) {

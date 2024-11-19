@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
+    header('Location: /Gestion_clinica/');
     exit();
 }
 ?>
@@ -16,7 +16,8 @@ if (!isset($_SESSION['id_usuario'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de Administración</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../Js/Admin/dashboard.js"></script>
+    <script src="/Gestion_clinica/app/views/Js/Admin/dashboard.js"></script>
+    
 </head>
 
 <body class="bg-gray-100">
@@ -45,9 +46,7 @@ if (!isset($_SESSION['id_usuario'])) {
                 <h3 class="text-xl font-bold text-gray-700">Ingresos Recientes</h3>
                 <p id="ingresosRecientes" class="text-3xl font-bold text-purple-700"></p>
             </div>
-
         </div>
-
         <!-- Sección de Gráficos y Alertas -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Gráfico de Citas -->
@@ -70,8 +69,8 @@ if (!isset($_SESSION['id_usuario'])) {
 
         <!-- Botones de Acceso Rápido -->
         <div class="flex justify-center mt-8 space-x-4">
-            <a href="admin_soli.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
-            <a href="gestionar_servicios.php" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Servicios</a>
+            <a href="/Gestion_clinica/gestion_usuarios" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Usuarios</a>
+            <a href="/Gestion_clinica/gestion_servicios" class="bg-purple-700 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Gestionar Servicios</a>
         </div>
     </div>
 

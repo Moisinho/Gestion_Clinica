@@ -5,23 +5,20 @@
             <img src="/Gestion_clinica/app/views/media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
             <span class="text-2xl font-bold">Clinica Pacoren</span>
         </div>
-        <div class="flex justify-between items-center">
-            <!-- Navegación -->
-            <nav class="hidden md:flex space-x-6 px-6">
-                <a href="/Gestion_clinica/home_farmacia" class="hover:text-purple-800">Inicio</a>
-                <a href="/Gestion_clinica/recetas" class="hover:text-purple-800">Atender solicitudes</a>
-                <a href="/Gestion_clinica/gestionar_medicamentos" class="hover:text-purple-800">Gestionar Medicina</a>
-            </nav>
 
-            <div class="flex items-center space-x-4">
-                
+        <!-- Navegación -->
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="/Gestion_clinica/home_recepcionista" class="hover:text-purple-800">Inicio</a>
+            <a href="/Gestion_clinica/reservar_cita" class="hover:text-purple-800">Agendar cita</a>
+            <a href="" class="hover:text-purple-800">Horarios Médicos</a>
+            <a href="" class="hover:text-purple-800">Contacto</a>
+            <div class="flex justify-end p-4">
                 <form action="/Gestion_clinica/app/controllers/logout.php" method="post">
                     <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>
                 </form>
-                
-
             </div>
-        </div>
+        </nav>
+
         <!-- Menú móvil -->
         <button id="menu-toggle" class="text-white md:hidden focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +30,9 @@
     <!-- Menú móvil expandido -->
     <div id="mobile-menu" class="md:hidden bg-purple-300 py-4 hidden">
         <nav class="space-y-2 px-6">
-            <a href="../../views/Doctor/medico_inicio.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
+            <a href="index_paciente.php" class="block text-white hover:bg-purple-600 py-2 rounded">Inicio</a>
+            <a href="servicios.php" class="block text-white hover:bg-purple-600 py-2 rounded">Mis citas</a>
+            <a href="contacto.php" class="block text-white hover:bg-purple-600 py-2 rounded">Contacto</a>
         </nav>
     </div>
 
@@ -44,4 +43,5 @@
             menu.classList.toggle('hidden');
         });
     </script>
+    <script src="/Gestion_clinica/app/js/tailwind-config.js"></script>
 </header>

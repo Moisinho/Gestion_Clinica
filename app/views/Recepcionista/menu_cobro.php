@@ -1,9 +1,16 @@
 <?php
+session_start();
+// Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: /Gestion_clinica/index.php');
+    exit();
+}
 // Asumimos que el id_cita viene del POST o ha sido previamente definido
 $id_cita = isset($_POST['id_cita']) ? $_POST['id_cita'] : null;
 $diagnostico = isset($_POST['diagnostico']) ? $_POST['diagnostico'] : null;
-
+// Iniciar la sesión
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -49,7 +56,7 @@ $diagnostico = isset($_POST['diagnostico']) ? $_POST['diagnostico'] : null;
 <body class="flex h-[100vh] font-serif justify-center items-center bg-[#A9A1D4]">
     <div class="flex flex-col bg-white p-4 w-[75vh] h-[85vh] rounded-md shadow-xl border border-black-600 text-center overflow-y-auto">
         <h2 class="text-2xl font-bold mb-4">Registrar Cobro</h2>
-        <form action="../../controllers/procesar_factura.php" method="post" id="form-cobro">
+        <form action="/Gestion_clinica/app/controllers/FacturaController.php" method="post" id="form-cobro">
             <input type="hidden" id="id_cita" name="id_cita" value="<?php echo htmlspecialchars($id_cita);?>">
                 <!-- Método de pago -->
                 <div class="mx-16 mb-4">
@@ -110,7 +117,7 @@ $diagnostico = isset($_POST['diagnostico']) ? $_POST['diagnostico'] : null;
         });
 
         function llamarMonto(idCita){
-            fetch(`../../controllers/ServicioController.php?action=obtenerMonto&id_cita=${idCita}`)
+            fetch(`/Gestion_clinica/app/controllers/ServicioController.php?action=obtenerMonto&id_cita=${idCita}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

@@ -3,7 +3,7 @@ require_once '../../models/Medicamento.php';
 session_start();
 // Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
+    header('Location: /Gestion_clinica/');
     exit();
 }
 ?>
@@ -87,7 +87,7 @@ if (!isset($_SESSION['id_usuario'])) {
         </div>
     </div>
     <script>
-    fetch('../../controllers/MedicamentoController.php')
+    fetch('/Gestion_clinica/app/controllers/MedicamentoController.php')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -130,7 +130,7 @@ if (!isset($_SESSION['id_usuario'])) {
     }
     function openUpdateModal(id) {
         // Realiza una solicitud para obtener los detalles del medicamento
-        fetch(`../../controllers/MedicamentoController.php?id=${id}`)
+        fetch(`/Gestion_clinica/app/controllers/MedicamentoController.php?id=${id}`)
             .then(response => response.json())
             .then(data => {
                 if (data && !data.error) {
@@ -160,7 +160,7 @@ if (!isset($_SESSION['id_usuario'])) {
         const formData = new FormData(document.getElementById("formulario-actualizar-medicamento"));
         formData.append("accion", "actualizar");
 
-        fetch('../../controllers/MedicamentoController.php', {
+        fetch('/Gestion_clinica/app/controllers/MedicamentoController.php', {
             method: 'POST',
             body: formData
         })
@@ -201,7 +201,7 @@ if (!isset($_SESSION['id_usuario'])) {
         // Aquí va el código para enviar el formulario con fetch
         const formData = new FormData(this);
 
-        fetch('../../controllers/MedicamentoController.php', {
+        fetch('/Gestion_clinica/app/controllers/MedicamentoController.php', {
             method: 'POST',
             body: formData
         })

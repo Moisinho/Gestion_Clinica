@@ -2,18 +2,18 @@
     <div class="container mx-auto flex items-center justify-between py-4 px-6">
         <!-- Logo de la clínica -->
         <div class="flex items-center">
-            <img src="../media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
+            <img src="/Gestion_clinica/app/views/media/image0_0-removebg-preview.png" alt="Logo" class="w-16 h-16 mr-3">
             <span class="text-2xl font-bold">Clinica Pacoren</span>
         </div>
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="dashboard.php" class="hover:text-purple-800">Inicio</a>
-            <a href="admin_soli.php" class="hover:text-purple-800">Usuarios</a>
-            <a href="gestion_servicios.php" class="hover:text-purple-800">Servicios</a>
+            <a href="/Gestion_clinica/home_admin" class="hover:text-purple-800">Inicio</a>
+            <a href="/Gestion_clinica/gestion_usuarios" class="hover:text-purple-800">Usuarios</a>
+            <a href="/Gestion_clinica/gestion_servicios" class="hover:text-purple-800">Servicios</a>
             <a href="contacto.php" class="hover:text-purple-800">Contacto</a>
             <div class="flex justify-end p-4">
-                <form action="../../controllers/logout.php" method="post">
+                <form action="/Gestion_clinica/app/controllers/logout.php" method="post">
                     <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>
                 </form>
             </div>

@@ -53,7 +53,7 @@ function crearGrafico(ctxCitas) {
 // Llamada para obtener el resumen del dashboard
 async function obtenerResumenDashboard() {
   try {
-    const response = await fetch("../../controllers/AdminController.php?action=resumenDashboard");
+    const response = await fetch("/Gestion_clinica/app/controllers/AdminController.php?action=resumenDashboard");
     const data = await response.json();
 
     console.log("Datos para cards: ", data);
@@ -70,7 +70,7 @@ async function obtenerResumenDashboard() {
 async function obtenerDatosGrafica(periodo) {
   try {
     const response = await fetch(
-      `../../controllers/AdminController.php?action=obtenerDatosGrafica&periodo=${periodo}`
+      `/Gestion_clinica/app/controllers/AdminController.php?action=obtenerDatosGrafica&periodo=${periodo}`
     );
     const datosGrafica = await response.json();
     console.log("Datos de gráfica:", datosGrafica);

@@ -27,7 +27,7 @@ class AuthController {
             // Redirigir según el tipo de usuario
             switch ($tipo_usuario) {
                 case 'Administrador':
-                    $pagina_inicio = '../views/Admin/dashboard.php'; // Definir la página para admin
+                    $pagina_inicio = '/Gestion_clinica/home_admin'; // Definir la página para admin
                     break;
                 case 'Médico':
                     $pagina_inicio = '/Gestion_clinica/home_medico';
@@ -36,13 +36,13 @@ class AuthController {
                     $pagina_inicio = '/Gestion_clinica/home_paciente';
                     break;
                 case 'Farmaceutico':
-                    $pagina_inicio = '../views/Farmaceutico/farmacia_inicio.php';
+                    $pagina_inicio = '/Gestion_clinica/home_farmacia';
                     break;
                 case 'Recepcionista':
-                    $pagina_inicio = '../views/facturacion/facturacion_cita.php';
+                    $pagina_inicio = '/Gestion_clinica/home_recepcionista';
                     break;
                 default:
-                    $pagina_inicio = '../../index.php';
+                    $pagina_inicio = '/Gestion_clinica/';
             }
     
             // Redirigir a la página de inicio

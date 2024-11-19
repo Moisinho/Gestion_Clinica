@@ -1,18 +1,16 @@
 <?php 
+session_start();
+if (!isset($_SESSION['id_usuario'])) {
+    header('Location: /Gestion_clinica/index.php');
+    exit();
+}
 require_once '../../includes/Database.php';
 require_once '../../models/Factura.php';
 
-// Crear instancia de la clase Database y obtener la conexión
 $database = new Database();
 $conn = $database->getConnection();
-
-// Crear la instancia de Factura
 $factura = new Factura($conn);
-
-// Capturar el ID de la factura desde la URL
 $id_factura = isset($_GET['id_factura']) ? $_GET['id_factura'] : null;
-
-// Obtener los detalles de la factura si el ID está presente
 $factura_details = null;
 if ($id_factura) {
     $factura_details = $factura->obtenerDetallesFactura($id_factura);
@@ -28,7 +26,6 @@ if ($id_factura) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex justify-center items-center h-screen bg-gray-200">
-
 <div class="bg-white p-6 rounded-lg shadow-lg w-96">
     <h2 class="text-2xl font-bold mb-4 text-center">Factura</h2>
     <p class="mb-2"><strong>ID Factura:</strong> <?php echo isset($factura_details['id_factura']) ? $factura_details['id_factura'] : 'N/A'; ?></p>
@@ -41,7 +38,7 @@ if ($id_factura) {
 
     <div class="mt-4 text-center">
         <p class="text-green-600 text-lg">¡Cobro realizado con éxito!</p>
-        <a href="./facturacion_cita.php" class="mt-4 inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition">Volver</a>
+        <a href="/Gestion_clinica/home_recepcionista" class="mt-4 inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition">Volver</a>
     </div>
 </div>
 

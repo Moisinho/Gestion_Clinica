@@ -172,7 +172,7 @@ try {
                     <option id="op_farmaceutico" value="farmaceutico">Farmacéutico</option>
                 </select>
 
-            <form action="../../controllers/anadir_usuario.php" method="POST">
+            <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="paciente">
                 <input type="hidden" name="source" value="registro_admin"><!--Identificador para el método registrarPaciente-->
                 <!-- Formulario para paciente -->
@@ -221,7 +221,7 @@ try {
 
 
                 <!-- Formulario para médico -->
-            <form action="../../controllers/anadir_usuario.php" method="POST">
+            <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="medico">
                 <div id="form_medico" class="modal hidden">
                     <label class="block mb-2">Nombre del Médico:</label>
@@ -259,7 +259,7 @@ try {
             </form>
 
                 <!-- Formulario para recepcionista -->
-            <form action="../../controllers/anadir_usuario.php" method="POST">
+            <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="recepcionista">
                 <div id="form_recepcionista" class="modal hidden">
                     <label class="block mb-2">Nombre:</label>
@@ -274,7 +274,7 @@ try {
                     <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
                 </div>
             </form>
-            <form action="../../controllers/anadir_usuario.php" method="POST">
+            <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="administrador">
                 <!-- Formulario para Administrador -->
                 <div id="form_administrador" class="modal hidden">
@@ -290,7 +290,7 @@ try {
                     <button type="submit" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-8 rounded-lg shadow hover:bg-purple-700">Guardar</button>
                 </div>
             </form>
-            <form action="../../controllers/anadir_usuario.php" method="POST">
+            <form action="/Gestion_clinica/app/controllers/UsuarioController.php" method="POST">
                 <input type="hidden" name="tipo_usuario" id="tipo_usuario_hidden" value="farmaceutico">
                 <div id="form_farmaceutico" class="modal hidden">
                     <label class="block mb-2">Nombre:</label>
