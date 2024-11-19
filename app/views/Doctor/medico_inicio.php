@@ -76,7 +76,7 @@ if (!isset($_SESSION['id_usuario'])) {
     </main>
     <?php include '../../includes/footer.php'; ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/Gestion_clinica/app/views/Js/Doctor/inicio.js"></script>
+    <script src="/Gestion_clinica/inicio_js"></script>
 </body>
 
 </html>

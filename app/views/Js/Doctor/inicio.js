@@ -38,7 +38,7 @@ function buildCalendar() {
   // Función para cargar las citas del médico
   function loadCitas() {
     const citasBody = document.getElementById("citasBody");
-    const url = '/Gestion_clinica/app/controllers/CitaController.php?action=obtenerPorMedico&id_usuario=' + id_usuario;
+    const url = '/Gestion_clinica/app/controllers/CitaController.php?action=obtenerPorMedico';
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
