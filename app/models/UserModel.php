@@ -24,4 +24,12 @@ class UserModel
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['total_usuarios_activos'] ?? 0;
     }
+    public function obtenerRolUsuario($id_usuario)
+    {
+        $query = "SELECT tipo_usuario FROM usuario WHERE id_usuario = :id_usuario";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 }
