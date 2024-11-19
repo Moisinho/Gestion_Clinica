@@ -81,12 +81,13 @@ DROP TABLE IF EXISTS `cama`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cama` (
   `id_cama` int(11) NOT NULL AUTO_INCREMENT,
-  `estado` varchar(50) DEFAULT NULL,
+  `estado` enum('Disponible','Ocupada','Mantenimiento') DEFAULT 'Disponible',
   `id_habitacion` int(11) DEFAULT NULL,
+  `tipo_cama` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id_cama`),
   KEY `id_habitacion` (`id_habitacion`),
   CONSTRAINT `cama_ibfk_1` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`id_habitacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,6 +96,7 @@ CREATE TABLE `cama` (
 
 LOCK TABLES `cama` WRITE;
 /*!40000 ALTER TABLE `cama` DISABLE KEYS */;
+INSERT INTO `cama` VALUES (1,'Disponible',1,'Estándar'),(2,'Disponible',1,'Estándar'),(3,'Disponible',1,'Estándar'),(4,'Disponible',1,'Estándar'),(5,'Disponible',1,'Estándar'),(6,'Disponible',2,'UCI'),(7,'Disponible',2,'UCI'),(8,'Disponible',2,'UCI'),(9,'Disponible',2,'Especial'),(10,'Disponible',2,'Especial'),(11,'Disponible',2,'Especial'),(12,'Disponible',2,'Especial'),(13,'Disponible',2,'Pediátrica'),(14,'Disponible',2,'Pediátrica'),(15,'Disponible',2,'Pediátrica');
 /*!40000 ALTER TABLE `cama` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,9 +109,8 @@ DROP TABLE IF EXISTS `cita`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cita` (
   `id_cita` int(11) NOT NULL AUTO_INCREMENT,
-  `estado` varchar(50) DEFAULT NULL,
+  `estado` varchar(50) DEFAULT 'Pendiente',
   `motivo` varchar(5000) NOT NULL,
-  `recordatorio` text DEFAULT NULL,
   `fecha_cita` datetime DEFAULT NULL,
   `diagnostico` text DEFAULT NULL,
   `tratamiento` text DEFAULT NULL,
@@ -123,7 +124,7 @@ CREATE TABLE `cita` (
   CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`cedula`) REFERENCES `paciente` (`cedula`),
   CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id_medico`),
   CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +133,6 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,'Pendiente','Me he sentido mal durante varios dias con dolores musculares y fiebre.','Recuerda la cita con el Dr. Juan Pérez','2024-10-10 10:00:00','Revisión general','Consulta y análisis de sangre','123456789',1,NULL),(2,'Confirmada','','Cita confirmada con la Dra. María López','2024-10-12 00:00:00','Chequeo de corazón','Electrocardiograma','987654321',2,NULL);
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +229,7 @@ CREATE TABLE `departamento` (
   `nombre_departamento` varchar(100) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
   PRIMARY KEY (`id_departamento`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,8 +238,33 @@ CREATE TABLE `departamento` (
 
 LOCK TABLES `departamento` WRITE;
 /*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
-INSERT INTO `departamento` VALUES (1,'Pediatría','Departamento encargado del cuidado de niños y adolescentes.'),(2,'Cardiología','Departamento especializado en el diagnóstico y tratamiento de enfermedades del corazón.'),(3,'Oncología','Departamento dedicado al diagnóstico y tratamiento del cáncer.');
+INSERT INTO `departamento` VALUES (1,'Pediatría','Departamento encargado del cuidado de niños y adolescentes.'),(2,'Cardiología','Departamento especializado en el diagnóstico y tratamiento de enfermedades del corazón.'),(3,'Oncología','Departamento dedicado al diagnóstico y tratamiento del cáncer.'),(4,'Odontología','Consulta con odontólogo para chequeos y tratamientos dentales.'),(5,'Medicina General','Consulta médica general para diagnóstico, tratamiento y prevención de enfermedades comunes, así como el seguimiento de la salud del paciente.'),(6,'Dermatología','Consulta médica especializada en el diagnóstico, tratamiento y prevención de enfermedades de la piel, cabello y uñas, incluyendo enfermedades dermatológicas comunes y crónicas. Además, se enfoca en el cuidado y seguimiento integral de la salud dermatológica del paciente.');
 /*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `examenes`
+--
+
+DROP TABLE IF EXISTS `examenes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `examenes` (
+  `id_examen` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `costo` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id_examen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `examenes`
+--
+
+LOCK TABLES `examenes` WRITE;
+/*!40000 ALTER TABLE `examenes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `examenes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -274,6 +299,35 @@ LOCK TABLES `factura` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `farmaceutico`
+--
+
+DROP TABLE IF EXISTS `farmaceutico`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `farmaceutico` (
+  `id_farmaceutico` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_farmaceutico` varchar(255) NOT NULL,
+  `correo_farmaceutico` varchar(255) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_farmaceutico`),
+  UNIQUE KEY `correo_farmaceutico` (`correo_farmaceutico`),
+  KEY `id_usuario` (`id_usuario`),
+  CONSTRAINT `farmaceutico_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `farmaceutico`
+--
+
+LOCK TABLES `farmaceutico` WRITE;
+/*!40000 ALTER TABLE `farmaceutico` DISABLE KEYS */;
+INSERT INTO `farmaceutico` VALUES (1,'Nicolas Tesla','nicotes33@gmail.com',15);
+/*!40000 ALTER TABLE `farmaceutico` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `habitacion`
 --
 
@@ -282,11 +336,11 @@ DROP TABLE IF EXISTS `habitacion`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `habitacion` (
   `id_habitacion` int(11) NOT NULL AUTO_INCREMENT,
-  `capacidad` int(11) DEFAULT NULL,
+  `capacidad_disponible` int(11) NOT NULL,
   `ubicacion` text DEFAULT NULL,
   `tipo` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_habitacion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,6 +349,7 @@ CREATE TABLE `habitacion` (
 
 LOCK TABLES `habitacion` WRITE;
 /*!40000 ALTER TABLE `habitacion` DISABLE KEYS */;
+INSERT INTO `habitacion` VALUES (1,5,'Segundo piso','General'),(2,10,'Cuarto piso','Privada');
 /*!40000 ALTER TABLE `habitacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +396,6 @@ CREATE TABLE `historial_medico` (
 
 LOCK TABLES `historial_medico` WRITE;
 /*!40000 ALTER TABLE `historial_medico` DISABLE KEYS */;
-INSERT INTO `historial_medico` VALUES ('1234321',1,1,70.00,165.00,'90',75,'O+','Pulmonares, Diabetes, Transfusiones','Ayuda, me estoy muriendo','Alcohol, Drogas','Cida','Toy chill','Ninguna','Uno ',NULL,NULL,NULL,'hhhhhhhhhhhjjjjjjjjjjjjjjj',NULL,'2024-10-07 16:45:57'),('123456789',1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Exámenes de sangre y electrocardiograma',NULL,'Hipertensión leve',NULL,'1 comprimido diario durante 30 días','Programar revisión dentro de 1 mes.','Medicamento XYZ','2024-10-07 16:30:38');
 /*!40000 ALTER TABLE `historial_medico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +410,6 @@ CREATE TABLE `horario` (
   `id_hora` int(11) NOT NULL AUTO_INCREMENT,
   `hora_inicio` time DEFAULT NULL,
   `hora_fin` time DEFAULT NULL,
-  `dias_trabajo` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_hora`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -367,7 +420,7 @@ CREATE TABLE `horario` (
 
 LOCK TABLES `horario` WRITE;
 /*!40000 ALTER TABLE `horario` DISABLE KEYS */;
-INSERT INTO `horario` VALUES (1,'08:00:00','12:00:00','Lunes, Martes, Miércoles'),(2,'13:00:00','17:00:00','Jueves, Viernes'),(3,'09:00:00','14:00:00','Sábado, Domingo');
+INSERT INTO `horario` VALUES (1,'06:00:00','14:00:00'),(2,'14:00:00','22:00:00');
 /*!40000 ALTER TABLE `horario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,8 +437,9 @@ CREATE TABLE `medicamento` (
   `descripcion` text DEFAULT NULL,
   `cant_stock` int(11) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
+  `fecha_expiracion` date DEFAULT NULL,
   PRIMARY KEY (`id_medicamento`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,6 +448,7 @@ CREATE TABLE `medicamento` (
 
 LOCK TABLES `medicamento` WRITE;
 /*!40000 ALTER TABLE `medicamento` DISABLE KEYS */;
+INSERT INTO `medicamento` VALUES (1,'Paracetamol','Analgésico general',100,5.99,NULL),(2,'Amoxicilina','Antibiótico',50,12.99,NULL),(3,'Ibuprofeno','Antiinflamatorio',75,8.99,NULL);
 /*!40000 ALTER TABLE `medicamento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -418,7 +473,7 @@ CREATE TABLE `medico` (
   CONSTRAINT `medico_ibfk_1` FOREIGN KEY (`id_hora`) REFERENCES `horario` (`id_hora`),
   CONSTRAINT `medico_ibfk_2` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`),
   CONSTRAINT `medico_usuario_fk` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -427,7 +482,7 @@ CREATE TABLE `medico` (
 
 LOCK TABLES `medico` WRITE;
 /*!40000 ALTER TABLE `medico` DISABLE KEYS */;
-INSERT INTO `medico` VALUES (1,'Dr. Juan Pérez','juan.perez@example.com',1,1,NULL),(2,'Dra. María López','maria.lopez@example.com',2,2,NULL),(3,'Dr. Carlos Fernández','carlos.fernandez@example.com',3,3,NULL),(4,'Dr. Pereira','pereira@gmail.com',1,2,NULL),(5,'a','aasdasda@gm.com',1,1,12);
+INSERT INTO `medico` VALUES (1,'Dr. Carlos Mendoza','carlosmendoza@gmail.com',1,1,16),(2,'Dra. Elena Rodríguez','elenarodriguez@gmail.com',2,1,17),(3,'Dr. Javier Gómez','javiergomez@gmail.com',1,2,18),(4,'Dra. Mariana Pérez','marianaperez@gmail.com',2,2,19),(5,'Dr. Fernando Ortiz','fernandoortiz@gmail.com',1,3,20),(6,'Dra. Sofía Ramírez','sofiaramirez@gmail.com',2,3,21),(7,'Dr. Alberto Fernández','albertofernandez@gmail.com',1,4,22),(8,'Dra. Laura Castillo','lauracastillo@gmail.com',2,4,23),(9,'Dr. Laura Martínez','lauramartinez@gmail.com',1,5,25),(10,'Dr. Javier Rodríguez','javierrodriguez@gmail.com',2,5,26),(11,'Dr. Beatriz Gómez','beatrizgomez@gmail.com',1,5,27),(12,'Dr. Manuel López','manuellopez@gmail.com',2,5,28),(13,'Dr. Isabel Sánchez','isabelsanchez@gmail.com',1,6,29),(14,'Dr. Carlos Fernández','carlosfernandez@gmail.com',2,6,30);
 /*!40000 ALTER TABLE `medico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,7 +500,7 @@ CREATE TABLE `paciente` (
   `fecha_nacimiento` date DEFAULT NULL,
   `direccion_paciente` text DEFAULT NULL,
   `telefono` varchar(20) DEFAULT NULL,
-  `edad` int(2) NOT NULL,
+  `edad` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `sexo` enum('Masculino','Femenino') NOT NULL,
   `id_seguro` int(11) DEFAULT NULL,
@@ -463,7 +518,7 @@ CREATE TABLE `paciente` (
 
 LOCK TABLES `paciente` WRITE;
 /*!40000 ALTER TABLE `paciente` DISABLE KEYS */;
-INSERT INTO `paciente` VALUES ('1','a','a@a.com','2022-12-12','a','1',1,2,'Masculino',4),('1234','Moisés Betancourt','moisos03@gmail.com','2003-02-05','Panama','1234',21,3,'Masculino',3),('123456789','Juan Pérez','juan.perez@example.com','1985-05-15','Calle Falsa 123, Ciudad','555-1234',24,NULL,'Masculino',NULL),('456789123','Luis Martínez','luis.martinez@example.com','1978-03-30','Boulevard de los Sueños 789, Ciudad','555-9012',0,NULL,'Masculino',NULL),('8-yeafer','Fernando Barrios','yeafer@gmail.com','2003-11-24','Cincuentenario','507121212',20,9,'Masculino',3),('9000','Juan González','juanito@gmail.com','2003-11-15','Pacora','+1 656589281',20,4,'Masculino',2),('987654321','María González','maria.gonzalez@example.com','1990-08-25','Avenida Siempre Viva 456, Ciudad','555-5678',0,NULL,'Masculino',NULL),('asd','aaaaaaaaaaa','asdasd@asdsad.com',NULL,'Pacora','123123',0,NULL,'Masculino',NULL),('E-8-217872','Alberto Rodriguez','albertito@hotmail.com','2004-08-26','Bethania','507556595',20,7,'Masculino',4);
+INSERT INTO `paciente` VALUES ('1','a','a@a.com','2022-12-12','a','1',1,2,'Masculino',4),('1234','Moisés Betancourt','moisos03@gmail.com','2003-02-05','Panama','1234',21,3,'Masculino',3),('123456789','Juan Pérez','juan.perez@example.com','1985-05-15','Calle Falsa 123, Ciudad','555-1234',24,NULL,'Masculino',NULL),('456789123','Luis Martínez','luis.martinez@example.com','1978-03-30','Boulevard de los Sueños 789, Ciudad','555-9012',0,NULL,'Masculino',NULL),('7777','Pedrolongo Juarez','pedrolongo1@gmail.com','2001-11-17','Los Andes','7777',23,24,'Masculino',4),('8-yeafer','Fernando Barrios','yeafer@gmail.com','2003-11-24','Cincuentenario','507121212',20,9,'Masculino',3),('9000','Juan González','juanito@gmail.com','2003-11-15','Pacora','+1 656589281',20,4,'Masculino',2),('987654321','María González','maria.gonzalez@example.com','1990-08-25','Avenida Siempre Viva 456, Ciudad','555-5678',0,NULL,'Masculino',NULL),('asd','aaaaaaaaaaa','asdasd@asdsad.com',NULL,'Pacora','123123',0,NULL,'Masculino',NULL),('E-8-217872','Alberto Rodriguez','albertito@hotmail.com','2004-08-26','Bethania','507556595',20,7,'Masculino',4);
 /*!40000 ALTER TABLE `paciente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -475,18 +530,19 @@ DROP TABLE IF EXISTS `paciente_hospitalizado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente_hospitalizado` (
-  `id_paciente` varchar(15) NOT NULL,
+  `cedula` varchar(15) NOT NULL,
   `id_cama` int(11) NOT NULL,
-  `id_habitacion` int(11) NOT NULL,
-  `fecha_ingreso` date DEFAULT NULL,
-  `fecha_egreso` date DEFAULT NULL,
-  `monto` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id_paciente`,`id_cama`,`id_habitacion`),
+  `id_medico` int(11) NOT NULL,
+  `fecha_ingreso` datetime NOT NULL,
+  `fecha_egreso` datetime DEFAULT NULL,
+  `motivo` text DEFAULT NULL,
+  `estado_pacienteH` enum('Hospitalizado','No hospitalizado') DEFAULT 'Hospitalizado',
+  PRIMARY KEY (`cedula`,`id_cama`),
   KEY `id_cama` (`id_cama`),
-  KEY `id_habitacion` (`id_habitacion`),
-  CONSTRAINT `paciente_hospitalizado_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `paciente` (`cedula`),
-  CONSTRAINT `paciente_hospitalizado_ibfk_2` FOREIGN KEY (`id_cama`) REFERENCES `cama` (`id_cama`),
-  CONSTRAINT `paciente_hospitalizado_ibfk_3` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`id_habitacion`)
+  KEY `id_medico` (`id_medico`),
+  CONSTRAINT `paciente_hospitalizado_ibfk_1` FOREIGN KEY (`cedula`) REFERENCES `paciente` (`cedula`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `paciente_hospitalizado_ibfk_2` FOREIGN KEY (`id_cama`) REFERENCES `cama` (`id_cama`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `paciente_hospitalizado_ibfk_3` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id_medico`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -568,6 +624,7 @@ CREATE TABLE `receta` (
   `dosis` varchar(50) DEFAULT NULL,
   `duracion` varchar(50) DEFAULT NULL,
   `frecuencia` varchar(50) DEFAULT NULL,
+  `estado` varchar(12) DEFAULT 'Pendiente',
   PRIMARY KEY (`id_receta`),
   KEY `id_cita` (`id_cita`),
   KEY `id_medicamento` (`id_medicamento`),
@@ -583,6 +640,63 @@ CREATE TABLE `receta` (
 LOCK TABLES `receta` WRITE;
 /*!40000 ALTER TABLE `receta` DISABLE KEYS */;
 /*!40000 ALTER TABLE `receta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `restablecer_contrasenia`
+--
+
+DROP TABLE IF EXISTS `restablecer_contrasenia`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `restablecer_contrasenia` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(100) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
+  `fecha_creacion` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `correo` (`correo`),
+  CONSTRAINT `restablecer_contrasenia_ibfk_1` FOREIGN KEY (`correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `restablecer_contrasenia`
+--
+
+LOCK TABLES `restablecer_contrasenia` WRITE;
+/*!40000 ALTER TABLE `restablecer_contrasenia` DISABLE KEYS */;
+/*!40000 ALTER TABLE `restablecer_contrasenia` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `restablecimiento_tokens`
+--
+
+DROP TABLE IF EXISTS `restablecimiento_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `restablecimiento_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(100) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
+  `fecha_expiracion` datetime NOT NULL,
+  `usado` tinyint(1) DEFAULT 0,
+  `creado_en` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  UNIQUE KEY `correo` (`correo`),
+  CONSTRAINT `restablecimiento_tokens_ibfk_1` FOREIGN KEY (`correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `restablecimiento_tokens`
+--
+
+LOCK TABLES `restablecimiento_tokens` WRITE;
+/*!40000 ALTER TABLE `restablecimiento_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `restablecimiento_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -659,7 +773,10 @@ CREATE TABLE `servicio` (
   `nombre_servicio` varchar(100) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `costo` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id_servicio`)
+  `id_departamento` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_servicio`),
+  KEY `fk_departamento` (`id_departamento`),
+  CONSTRAINT `fk_departamento` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -669,8 +786,43 @@ CREATE TABLE `servicio` (
 
 LOCK TABLES `servicio` WRITE;
 /*!40000 ALTER TABLE `servicio` DISABLE KEYS */;
-INSERT INTO `servicio` VALUES (1,'Cita Medicina General','Consulta con médico general para chequeos y tratamientos básicos.',50.00),(2,'Vacuna Pentavalente','Vacuna combinada para proteger contra cinco enfermedades: difteria, tétanos, tos ferina, hepatitis B y Haemophilus influenzae tipo b.',30.00),(3,'Vacuna Antirrábica','Vacuna para prevenir la rabia, recomendada tras mordeduras de animales.',40.00),(4,'Vacuna Influenza','Vacuna anual para prevenir la gripe.',25.00),(5,'Cita Dermatología','Consulta con dermatólogo para problemas de piel.',80.00),(6,'Cita Odontología','Consulta con odontólogo para chequeos y tratamientos dentales.',70.00),(7,'Cita Cardiología','Consulta con cardiólogo para chequeos y tratamientos cardíacos.',90.00);
+INSERT INTO `servicio` VALUES (1,'Cita Medicina General','Consulta con médico general para chequeos y tratamientos básicos.',50.00,5),(2,'Vacuna Pentavalente','Vacuna combinada para proteger contra cinco enfermedades: difteria, tétanos, tos ferina, hepatitis B y Haemophilus influenzae tipo b.',30.00,5),(3,'Vacuna Antirrábica','Vacuna para prevenir la rabia, recomendada tras mordeduras de animales.',40.00,5),(4,'Vacuna Influenza','Vacuna anual para prevenir la gripe.',25.00,5),(5,'Cita Dermatología','Consulta con dermatólogo para problemas de piel.',80.00,6),(6,'Cita Odontología','Consulta con odontólogo para chequeos y tratamientos dentales.',70.00,4),(7,'Cita Cardiología','Consulta con cardiólogo para chequeos y tratamientos cardíacos.',90.00,2);
 /*!40000 ALTER TABLE `servicio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `solicitudes_examenes`
+--
+
+DROP TABLE IF EXISTS `solicitudes_examenes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `solicitudes_examenes` (
+  `id_solicitud` int(11) NOT NULL AUTO_INCREMENT,
+  `cedula` varchar(15) NOT NULL,
+  `id_examen` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
+  `fecha_solicitud` datetime DEFAULT current_timestamp(),
+  `estado` enum('Pendiente','Realizado','Cancelado') DEFAULT 'Pendiente',
+  `fecha_realizacion` datetime DEFAULT NULL,
+  `resultado` text DEFAULT NULL,
+  PRIMARY KEY (`id_solicitud`),
+  KEY `cedula` (`cedula`),
+  KEY `id_examen` (`id_examen`),
+  KEY `id_medico` (`id_medico`),
+  CONSTRAINT `solicitudes_examenes_ibfk_1` FOREIGN KEY (`cedula`) REFERENCES `paciente` (`cedula`),
+  CONSTRAINT `solicitudes_examenes_ibfk_2` FOREIGN KEY (`id_examen`) REFERENCES `examenes` (`id_examen`),
+  CONSTRAINT `solicitudes_examenes_ibfk_3` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id_medico`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `solicitudes_examenes`
+--
+
+LOCK TABLES `solicitudes_examenes` WRITE;
+/*!40000 ALTER TABLE `solicitudes_examenes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `solicitudes_examenes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -711,13 +863,13 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) NOT NULL,
+  `correo` varchar(100) DEFAULT NULL,
   `contrasenia` varchar(100) NOT NULL,
   `tipo_usuario` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
-  UNIQUE KEY `correo` (`correo`),
-  UNIQUE KEY `contrasenia` (`contrasenia`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  UNIQUE KEY `contrasenia` (`contrasenia`),
+  UNIQUE KEY `correo` (`correo`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -726,7 +878,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente'),(12,'aasdasda@gm.com','$2y$10$fQaDODArmp9CleCW/px4lu8WFaN0xIP2Wj3OkJSIALS.dvovEnAwK','medico'),(14,'elon@x.com','$2y$10$mqO3Z4sTuy8co/.mDYGLHuzXfUcdjzk6uFQvb0TI4Y61ZBJ/mcIcS','Administrador');
+INSERT INTO `usuario` VALUES (2,'a@a.com','$2y$10$O42R2qV1yg2z1AI4Gj3Bx.apU6XFDDUeFIpfoz8XFvjcIeTAsJIS6','paciente'),(3,'moisos03@gmail.com','$2y$10$vciBarRSptqYPwth3BBhHOOc2iVqosrGlzSQ/Sp.H2cnmzDYK2q7K','paciente'),(4,'juanito@gmail.com','$2y$10$oGiry.tle3fTYTHOnyDC3uCDN8TZcD7SJ9.jv/oIC.ddvqZfUDNcW','paciente'),(6,'asdasd@asdsad.com','12345678','paciente'),(7,'albertito@hotmail.com','$2y$10$LPjt7onv9Pf14auyUqTpvuwsx9bos18cpYMlTBkbgDCVZfuS8tDX2','paciente'),(9,'yeafer@gmail.com','$2y$10$ByS.f3b0SNpZnggO1IRlCe2rZZz3bywviReszxadAYtMCSeAwG9rG','paciente'),(12,'aasdasda@gm.com','$2y$10$fQaDODArmp9CleCW/px4lu8WFaN0xIP2Wj3OkJSIALS.dvovEnAwK','medico'),(14,'elon@x.com','$2y$10$mqO3Z4sTuy8co/.mDYGLHuzXfUcdjzk6uFQvb0TI4Y61ZBJ/mcIcS','Administrador'),(15,'nicotes33@gmail.com','$2y$10$5lcOrZe62y0WMQlz.1Jz0uKtkPs8680UZkYhS595t3qs6QW5Tqu1O','Farmaceutico'),(16,'carlosmendoza@gmail.com','$2y$10$tdc89.hSRWb0gRYbeq.ZcOpp8Lf0AQ3QxVwUZ0ySXtQ5C.a8gsiby','Médico'),(17,'elenarodriguez@gmail.com','$2y$10$LdiIUZV2PtW9fbG393kA3.V7UFMB5RPrpfr4sZyS8hSw7orSqnqfu','Médico'),(18,'javiergomez@gmail.com','$2y$10$tMycfin1gvM/qTJsZzy0p.Aj/j7UoLBe8OmXolJduv3vSroQ1P0je','Médico'),(19,'marianaperez@gmail.com','$2y$10$85lYnOtCskL/JULs3TI2Eu/p2UlBaTLIyuJT5vHVIALDdkulUWjkG','Médico'),(20,'fernandoortiz@gmail.com','$2y$10$riZb3zwWkl88/Bl30vLJXuYmfZ4.C9KXQbtV2hxE.zDmM3iwCEhxO','Médico'),(21,'sofiaramirez@gmail.com','$2y$10$AxJ23Vb3Wf8VCwqMcZypv.spCiyGGj72bPwp8HrJfi.GX/WT.wI5C','Médico'),(22,'albertofernandez@gmail.com','$2y$10$2UYTgEbUIRfqFKDRoDVNVOojh8zIeIwhMuenL3SYNpOeQmSt/DAd.','Médico'),(23,'lauracastillo@gmail.com','$2y$10$Y71b4gjUUU/So98RU2Yb6uZvFm.KBxG9f1vQYLca9wx/ZndyiKks2','Médico'),(24,'pedrolongo1@gmail.com','$2y$10$.oRfGCCbCokM7k1gJqNZKuBtH93zUOUsPACqqHc9BkJnBdcbix3Re','Paciente'),(25,'lauramartinez@gmail.com','$2y$10$/iU/9uIdbFHS4aRXsU9nvuTqE4iA6W58GtDxMRjXU8pR8ZNK46.v6','Médico'),(26,'javierrodriguez@gmail.com','$2y$10$2x/A15Jy40HJBOWd2QAn9urU3j8Hibyg4QrMqaFcka6MptY/aahju','Médico'),(27,'beatrizgomez@gmail.com','$2y$10$deVrSMgrXlVpBE2wCQ8weuVPAiLYljOSneS6YnyGz6cQAjpww3x4u','Médico'),(28,'manuellopez@gmail.com','$2y$10$3UFKOp7X0mpnr6bGuYbub.K4HGFWFAs.k8cziqcJs2p2qJzOeyboO','Médico'),(29,'isabelsanchez@gmail.com','$2y$10$qQWa68phNMyKITmXJS9jleEjFwqRIkt9W9Muia21w3viwq5ChsV.W','Médico'),(30,'carlosfernandez@gmail.com','$2y$10$rYLlKNkpwlQN4tb1wBowfeNvNGk0Ry/sm2hxMGMTt7a11oVuBvvS2','Médico');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -737,6 +889,38 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'gestionclinica_db'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `ObtenerDatosRecetas` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ObtenerDatosRecetas`()
+BEGIN
+    SELECT 
+        r.id_receta,
+        c.fecha_cita AS fecha,
+        p.nombre_paciente,
+        m.nombre AS nombre_medicamento,
+        m.cant_stock,
+        med.nombre_medico,
+        r.estado
+    FROM receta r
+    INNER JOIN cita c ON r.id_cita = c.id_cita
+    INNER JOIN paciente p ON c.cedula = p.cedula
+    INNER JOIN medico med ON c.id_medico = med.id_medico
+    INNER JOIN medicamento m ON r.id_medicamento = m.id_medicamento
+    ORDER BY c.fecha_cita;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `ObtenerHorarios` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -767,4 +951,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-03 14:32:23
+-- Dump completed on 2024-11-19  4:59:41
