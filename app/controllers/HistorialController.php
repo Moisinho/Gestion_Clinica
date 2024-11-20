@@ -104,6 +104,30 @@ if ($_GET['action'] == 'obtenerPorCedula' && isset($_GET['cedula'])) {
     }
 }
 
+if ($_GET['action'] === 'verificarCitaMedicinaGeneral' && isset($_GET['cedula'])) {
+    $cedula = $_GET['cedula'];
+
+    try {
+        $resultado = $historialModel->verificarCitaMedicinaGeneral($cedula);
+
+        if ($resultado['tiene_cita_medicina_general']) {
+            echo json_encode([
+                'success' => true,
+                'mensaje' => 'El usuario ya tiene una cita de Medicina General.',
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'mensaje' => 'El usuario no tiene historial de Medicina General.',
+            ]);
+        }
+    } catch (PDOException $e) {
+        error_log("Error en verificarCitaMedicinaGeneral: " . $e->getMessage());
+        echo json_encode(['error' => 'Error al verificar el historial.']);
+    }
+} else {
+    echo json_encode(['error' => 'Acción no válida o datos incompletos.']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = filter_input(INPUT_POST, 'accion', FILTER_SANITIZE_FULL_SPECIAL_CHARS);

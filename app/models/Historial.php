@@ -97,6 +97,55 @@ class Historial
     
         return []; // Devuelve un arreglo vacío si no hay resultados
     }
-    
+
+    public function verificarCitaMedicinaGeneral($cedula){
+        try {
+            $sql = "SELECT h.id_historial
+                    FROM historial_medico AS h
+                    JOIN medico AS m ON h.id_medico = m.id_medico
+                    JOIN servicio AS s ON m.id_servicio = s.id_servicio
+                    WHERE h.cedula = :cedula AND s.nombre_servicio = 'Cita Medicina General'";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':cedula', $cedula, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Si hay resultados, el usuario tiene una cita de medicina general
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'tiene_cita_medicina_general' => true,
+                    'mensaje' => 'El usuario ya tuvo una cita de medicina general.'
+                ];
+            }
+
+            // Si no hay resultados, verificar si el usuario tiene historial
+            $sqlHistorial = "SELECT id_historial 
+                            FROM historial_medico 
+                            WHERE cedula = :cedula";
+
+            $stmtHistorial = $this->conn->prepare($sqlHistorial);
+            $stmtHistorial->bindParam(':cedula', $cedula, PDO::PARAM_STR);
+            $stmtHistorial->execute();
+
+            if ($stmtHistorial->rowCount() > 0) {
+                return [
+                    'tiene_cita_medicina_general' => false,
+                    'mensaje' => 'El usuario tiene historial, pero no una cita de medicina general.'
+                ];
+            }
+
+            // Si no tiene historial
+            return [
+                'tiene_cita_medicina_general' => false,
+                'mensaje' => 'El usuario no tiene historial médico registrado.'
+            ];
+        } catch (PDOException $e) {
+            error_log("Error en verificarCitaMedicinaGeneral: " . $e->getMessage());
+            return [
+                'tiene_cita_medicina_general' => false,
+                'mensaje' => 'Error al verificar la información del historial médico.'
+            ];
+        }
+    }
     
 }

@@ -25,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $motivo = $_POST['motivo'];
         $id_medico = $_POST['medico'];
         $id_servicio = $_POST['servicio'];
-        $fecha_cita = $_POST['fecha_cita'];
+
 
         if ($cita->verificarPaciente($cedula)) {
-            $resultado = $cita->registrarCita($cedula, $motivo, $id_medico, $id_servicio, $fecha_cita);
+            $resultado = $cita->registrarCita($cedula, $motivo, $id_medico, $id_servicio);
             if ($resultado) {
                 // Obtén el rol del usuario actual
                 $rol = $userModel->obtenerRolUsuario($id_usuario);

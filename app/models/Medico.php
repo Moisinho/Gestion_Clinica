@@ -69,4 +69,22 @@ class Medico
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerMedicosPorServicio($id_servicio) {
+        // Definir la consulta con JOIN para obtener médicos por id_servicio
+        $query = "
+            SELECT m.nombre_medico, m.id_medico
+            FROM medico m
+            JOIN servicio s ON m.id_departamento = s.id_departamento
+            WHERE s.id_servicio = :id_servicio
+        ";
+    
+        // Preparar la consulta
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_servicio', $id_servicio, PDO::PARAM_INT);
+    
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }  
 }

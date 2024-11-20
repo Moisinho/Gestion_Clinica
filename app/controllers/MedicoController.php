@@ -60,6 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             echo json_encode(['success' => false, 'message' => 'No se encontró el médico']);
         }
     }
+
+        // OBTENER MÉDICO POR SERVICIO
+    elseif ($_GET['action'] == 'obtenerMedicosPorServicio') {
+        $id_servicio = $_GET['id_servicio'];  // Obtener el id_servicio desde la solicitud GET
+        $medicos = $medico->obtenerMedicosPorServicio($id_servicio);  // Llamar a la función en el modelo
+    
+        if ($medicos) {
+            echo json_encode(['success' => true, 'data' => $medicos]);  // Devolver los médicos en formato JSON
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron médicos para este servicio']);
+        }
+    }
 } else {
     echo json_encode(['success' => false, 'message' => 'Solicitud no válida']);
 }

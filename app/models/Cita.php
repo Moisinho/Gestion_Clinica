@@ -98,47 +98,89 @@ class Cita
         return $stmt->rowCount() > 0;
     }
 
-    public function registrarCita($cedula, $motivo, $id_medico, $id_servicio, $fecha_cita)
-    {
+    public function registrarCita($cedula, $motivo, $id_medico, $id_servicio){
         try {
             // Sanitizar los datos de entrada
             $this->cedula = htmlspecialchars(trim($cedula));
             $this->motivo = htmlspecialchars(trim($motivo));
             $this->id_medico = htmlspecialchars(trim($id_medico));
             $this->id_servicio = htmlspecialchars(trim($id_servicio));
-            $this->fecha_cita = htmlspecialchars(trim($fecha_cita));
-
-            // Query para insertar la cita
-            $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $this->conn->prepare($query);
-
+    
+            // Obtener la conexión a la base de datos
+            $conn = $this->conn;
+    
+            // Inicializar variables para fecha y hora
+            $fecha_cita = date('Y-m-d', strtotime('+1 day')); // Día siguiente
+            $hora_cita = null;
+    
+            // Loop para encontrar una fecha con menos de 10 citas para el médico
+            do {
+                $stmt = $conn->prepare("SELECT COUNT(*) FROM cita WHERE DATE(fecha_cita) = ? AND id_medico = ?");
+                $stmt->execute([$fecha_cita, $this->id_medico]);
+                $total_citas = $stmt->fetchColumn();
+    
+                if ($total_citas >= 10) {
+                    // Si hay más de 10 citas, pasar al día siguiente
+                    $fecha_cita = date('Y-m-d', strtotime($fecha_cita . ' +1 day'));
+                }
+            } while ($total_citas >= 10);
+    
+            // Buscar la última hora de cita en esa fecha para ese médico
+            $stmt = $conn->prepare("SELECT MAX(hora_cita) FROM cita WHERE DATE(fecha_cita) = ? AND id_medico = ?");
+            $stmt->execute([$fecha_cita, $this->id_medico]);
+            $hora_cita = $stmt->fetchColumn();
+    
+            if ($hora_cita === null) {
+                // Si no hay citas previas, asignar la hora de inicio del horario
+                $stmt = $conn->prepare("SELECT h.hora_inicio FROM medico m JOIN horario h ON m.id_hora = h.id_hora WHERE m.id_medico = ?");
+                $stmt->execute([$this->id_medico]);
+                $hora_cita = $stmt->fetchColumn();
+            } else {
+                // Si hay citas previas, sumar 45 minutos
+                $hora_cita = date('H:i:s', strtotime($hora_cita . ' +45 minutes'));
+            }
+    
+            // Query para insertar la cita con fecha y hora calculadas
+            $query = "INSERT INTO cita (cedula, motivo, id_medico, id_servicio, fecha_cita, hora_cita) 
+                      VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+    
             $stmt->bindParam(1, $this->cedula);
             $stmt->bindParam(2, $this->motivo);
             $stmt->bindParam(3, $this->id_medico);
             $stmt->bindParam(4, $this->id_servicio);
-            $stmt->bindParam(5, $this->fecha_cita);
-
+            $stmt->bindParam(5, $fecha_cita);
+            $stmt->bindParam(6, $hora_cita);
+    
             // Intentar ejecutar la consulta
             if ($stmt->execute()) {
                 // Obtener el último ID insertado
                 $id_cita = $this->conn->lastInsertId();
-
+    
                 // Obtener la información de la cita
                 $info_cita = $this->obtenerInformacionCita($id_cita);
-
+    
                 // Enviar correo de confirmación
                 $resultadoEnvio = $this->enviarCorreoCita($id_cita);
-
+    
                 if (!$resultadoEnvio) {
                     echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Éxito',
-                        text: 'La cita se ha registrado exitosamente.',
-                    });
-                </script>";
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: 'La cita se ha registrado exitosamente. Información enviada por correo.',
+                        });
+                    </script>";
+                } else {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cita registrada',
+                            text: 'La cita se registró pero hubo un error al enviar el correo.',
+                        });
+                    </script>";
                 }
-
+    
                 return true;
             } else {
                 echo "<script>alert('Error al ejecutar la consulta para registrar la cita.');</script>";
@@ -314,7 +356,8 @@ class Cita
             p.correo_paciente AS correo,
             c.fecha_cita,
             p.nombre_paciente,
-            m.nombre_medico AS doctor
+            m.nombre_medico AS doctor,
+            c.hora_cita as hora
         FROM 
             cita c
         JOIN 
@@ -355,6 +398,7 @@ class Cita
         <h1>Estimado(a) {$infoCita['nombre_paciente']}</h1>
         <p>Su cita ha sido programada para la fecha: <strong>{$infoCita['fecha_cita']}</strong></p>
         <p>El médico que lo(a) atenderá es: <strong>{$infoCita['doctor']}</strong></p>
+        <p>Hora de la cita: <strong>{$infoCita['hora']}</strong></p>
         <p>Por favor, contacte a la clínica si necesita más información.</p>
     ";
 

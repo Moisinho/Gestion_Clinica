@@ -77,6 +77,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
     }
 
+    // OBTENER SERVICIOS EXCLUYENDO "Cita Medicina General"
+    else if ($_GET['action'] == 'obtenerServiciosSinMedicinaGeneral' && isset($_GET['excluir'])) {
+        $excluir = $_GET['excluir'];
+        $servicios = $servicioModel->obtenerServiciosSinMedicinaGeneral($excluir);
+        
+        if ($servicios) {
+            echo json_encode($servicios);  // Devuelve los datos en formato JSON
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontraron servicios']);
+        }
+    }
+
 } else {
     echo json_encode(['success' => false, 'message' => 'Solicitud no válida']);
 }

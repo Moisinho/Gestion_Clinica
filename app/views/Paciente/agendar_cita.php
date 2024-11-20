@@ -7,6 +7,9 @@ if (!isset($_SESSION['id_usuario'])) {
     header('Location: ../../../index.php');
     exit();
 }
+
+$id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null; 
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -71,6 +74,8 @@ if (!isset($_SESSION['id_usuario'])) {
     </div>
 
     <script>
+        var id_usuario = <?php echo json_encode($id_usuario); ?>;
+
         // Función para vaciar los campos del formulario
         function borrarReserva() {
             document.getElementById("reservaForm").reset();
@@ -78,45 +83,137 @@ if (!isset($_SESSION['id_usuario'])) {
 
         // Cargar servicios dinámicamente
         $(document).ready(function() {
+            // Cargar la cédula del usuario logeado
             $.ajax({
-                url: '/Gestion_clinica/app/controllers/citaController.php',
+                url: '../../controllers/PacienteController.php', // Ruta al controlador del Paciente
                 type: 'GET',
-                data: { action: 'obtenerServicios' },
+                data: {
+                    action: 'obtenerCedulaById',
+                    id_usuario: id_usuario 
+                },
                 dataType: 'json',
-                success: function(servicios) {
-                    console.log(servicios);
-                    if (Array.isArray(servicios)) {
-                        servicios.forEach(function(servicio) {
-                            $('#servicio').append('<option value="' + servicio.id_servicio + '">' + servicio.nombre_servicio + '</option>');
-                        });
+                success: function (data) {
+                    console.log("Respuesta de obtenerCedulaById:", data); // Verificar respuesta
+                    if (data.error) {
+                        console.log(data.error);
+                        alert("Error: " + data.error);
+                    } else {
+                        console.log("Cédula obtenida:", data.cedula);
+                        $('#cedula').val(data.cedula || 'error'); // Mostrar la cédula en el campo
+
+                        // Verificar cita de Medicina General con la cédula obtenida
+                        const cedula = data.cedula; // Guardar la cédula obtenida
+                        if (cedula) {
+                            $.ajax({
+                                url: '../../controllers/HistorialController.php', // Ruta al controlador del Historial
+                                type: 'GET',
+                                data: {
+                                    action: 'verificarCitaMedicinaGeneral',
+                                    cedula: cedula
+                                },
+                                dataType: 'json',
+                                success: function (response) {
+                                    console.log("Respuesta de verificar cita:", response); // Verificar respuesta
+
+                                    const selectServicio = $('#servicio');
+                                    selectServicio.empty(); // Limpiar las opciones del select
+
+                                    if (response.success) {
+                                        alert(response.mensaje);
+                                        // Mapear todos los servicios menos Medicina General
+                                        $.ajax({
+                                            url: '../../controllers/ServicioController.php',
+                                            type: 'GET',
+                                            data: {
+                                                action: 'obtenerServiciosSinMedicinaGeneral',
+                                                excluir: 'Cita Medicina General'
+                                            },
+                                            dataType: 'json',
+                                            success: function (servicios) {
+                                                console.log("Servicios obtenidos:", servicios);
+                                                servicios.forEach(function (servicio) {
+                                                    console.log("Agregando servicio: ", servicio);
+                                                    selectServicio.append('<option value="' + servicio.id_servicio + '">' + servicio.nombre_servicio + '</option>');
+                                                });
+
+                                                // Llamar la función para cargar médicos al cargar la página
+                                                cargarMedicosPorServicio();
+                                            },
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                console.error("Error al cargar servicios:", textStatus, errorThrown);
+                                                console.log("Respuesta del servidor:", jqXHR.responseText);
+                                                alert("Error al cargar los servicios.");
+                                            }
+                                        });
+                                    } else {
+                                        // Mapear solo Cita Medicina General y Odontología
+                                        selectServicio.append('<option value="1">Cita Medicina General</option>');
+                                        selectServicio.append('<option value="6">Cita Odontología</option>');
+
+                                        // Llamar la función para cargar los médicos al verificar que no hay historial
+                                        cargarMedicosPorServicio();
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error("Error al verificar cita:", textStatus, errorThrown);
+                                    console.log("Respuesta del servidor:", jqXHR.responseText); // Ver respuesta completa
+                                    alert("Error al verificar la cita.");
+                                }
+                            });
+                        }
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + ", " + errorThrown);
-                    console.log("Response: " + jqXHR.responseText);
-                    alert("Error al cargar los servicios.");
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error al cargar la cédula:", textStatus, errorThrown);
+                    console.log("Respuesta del servidor:", jqXHR.responseText); // Ver respuesta completa
+                    alert("Error al cargar la cédula.");
                 }
             });
 
-            // Cargar médicos dinámicamente
-            $.ajax({
-                url: '/Gestion_clinica/app/controllers/citaController.php',
-                type: 'GET',
-                data: { action: 'obtenerMedicos' },
-                dataType: 'json',
-                success: function(medicos) {
-                    console.log(medicos);
-                    if (Array.isArray(medicos)) {
-                        medicos.forEach(function(medico) {
-                            $('#medico').append('<option value="' + medico.id_medico + '">' + medico.nombre_medico + '</option>');
-                        });
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + ", " + errorThrown);
-                    console.log("Response: " + jqXHR.responseText);
-                    alert("Error al cargar los médicos.");
+            // Función para cargar los médicos según el servicio seleccionado
+            function cargarMedicosPorServicio() {
+                var id_servicio = $('#servicio').val(); // Obtener el servicio seleccionado
+                console.log("Servicio seleccionado: ", id_servicio);
+
+                if (id_servicio) {
+                    $.ajax({
+                        url: '../../controllers/MedicoController.php',
+                        type: 'GET',
+                        data: {
+                            action: 'obtenerMedicosPorServicio',
+                            id_servicio: id_servicio
+                        },
+                        dataType: 'json',
+                        success: function(medicos) {
+                            console.log("Médicos obtenidos: ", medicos);
+                            var selectMedico = $('#medico');
+                            selectMedico.empty(); // Limpiar los médicos existentes
+                            selectMedico.append('<option value="">Seleccione un médico</option>');
+
+                            if (medicos.success && Array.isArray(medicos.data) && medicos.data.length > 0) {
+                                // Agregar médicos al select
+                                medicos.data.forEach(function(medico) {
+                                    console.log("Agregando médico: ", medico);
+                                    console.log("id del medico: ", medico.id_medico);
+                                    selectMedico.append('<option value="' + medico.id_medico + '">' + medico.nombre_medico + '</option>');
+                                });
+                            } else {
+                                alert("No se encontraron médicos para el servicio seleccionado.");
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error("Error al cargar médicos por servicio:", textStatus, errorThrown);
+                            alert("Error al cargar los médicos.");
+                        }
+                    });
+                } else {
+                    $('#medico').empty().append('<option value="">Seleccione un médico</option>');
                 }
+            }
+
+            // Evento change para el select de servicios
+            $('#servicio').change(function() {
+                cargarMedicosPorServicio(); // Volver a cargar médicos cada vez que se cambie el servicio
             });
         });
     </script>

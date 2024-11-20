@@ -85,4 +85,17 @@ class ServicioModel
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerServiciosSinMedicinaGeneral($medicina_general){
+        // Consulta para obtener todos los servicios excepto "Cita Medicina General"
+        $query = "SELECT * FROM servicio WHERE nombre_servicio != :medicina_general";
+        $stmt = $this->conn->prepare($query);
+
+        // Vincular el parámetro del nombre del servicio a excluir
+        $stmt->bindParam(':medicina_general', $medicina_general);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

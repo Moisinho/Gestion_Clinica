@@ -17,14 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $horario = $_POST['horario'];
             $departamento = $_POST['departamento'];
 
-            if($horario === '08:00 - 12:00'){
+            if($horario === '06:00 - 14:00'){
                 $id_hora = 1;
             }
-            else if($horario === '13:00 - 17:00'){
+            else if($horario === '14:00 - 22:00'){
                 $id_hora = 2;
-            }
-            else if($horario === '09:00 - 14:00'){
-                $id_hora = 3;
             }
 
             $query = "SELECT id_departamento FROM departamento WHERE nombre_departamento = :departamento";
