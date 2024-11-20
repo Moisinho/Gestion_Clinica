@@ -135,9 +135,11 @@ class Cita
                 $stmt = $conn->prepare("SELECT h.hora_inicio FROM medico m JOIN horario h ON m.id_hora = h.id_hora WHERE m.id_medico = ?");
                 $stmt->execute([$this->id_medico]);
                 $hora_cita = $stmt->fetchColumn();
+    
             } else {
                 // Si hay citas previas, sumar 45 minutos
                 $hora_cita = date('H:i:s', strtotime($hora_cita . ' +45 minutes'));
+    
             }
     
             // Query para insertar la cita con fecha y hora calculadas
@@ -154,6 +156,7 @@ class Cita
     
             // Intentar ejecutar la consulta
             if ($stmt->execute()) {
+                
                 // Obtener el último ID insertado
                 $id_cita = $this->conn->lastInsertId();
     
@@ -183,16 +186,14 @@ class Cita
     
                 return true;
             } else {
-                echo "<script>alert('Error al ejecutar la consulta para registrar la cita.');</script>";
                 return false;
             }
         } catch (PDOException $e) {
-            echo "<script>alert('Error al registrar la cita: {$e->getMessage()}');</script>";
+            // Depuración: Si hay un error en el bloque try-catch, mostrar el mensaje
+            echo "Error al registrar la cita: {$e->getMessage()}\n";
             return false;
         }
-    }
-
-
+    }    
 
     public function obtener_detalles_cita($id_cita)
     {

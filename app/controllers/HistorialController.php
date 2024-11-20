@@ -1,8 +1,6 @@
 <?php
 session_start();
-//BORRAR ---------------------------------------------------------
-$_SESSION['id_usuario'] = 12;
-//-----------------------------------------------------------------
+
 if (!isset($_SESSION['id_usuario'])) {
     echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
     exit();

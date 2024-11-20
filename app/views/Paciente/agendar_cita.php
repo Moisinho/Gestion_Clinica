@@ -33,7 +33,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
     <div class="container mx-auto w-6/12 mb-10">
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>
-            <form id="reservaForm" method="POST" action="/Gestion_clinica/app/controllers/citaController.php">
+            <form id="reservaForm" method="POST" action="/Gestion_clinica/app/controllers/CitaController.php">
                 <input type="hidden" name="action" value="registrar">
 
                 <div class="mb-4">
@@ -49,20 +49,15 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                 </div>
 
                 <div class="mb-4">
-                    <label for="motivo" class="block text-gray-700">Motivo de cita</label>
-                    <input type="text" id="motivo" name="motivo" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
-
-                <div class="mb-4">
                     <label for="medico" class="block text-gray-700">Médico de atención</label>
                     <select id="medico" name="medico" required class="w-full px-4 py-2 border rounded-lg">
                         <option value="">Seleccione un médico</option>
                     </select>
                 </div>
-
+                
                 <div class="mb-4">
-                    <label for="fecha" class="block text-gray-700">Fecha de cita</label>
-                    <input type="date" id="fecha" name="fecha_cita" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <label for="motivo" class="block text-gray-700">Motivo de cita</label>
+                    <input type="text" id="motivo" name="motivo" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
 
                 <div class="flex justify-between">
@@ -85,7 +80,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
         $(document).ready(function() {
             // Cargar la cédula del usuario logeado
             $.ajax({
-                url: '../../controllers/PacienteController.php', // Ruta al controlador del Paciente
+                url: '/Gestion_Clinica/app/controllers/PacienteController.php', // Ruta al controlador del Paciente
                 type: 'GET',
                 data: {
                     action: 'obtenerCedulaById',
@@ -105,7 +100,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                         const cedula = data.cedula; // Guardar la cédula obtenida
                         if (cedula) {
                             $.ajax({
-                                url: '../../controllers/HistorialController.php', // Ruta al controlador del Historial
+                                url: '/Gestion_Clinica/app/controllers/HistorialController.php', // Ruta al controlador del Historial
                                 type: 'GET',
                                 data: {
                                     action: 'verificarCitaMedicinaGeneral',
@@ -122,7 +117,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                                         alert(response.mensaje);
                                         // Mapear todos los servicios menos Medicina General
                                         $.ajax({
-                                            url: '../../controllers/ServicioController.php',
+                                            url: '/Gestion_Clinica/app/controllers/ServicioController.php',
                                             type: 'GET',
                                             data: {
                                                 action: 'obtenerServiciosSinMedicinaGeneral',
@@ -177,7 +172,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
 
                 if (id_servicio) {
                     $.ajax({
-                        url: '../../controllers/MedicoController.php',
+                        url: '/Gestion_Clinica/app/controllers/MedicoController.php',
                         type: 'GET',
                         data: {
                             action: 'obtenerMedicosPorServicio',
