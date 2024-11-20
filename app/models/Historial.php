@@ -18,7 +18,7 @@ class Historial
                     JOIN cita AS c ON p.cedula = c.cedula
                     JOIN medico AS m ON c.id_medico = m.id_medico
                     JOIN historial_medico AS h ON h.id_cita = c.id_cita
-                    LEFT JOIN departamento AS d ON h.id_departamento_referencia = d.ide_departamento
+                    LEFT JOIN departamento AS d ON h.id_departamento_referencia = d.id_departamento
                     WHERE p.id_usuario = :id_usuario";
 
             $stmt = $this->conn->prepare($sql);
