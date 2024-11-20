@@ -122,6 +122,14 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode($medicos);
         exit();
     }
+    // OBTENER CITAS POR PACIENTE
+    elseif ($_GET['action'] === 'obtenerPorPaciente' && $id_usuario !== null) {
+        $citas = $cita->obtenerCitasPorPaciente($id_usuario); // Aquí usamos la instancia de Cita ya creada
+
+        header('Content-Type: application/json');
+        echo json_encode($citas);
+        exit();
+    }
     elseif ($_POST['action'] == 'agregarReferencia') {
         error_log("Iniciando proceso de agregar referencia...");
         $cedula_paciente = $_POST['cedula_paciente'];
@@ -135,21 +143,11 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         }
         exit();
     }
-
-    // OBTENER CITAS POR PACIENTE
-    elseif ($_GET['action'] === 'obtenerPorPaciente' && $id_usuario !== null) {
-        $citas = $cita->obtenerCitasPorPaciente($id_usuario); // Aquí usamos la instancia de Cita ya creada
-
-        header('Content-Type: application/json');
-        echo json_encode($citas);
-        exit();
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'Solicitud no válida.']);
-        exit();
-    }
+    
     
 }
+
+
 ?>
 
 

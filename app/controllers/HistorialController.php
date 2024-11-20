@@ -73,10 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
 
     // OBTENER HISTORIAL POR USUARIO
-    if ($_GET['action'] == 'obtenerPorUsuario') {
-        $id_usuario = $_SESSION['id_usuario'];
-
-        $historial = $historialModel->obtenerHistorialPorUsuario($id_usuario);
+    if ($_GET['action'] == 'obtenerPorUsuario' && isset($_GET['usuario'])) {
+        $user = htmlspecialchars(strip_tags($_GET['usuario']));
+        $historial = $historialModel->obtenerHistorialPorUsuario($user);
 
         if (!empty($historial)) {
             echo json_encode($historial);
@@ -160,3 +159,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+?>

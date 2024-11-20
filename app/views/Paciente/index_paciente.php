@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
+    header('Location: /Gestion_clinica/');
     exit();
 }
 ?>

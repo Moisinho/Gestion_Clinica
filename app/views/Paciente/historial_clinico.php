@@ -4,7 +4,7 @@ session_start();
 
 // Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 if (!isset($_SESSION['id_usuario'])) {
-    header('Location: ../../../index.php');
+    header('Location: /Gestion_clinica/');
     exit();
 }
 ?>
@@ -46,14 +46,19 @@ if (!isset($_SESSION['id_usuario'])) {
 
     <?php include '../../includes/footer.php'; ?>
     <script>
+    const id_usuario = "<?php echo $_SESSION['id_usuario']; ?>";
     $(document).ready(function() {
         $.ajax({
-            url: '../../controllers/HistorialController.php',
+            url: `/Gestion_clinica/app/controllers/HistorialController.php?action=obtenerPorUsuario&usuario=${id_usuario}`,
             method: 'GET',
             dataType: 'json',
             success: function(response) {
                 if (response.error) {
                     $('#mensajeError').text(response.error);
+                    return;
+                }
+                if (!response[0]) {
+                    $('#mensajeError').text('No se encontraron datos del paciente.');
                     return;
                 }
 
@@ -82,12 +87,11 @@ if (!isset($_SESSION['id_usuario'])) {
                 });
             },
             error: function() {
-                $('#mensajeError').text('Error al cargar el historial clínico.');
+                $('#mensajeError').text('No se encontraron datos del paciente.');
             }
         });
     });
     </script>
-    <script src="../../js/tailwind-config.js"></script>
 </body>
 
 </html>
