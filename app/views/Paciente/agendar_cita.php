@@ -115,13 +115,12 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
 
                                     if (response.success) {
                                         alert(response.mensaje);
-                                        // Mapear todos los servicios menos Medicina General
+                                        // Mapear todos los servicios 
                                         $.ajax({
                                             url: '/Gestion_Clinica/app/controllers/ServicioController.php',
                                             type: 'GET',
                                             data: {
-                                                action: 'obtenerServiciosSinMedicinaGeneral',
-                                                excluir: 'Cita Medicina General'
+                                                action: 'obtenerTodos'
                                             },
                                             dataType: 'json',
                                             success: function (servicios) {
