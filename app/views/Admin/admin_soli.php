@@ -196,7 +196,7 @@ try {
                     <input type="text" name="direccion" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa la dirección" required>
 
                     <label class="block mb-2">Teléfono:</label>
-                    <input type="number" name="telefono" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa su telefono" required>
+                    <input type="tel" name="telefono" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" placeholder="Ingresa su telefono" required>
 
                     <label for="sexo" class="block mb-2">Sexo:</label>
                     <select name="sexo" id="sexo" class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg" required>
