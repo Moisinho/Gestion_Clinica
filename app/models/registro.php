@@ -56,15 +56,13 @@ class Registro {
                 $_SESSION['id_usuario'] = $id_usuario; // Almacena el ID del usuario
                 $_SESSION['nombre'] = $nombre; // Almacena el nombre del usuario
 
-                // Mostrar alerta y redirigir
-                echo "<script>
-                        alert('Registro exitoso. Bienvenido, $nombre.');
-                        window.location.href = '../views/Paciente/index_paciente.php';
-                    </script>";
+                $destino = "/Gestion_clinica/home_paciente";
+                header("Location: /Gestion_clinica/exito?nombre=" . urlencode($nombre) . "&destino=" . urlencode($destino));
+                exit();
             }
             else if($source === 'registro_admin'){
                 echo "<script>alert('Registro exitoso del paciente: $nombre.');
-                window.location.href = '../views/Admin/admin_soli.php';</script>";
+                window.location.href = '/Gestion_clinica/gestion_usuarios';</script>";
             }
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -96,7 +94,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del medico: $nombre_medico.');
-            window.location.href = '../views/Admin/admin_soli.php';</script>";
+            window.location.href = '/Gestion_clinica/gestion_usuarios';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -128,7 +126,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del recepcionista: $nombre_recepcionista.');
-            window.location.href = '../views/Admin/admin_soli.php';</script>";
+            window.location.href = '/Gestion_clinica/gestion_usuarios';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -160,7 +158,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del administrador: $nombre_administrador.');
-            window.location.href = '../views/Admin/admin_soli.php';</script>";
+            window.location.href = '/Gestion_clinica/gestion_usuarios';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error
@@ -191,7 +189,7 @@ class Registro {
             $this->conn->commit();
 
             echo "<script>alert('Registro exitoso del Farmaceutico: $nombre_farmaceutico.');
-            window.location.href = '../views/Admin/admin_soli.php';</script>";
+            window.location.href = '/Gestion_clinica/gestion_usuarios';</script>";
 
         } catch (Exception $e) {
             // Revertir la transacción si ocurre un error

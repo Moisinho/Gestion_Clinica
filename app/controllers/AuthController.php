@@ -49,7 +49,7 @@ class AuthController {
             header("Location: $pagina_inicio");
             exit();
         } else {
-            echo "Credenciales incorrectas. Intenta nuevamente.";
+            header("Location: /Gestion_clinica/login?error=Credenciales%20incorrectas");
         }
     }
     

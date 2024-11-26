@@ -20,7 +20,7 @@ if (!isset($_SESSION['id_usuario'])) {
 <body class="bg-gray-50 font-sans">
     <?php include '../../includes/header_doctor.php'; ?>
     <!-- Contenido principal -->
-    <div class="container mx-auto p-5">
+    <div class="container mx-auto p-5 h-screen">
         <div class="bg-white p-5 rounded-lg shadow-md">
             <div class="mt-5 text-center flex justify-between">
                 <h2 class="text-2xl font-bold text-Moradote mb-4">Historial Clínico</h2>

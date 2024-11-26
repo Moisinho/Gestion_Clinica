@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 // Redirige según el rol
                 if ($rol === 'Paciente') {
                     echo "<script>alert('Cita registrada exitosamente.');
+                    
                     window.location.href='/Gestion_clinica/agendar_cita'; // Página del paciente
                     </script>";
                 } elseif ($rol === 'Recepcionista') {

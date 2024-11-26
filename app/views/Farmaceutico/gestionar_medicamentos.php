@@ -16,13 +16,13 @@ if (!isset($_SESSION['id_usuario'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../js/tailwind-config.js"></script>
 </head>
-<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+<body class="bg-gray-100">
     <?php include('../../includes/header_farmacia.php'); ?>
-    
-    <div class="container mx-auto p-5 flex-grow">
+    <div class="h-screen">
+    <div class="container mx-auto p-5 flex-grow mb-6">
         <div class="bg-purple-300 p-5 rounded-lg shadow-md mt-8">
             <h2 class="text-2xl font-bold mb-4 text-white">Registrar nuevos Medicamentos</h2>
-
+            
             <!-- Formulario para agregar un nuevo medicamento -->
             <form method="POST" id="formularioMedicamento" class="bg-white p-5 rounded-lg shadow-md mb-8">
                 <h3 class="text-xl font-semibold mb-4">Añadir Nuevo Medicamento</h3>
@@ -85,7 +85,11 @@ if (!isset($_SESSION['id_usuario'])) {
                 <button type="button" class="bg-purple-600 text-white font-semibold px-4 py-2 mt-4 rounded-lg shadow hover:bg-purple-700" onclick="actualizarMedicamento()">Actualizar</button>
             </form>
         </div>
+        
     </div>
+    </div>
+    
+    
     <script>
     fetch('/Gestion_clinica/app/controllers/MedicamentoController.php')
         .then(response => {
