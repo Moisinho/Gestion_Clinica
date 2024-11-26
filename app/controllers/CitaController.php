@@ -7,6 +7,7 @@ require_once '../models/Cita.php';
 require_once '../models/Medico.php';
 require_once '../models/ServicioModel.php';
 require_once '../models/UserModel.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -54,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         } else {
             echo "<script>alert('El paciente no está registrado. Por favor, regístrese primero.');</script>";
         }
-
     }
     // MANEJO DE ACTUALIZACION DE CITA
     elseif ($_POST['action'] == 'actualizar') {
@@ -82,13 +82,12 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         }
         echo json_encode($citasMedico);
         exit();
-
     }
     //OBTENER DETALLES DE CITAS PARA EL MODAL DE RECEPCIONISTA
     elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
         $id_cita = $_GET['id_cita'];
         $detallesCita = $cita->obtener_detalles_cita($id_cita);
-        
+
         // Verificar si se obtuvieron detalles
         if ($detallesCita) {
             echo json_encode($detallesCita);
@@ -116,9 +115,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         $servicios = $servicioModel->obtenerServicios();
         echo json_encode($servicios);
         exit();
-    }
-    
-    elseif ($_GET['action'] == 'obtenerMedicos') {
+    } elseif ($_GET['action'] == 'obtenerMedicos') {
         $medicos = $medicoModel->obtenerMedicos();
         echo json_encode($medicos);
         exit();
@@ -131,23 +128,5 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode($citas);
         exit();
     }
-    elseif ($_POST['action'] == 'agregarReferencia') {
-        error_log("Iniciando proceso de agregar referencia...");
-        $cedula_paciente = $_POST['cedula_paciente'];
-        $id_departamento = $_POST['id_departamento'];
-        $id_medico = $_POST['id_medico'];
-
-        if ($cita->registrarReferenciaEspecialidad($cedula_paciente, $id_departamento, $id_medico)) {
-            echo json_encode(['success' => true, 'message' => 'Referencia de especialidad registrada exitosamente.']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'El paciente ya tiene una referencia para esta especialidad.']);
-        }
-        exit();
-    }
     
 }
-
-
-?>
-
-

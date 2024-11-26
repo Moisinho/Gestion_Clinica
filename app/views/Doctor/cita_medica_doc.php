@@ -166,13 +166,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             <?php
-            require_once '../../includes/Database.php';
-            require_once '../../models/Receta.php';
+                        require_once '../../includes/Database.php';
+                        require_once '../../models/Receta.php';
 
             $medicamentoModel = new Medicamento();
 
-            $medicamentos = $medicamentoModel->obtenermeds();
-            ?>
+                        if (isset($id_paciente) && !empty($id_paciente)) {
+                            
+                            $db = new Database();
+                            $conn = $db->getConnection();
+
+                            
+                            $query = "SELECT nombre_paciente FROM paciente WHERE cedula = :id_paciente";
+                            $stmt = $conn->prepare($query);
+                            $stmt->bindParam(':id_paciente', $id_paciente, PDO::PARAM_STR);
+                            $stmt->execute();
+
+                            
+                            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $nombre_paciente = $resultado ? $resultado['nombre_paciente'] : null;
+                        }
+                        ?>
+
+                        <?php
+                            require_once '../../includes/Database.php';
+                            if (isset($id_cita) && !empty($id_cita)) {
+                            
+                            $db = new Database();
+                            $conn = $db->getConnection();
+
+                            
+                            $query = "SELECT m.nombre_medico
+                                        FROM medico m
+                                        INNER JOIN cita c ON m.id_medico = c.id_medico
+                                        WHERE c.id_cita = :id_cita";
+                            $stmt = $conn->prepare($query);
+                            $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_STR);
+                            $stmt->execute();
+
+                            
+                            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $nombre_medico = $resultado ? $resultado['nombre_medico'] : null;
+                        }
+                        ?>
 
             <!-- Tu HTML con el formulario -->
             <div class="mt-5">
@@ -236,9 +272,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     });
 
                     doc.setFontSize(12);
-                    doc.text("Paciente: Juan Pérez", 20, 40);
+                    doc.text("Paciente:".$nombre_paciente, 20, 40);
                     doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40);
-                    doc.text("Médico: Dr. María López", 20, 50);
+                    doc.text("Médico:".$nombre_medico   , 20, 50);
                     doc.text("Especialidad: Cardiología", 150, 50);
 
                     doc.setLineWidth(0.5);

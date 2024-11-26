@@ -53,6 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         echo json_encode($servicios);
     }
 
+    // OBTENER SERVICIO POR USUARIO
+    elseif ($_GET['action'] == 'obtenerServiciosPorUsuario') {
+        $cedula = $_GET['cedula'];
+        $servicioData = $servicioModel->obtenerServiciosPorUsuario($cedula);
+
+        if ($servicioData) {
+            echo json_encode(['success' => true, 'data' => $servicioData]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No se encontró el servicio']);
+        }
+    }
+
     // OBTENER SERVICIO POR ID
     elseif ($_GET['action'] == 'obtenerPorId') {
         $id_servicio = $_GET['id_servicio'];
@@ -81,14 +93,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     else if ($_GET['action'] == 'obtenerServiciosSinMedicinaGeneral' && isset($_GET['excluir'])) {
         $excluir = $_GET['excluir'];
         $servicios = $servicioModel->obtenerServiciosSinMedicinaGeneral($excluir);
-        
+
         if ($servicios) {
             echo json_encode($servicios);  // Devuelve los datos en formato JSON
         } else {
             echo json_encode(['success' => false, 'message' => 'No se encontraron servicios']);
         }
     }
-
 } else {
     echo json_encode(['success' => false, 'message' => 'Solicitud no válida']);
 }
