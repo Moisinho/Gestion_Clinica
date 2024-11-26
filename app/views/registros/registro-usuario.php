@@ -18,6 +18,7 @@
             <div class="mb-4">
                 <label for="correo" class="block text-gray-700 font-semibold">Correo:</label>
                 <input type="email" id="correo" name="correo" class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md" required>
+                <p id="error-correo" class="text-red-500 mt-2 hidden">El correo debe ser de un dominio válido.</p>
             </div>
             <div class="mb-4">
                 <label for="contrasenia" class="block text-gray-700 font-semibold">Contraseña:</label>
@@ -30,13 +31,29 @@
             </div>
             <div class="flex justify-between">
                 <button type="button" onclick="window.location.href='/Gestion_clinica/login'" class="w-32 px-4 py-2 bg-purple-200 text-purple-600 rounded-md font-semibold hover:bg-purple-400 hover:text-white">Volver</button>
-                <button type="submit" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold hover:bg-purple-800">Siguiente</button>
+                <button id="btn-siguiente" type="submit" class="w-32 px-4 py-2 bg-purple-600 text-white rounded-md font-semibold hover:bg-purple-800 disabled:opacity-50" disabled>Siguiente</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    const correoInput = document.getElementById("correo");
+    const errorCorreo = document.getElementById("error-correo");
+    const btnSiguiente = document.getElementById("btn-siguiente");
+
+    correoInput.addEventListener("input", function () {
+        // Validar el dominio del correo
+        const dominioValido = /@(gmail\.com|hotmail\.com|utp\.ac\.pa)$/i; // Agregar dominios válidos aquí
+        if (dominioValido.test(correoInput.value)) {
+            errorCorreo.classList.add("hidden"); // Ocultar mensaje de error
+            btnSiguiente.disabled = false; // Habilitar el botón
+        } else {
+            errorCorreo.classList.remove("hidden"); // Mostrar mensaje de error
+            btnSiguiente.disabled = true; // Deshabilitar el botón
+        }
+    });
+
     function validarContrasena() {
         var contrasenia = document.getElementById("contrasenia").value;
         var confirmarContrasenia = document.getElementById("confirmar_contrasenia").value;

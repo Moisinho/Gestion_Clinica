@@ -6,6 +6,7 @@ RewriteRule ^tailwind$ /Gestion_clinica/app/js/tailwind-config.js [L]
 RewriteRule ^login$ /Gestion_clinica/app/views/login.php [L]
 RewriteRule ^registro$ /Gestion_clinica/app/views/registros/registro-usuario.php [L]
 RewriteRule ^registro_sig$ /Gestion_clinica/app/views/registros/registro-usuario__sig.php [L]
+RewriteRule ^exito$ /Gestion_clinica/app/views//registros/registro_exitoso.php [L]
 
 #Paginas de paciente
 RewriteRule ^home_paciente$ /Gestion_clinica/app/views/Paciente/index_paciente.php [L]
@@ -13,6 +14,7 @@ RewriteRule ^agendar_cita$ /Gestion_clinica/app/views/Paciente/agendar_cita.php 
 RewriteRule ^citas_paciente$ /Gestion_clinica/app/views/Paciente/citas.php [L]
 RewriteRule ^citas_paciente_js$ /Gestion_clinica/app/views/Js/Paciente/citas.js [L]
 RewriteRule ^historial_paciente$ /Gestion_clinica/app/views/Paciente/historial_clinico.php [L]
+RewriteRule ^contacto_paciente$ /Gestion_clinica/app/views/Paciente/contacto.php [L]
 
 #Reestrablcer contraseña
 RewriteRule ^reset-password$ /Gestion_clinica/app/views/registros/reset_password.php [L]
