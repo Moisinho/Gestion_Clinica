@@ -19,6 +19,32 @@ class ServicioModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerServiciosPorUsuario($cedula)
+    {
+        try {
+            $sql = "
+            SELECT d.id_departamento, d.nombre_departamento, d.tipo
+            FROM departamento d
+            WHERE d.tipo = 'general'
+            UNION
+            SELECT d.id_departamento, d.nombre_departamento, d.tipo
+            FROM departamento d
+            INNER JOIN referencia_especialidad r ON d.id_departamento = r.id_departamento
+            WHERE r.cedula_paciente = :cedula;
+        ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':cedula', $cedula, PDO::PARAM_STR);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en obtenerServiciosPorUsuario: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
     // Método para agregar un nuevo servicio
     public function agregarServicio($nombre_servicio, $descripcion, $costo)
     {
@@ -73,7 +99,8 @@ class ServicioModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerMonto($id_cita){
+    public function obtenerMonto($id_cita)
+    {
         $query = "SELECT s.costo
                     FROM servicio AS s
                     JOIN cita AS c ON c.id_servicio = s.id_servicio
@@ -86,7 +113,8 @@ class ServicioModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerServiciosSinMedicinaGeneral($medicina_general){
+    public function obtenerServiciosSinMedicinaGeneral($medicina_general)
+    {
         // Consulta para obtener todos los servicios excepto "Cita Medicina General"
         $query = "SELECT * FROM servicio WHERE nombre_servicio != :medicina_general";
         $stmt = $this->conn->prepare($query);
