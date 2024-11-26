@@ -3,6 +3,7 @@ session_start();
 
 //Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
 //if (!isset($_SESSION['id_usuario'])) {
+var_dump($_SESSION);
 //   header('Location: ../../../index.php');
 //    exit();
 //}
@@ -34,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body class="bg-gray-50 font-sans">
 
     <?php include '../../includes/header_doctor.php'; ?>
-   
+
 
     <div class="container mx-auto p-5">
         <div class="bg-white p-5 rounded-lg shadow-md mb-5">
@@ -75,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div><label class="block font-bold">Frecuencia Cardíaca</label><input type="text" name="frecuencia_cardiaca" placeholder="Ej. 75" class="border border-gray-300 rounded p-2 w-full"></div>
                 <div>
                     <label class="block font-bold">Tipo de Sangre</label>
-                    <select name="tipo_sangre" class="border border-gray-300 rounded p-2 w-full">
+                    <select name="tipo_sangre" id="tipo_sangre" class="border border-gray-300 rounded p-2 w-full">
                         <option value="">Seleccione</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
@@ -153,7 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <!-- Exámenes y Estudios -->
-             
+
             <div class="mt-5">
                 <h3 class="text-lg font-bold text-Moradito">Exámenes y Estudios</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -171,148 +172,147 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
             </div>
-                <?php
-                require_once '../../includes/Database.php';
-                require_once '../../models/Receta.php';
+            <?php
+            require_once '../../includes/Database.php';
+            require_once '../../models/Receta.php';
 
-                $medicamentoModel = new Medicamento();
+            $medicamentoModel = new Medicamento();
 
-                $medicamentos = $medicamentoModel->obtenermeds();
+            $medicamentos = $medicamentoModel->obtenermeds();
+            ?>
 
-                // Verificar si los medicamentos fueron cargados correctamente
-                if (!empty($medicamentos)) {
-                    echo "Medicamentos cargados correctamente";
-                } else {
-                    echo "No se encontraron medicamentos";
+            <!-- Tu HTML con el formulario -->
+            <div class="mt-5">
+                <h3 class="text-lg font-bold text-Moradote">Receta</h3>
+                <!-- Contenedor de la tabla -->
+                <table id="receta-table" class="w-full border-collapse mt-2 receta-table">
+                    <thead>
+                        <tr class="bg-purple-300">
+                            <th class="border px-2 py-1">Medicamento</th>
+                            <th class="border px-2 py-1">Dosis</th>
+                            <th class="border px-2 py-1">Frecuencia</th>
+                            <th class="border px-2 py-1">Duración</th>
+                            <th class="border px-2 py-1">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receta-body">
+                        <!-- Fila inicial -->
+                        <tr>
+                            <td class="border">
+                                <select name="medicamento[]" class="rounded-md focus:outline-none hover:bg-transparent" onchange="mostrarStock(this)">
+                                    <option disabled selected value="">Seleccione un medicamento</option>
+                                    <?php if (!empty($medicamentos)): ?>
+                                        <?php foreach ($medicamentos as $medicamento): ?>
+                                            <option value="<?= $medicamento['id_medicamento'] ?>" data-stock="<?= $medicamento['cant_stock'] ?>">
+                                                <?= htmlspecialchars($medicamento['nombre']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="">No hay medicamentos disponibles</option>
+                                    <?php endif; ?>
+                                </select>
+                            </td>
+                            <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
+                            <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
+                            <td class="border">
+                                <input type="text" name="stock[]" readonly class="w-full p-1" placeholder="Stock">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Botón para agregar una fila -->
+                <button type="button" onclick="agregarFila()" class="mt-3 bg-purple-500 text-white p-2 rounded-md">Agregar receta</button>
+                <button onclick="generarPDF()" class="mt-3 bg-blue-500 text-white p-2 rounded-md">Generar PDF</button>
+
+            </div>
+            <script>
+                function generarPDF() {
+                    const {
+                        jsPDF
+                    } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const pageHeight = doc.internal.pageSize.getHeight();
+
+                    doc.setFontSize(16);
+                    doc.setFont("helvetica", "bold");
+                    doc.text("Receta Médica", pageWidth / 2, 20, {
+                        align: "center"
+                    });
+
+                    doc.setFontSize(12);
+                    doc.text("Paciente: Juan Pérez", 20, 40);
+                    doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40);
+                    doc.text("Médico: Dr. María López", 20, 50);
+                    doc.text("Especialidad: Cardiología", 150, 50);
+
+                    doc.setLineWidth(0.5);
+                    doc.line(20, 60, pageWidth - 20, 60);
+
+                    const table = document.getElementById("receta-table");
+                    const rows = table.querySelectorAll("tbody tr");
+
+
+                    const headers = ["Medicamento", "Dosis", "Frecuencia", "Duración", "Stock"];
+
+
+                    let y = 70;
+                    doc.setFontSize(10);
+                    doc.text(headers[0], 20, y);
+                    doc.text(headers[1], 60, y);
+                    doc.text(headers[2], 100, y);
+                    doc.text(headers[3], 140, y);
+                    doc.text(headers[4], 180, y);
+
+                    y += 10;
+                    rows.forEach((row, index) => {
+                        const medicamento = row.querySelector('select[name="medicamento[]"] option:checked').textContent.trim();
+                        const dosis = row.querySelector('input[name="dosis[]"]').value.trim();
+                        const frecuencia = row.querySelector('input[name="frecuencia[]"]').value.trim();
+                        const duracion = row.querySelector('input[name="duracion[]"]').value.trim();
+                        const stock = row.querySelector('input[name="stock[]"]').value.trim();
+
+                        doc.text(medicamento, 20, y + 10);
+                        doc.text(dosis, 60, y + 10);
+                        doc.text(frecuencia, 100, y + 10);
+                        doc.text(duracion, 140, y + 10);
+                        doc.text(stock, 180, y + 10);
+                        y += 10;
+                    });
+
+                    y += 10;
+
+                    doc.line(20, y, pageWidth - 20, y);
+                    y += 10;
+
+                    doc.setFontSize(8);
+                    doc.text("Dirección: Calle Ejemplo 123 | Tel: (123) 456-7890", 20, y);
+                    doc.text("www.clinicasalud.com", pageWidth - 80, y, {
+                        align: "right"
+                    });
+
+                    doc.save("Receta_Medica.pdf");
                 }
-                ?>
+            </script>
 
-                <!-- Tu HTML con el formulario -->
-                <div class="mt-5">
-    <h3 class="text-lg font-bold text-Moradote">Receta</h3>
-    <!-- Contenedor de la tabla -->
-    <table id="receta-table" class="w-full border-collapse mt-2 receta-table">
-        <thead>
-            <tr class="bg-purple-300">
-                <th class="border px-2 py-1">Medicamento</th>
-                <th class="border px-2 py-1">Dosis</th>
-                <th class="border px-2 py-1">Frecuencia</th>
-                <th class="border px-2 py-1">Duración</th>
-                <th class="border px-2 py-1">Stock</th>
-            </tr>
-        </thead>
-        <tbody id="receta-body">
-            <!-- Fila inicial -->
-            <tr>
-                <td class="border">
-                    <select name="medicamento[]" class="rounded-md focus:outline-none hover:bg-transparent" onchange="mostrarStock(this)">
-                        <option disabled selected value="">Seleccione un medicamento</option>
-                        <?php if (!empty($medicamentos)): ?>
-                            <?php foreach ($medicamentos as $medicamento): ?>
-                                <option value="<?= $medicamento['id_medicamento'] ?>" data-stock="<?= $medicamento['cant_stock'] ?>">
-                                    <?= htmlspecialchars($medicamento['nombre']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <option value="">No hay medicamentos disponibles</option>
-                        <?php endif; ?>
-                    </select>
-                </td>
-                <td class="border"><input type="text" name="dosis[]" placeholder="Dosis" class="w-full p-1"></td>
-                <td class="border"><input type="text" name="frecuencia[]" placeholder="Frecuencia" class="w-full p-1"></td>
-                <td class="border"><input type="text" name="duracion[]" placeholder="Duración" class="w-full p-1"></td>
-                <td class="border">
-                    <input type="text" name="stock[]" readonly class="w-full p-1" placeholder="Stock">
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <!-- Botón para agregar una fila -->
-    <button type="button" onclick="agregarFila()" class="mt-3 bg-purple-500 text-white p-2 rounded-md">Agregar receta</button>
-    <button onclick="generarPDF()" class="mt-3 bg-blue-500 text-white p-2 rounded-md">Generar PDF</button>
+            <script>
+                function mostrarStock(selectElement) {
+                    const stockInput = selectElement.closest('tr').querySelector('input[name="stock[]"]');
+                    const selectedOption = selectElement.options[selectElement.selectedIndex];
+                    const stock = selectedOption.getAttribute('data-stock');
+                    stockInput.value = stock || '';
+                }
 
-</div>
-<script>
-    function generarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+                // Función para agregar una nueva fila al tbody
+                function agregarFila() {
+                    // Seleccionar el tbody
+                    const tbody = document.getElementById('receta-body');
 
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-
-        doc.setFontSize(16);
-        doc.setFont("helvetica", "bold");
-        doc.text("Receta Médica", pageWidth / 2, 20, { align: "center" });
-
-        doc.setFontSize(12);
-        doc.text("Paciente: Juan Pérez", 20, 40);
-        doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40);
-        doc.text("Médico: Dr. María López", 20, 50);
-        doc.text("Especialidad: Cardiología", 150, 50);
-
-        doc.setLineWidth(0.5);
-        doc.line(20, 60, pageWidth - 20, 60);
-
-        const table = document.getElementById("receta-table");
-        const rows = table.querySelectorAll("tbody tr");
-
-   
-        const headers = ["Medicamento", "Dosis", "Frecuencia", "Duración", "Stock"];
-
-        
-        let y = 70;
-        doc.setFontSize(10);
-        doc.text(headers[0], 20, y);
-        doc.text(headers[1], 60, y);
-        doc.text(headers[2], 100, y);
-        doc.text(headers[3], 140, y);
-        doc.text(headers[4], 180, y);
-
-        y += 10;
-        rows.forEach((row, index) => {
-            const medicamento = row.querySelector('select[name="medicamento[]"] option:checked').textContent.trim();
-            const dosis = row.querySelector('input[name="dosis[]"]').value.trim();
-            const frecuencia = row.querySelector('input[name="frecuencia[]"]').value.trim();
-            const duracion = row.querySelector('input[name="duracion[]"]').value.trim();
-            const stock = row.querySelector('input[name="stock[]"]').value.trim();
-
-            doc.text(medicamento, 20, y + 10);
-            doc.text(dosis, 60, y + 10);
-            doc.text(frecuencia, 100, y + 10);
-            doc.text(duracion, 140, y + 10);
-            doc.text(stock, 180, y + 10);
-            y += 10;
-        });
-
-        y += 10;  
-
-        doc.line(20, y, pageWidth - 20, y);
-        y += 10; 
-
-        doc.setFontSize(8);
-        doc.text("Dirección: Calle Ejemplo 123 | Tel: (123) 456-7890", 20, y);
-        doc.text("www.clinicasalud.com", pageWidth - 80, y, { align: "right" });
-
-        doc.save("Receta_Medica.pdf");
-    }
-</script>
-
-<script>
-    function mostrarStock(selectElement) {
-        const stockInput = selectElement.closest('tr').querySelector('input[name="stock[]"]');
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock');
-        stockInput.value = stock || '';
-    }
-
-    // Función para agregar una nueva fila al tbody
-    function agregarFila() {
-        // Seleccionar el tbody
-        const tbody = document.getElementById('receta-body');
-
-        // Crear una nueva fila
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
+                    // Crear una nueva fila
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
             <td class="border">
                 <select name="medicamento[]" class="rounded-md focus:outline-none hover:bg-transparent" onchange="mostrarStock(this)">
                     <option disabled selected value="">Seleccione un medicamento</option>
@@ -335,10 +335,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </td>
         `;
 
-        // Agregar la fila al tbody
-        tbody.appendChild(newRow);
-    }
-</script>
+                    // Agregar la fila al tbody
+                    tbody.appendChild(newRow);
+                }
+            </script>
 
 
 
@@ -368,13 +368,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <?php include '../../includes/footer.php'; ?>
+    <script>
+        let id_usuario = <?php echo json_encode((int)$_SESSION['id_usuario']); ?>;
+    </script>
+
+
     <script src="/Gestion_clinica/app/views/Js/Doctor/historial.js"></script>
     <script src="/Gestion_clinica/detalles_cita_js"></script>
     <script>
-    document.getElementById("volverBtn").addEventListener("click", function() {
-        window.location.href = "/Gestion_clinica/home_medico";
-    });
-</script>
+        document.getElementById("volverBtn").addEventListener("click", function() {
+            window.location.href = "/Gestion_clinica/home_medico";
+        });
+    </script>
 
 </body>
 

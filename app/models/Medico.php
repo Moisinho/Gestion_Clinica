@@ -9,24 +9,24 @@ class Medico
     }
 
     public function obtenerMedicos()
-{
-    $query = "SELECT id_medico, nombre_medico FROM Medico";
-    $stmt = $this->conn->prepare($query);
-    
-    // Quita o comenta la línea de depuración
-    // echo "Ejecutando la consulta: $query\n"; 
+    {
+        $query = "SELECT id_medico, nombre_medico FROM Medico";
+        $stmt = $this->conn->prepare($query);
 
-    if (!$stmt->execute()) {
-        print_r($stmt->errorInfo());
-        return [];
+        // Quita o comenta la línea de depuración
+        // echo "Ejecutando la consulta: $query\n"; 
+
+        if (!$stmt->execute()) {
+            print_r($stmt->errorInfo());
+            return [];
+        }
+
+        $medicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Devuelve el JSON
+        echo json_encode($medicos);
+        exit();
     }
-
-    $medicos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Devuelve el JSON
-    echo json_encode($medicos);
-    exit();
-}
 
 
 
@@ -70,7 +70,19 @@ class Medico
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerMedicosPorServicio($id_servicio) {
+
+    public function obtenerMedicoPorUsuario($id_usuario)
+    {
+        $query = "SELECT id_medico FROM Medico WHERE id_usuario = :id_usuario";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerMedicosPorServicio($id_servicio)
+    {
         // Definir la consulta con JOIN para obtener médicos por id_servicio
         $query = "
             SELECT m.nombre_medico, m.id_medico
@@ -78,13 +90,13 @@ class Medico
             JOIN servicio s ON m.id_departamento = s.id_departamento
             WHERE s.id_servicio = :id_servicio
         ";
-    
+
         // Preparar la consulta
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_servicio', $id_servicio, PDO::PARAM_INT);
-    
+
         $stmt->execute();
-    
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }  
+    }
 }

@@ -38,10 +38,10 @@ class Historial
             $sql = "INSERT INTO historial_medico 
                     (cedula, id_cita, id_medico, peso, altura, presion_arterial, frecuencia_cardiaca, tipo_sangre, 
                     antecedentes_personales, otros_antecedentes, antecedentes_no_patologicos, otros_antecedentes_no_patologicos, 
-                    condicion_general, examenes, laboratorios, diagnostico, recomendaciones, tratamiento, id_departamento_referencia) 
+                    condicion_general, examenes, laboratorios, diagnostico, tratamiento, id_departamento_referencia) 
                     VALUES (:cedula, :id_cita, :id_medico, :peso, :altura, :presion_arterial, :frecuencia_cardiaca, :tipo_sangre, 
                     :antecedentes_patologicos, :otros_antecedentes_patologicos, :antecedentes_no_patologicos, 
-                    :otros_antecedentes_no_patologicos, :condicion_general, :examenes_sangre, :laboratorios, :diagnostico, :recomendaciones, :tratamiento, :id_departamento_referencia)";
+                    :otros_antecedentes_no_patologicos, :condicion_general, :examenes_sangre, :laboratorios, :diagnostico, :tratamiento, :id_departamento_referencia)";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -65,11 +65,20 @@ class Historial
             $stmt = $this->conn->prepare($sql);
 
             foreach ($recetas as $receta) {
+                // Convertir nombre del medicamento a su ID
+                $id_medicamento = $this->obtenerIdMedicamentoPorNombre($receta['medicamento']);
+                if (!$id_medicamento) {
+                    throw new Exception("El medicamento '{$receta['medicamento']}' no existe en la base de datos.");
+                }
+
+                // Asociar valores para la receta
                 $stmt->bindValue(':id_cita', $id_cita);
-                $stmt->bindValue(':id_medicamento', $receta['medicamento']);
+                $stmt->bindValue(':id_medicamento', $id_medicamento);
                 $stmt->bindValue(':dosis', $receta['dosis']);
                 $stmt->bindValue(':duracion', $receta['duracion']);
                 $stmt->bindValue(':frecuencia', $receta['frecuencia']);
+
+                // Ejecutar la consulta
                 $stmt->execute();
             }
 
@@ -79,7 +88,59 @@ class Historial
             return false;
         }
     }
-    public function obtenerHistorialPorCedula($cedula) {
+
+    public function agregarReferencia($cedula_paciente, $id_departamento, $id_medico)
+    {
+        try {
+            // Establecer la fecha de referencia
+            $fecha_referencia = date('Y-m-d'); // Fecha actual
+
+            // SQL para insertar en la tabla referencia_especialidad
+            $sql = "INSERT INTO referencia_especialidad (cedula_paciente, id_departamento, fecha_referencia, id_medico) 
+                VALUES (:cedula_paciente, :id_departamento, :fecha_referencia, :id_medico)";
+
+            // Preparar la consulta
+            $stmt = $this->conn->prepare($sql);
+
+            // Vincular los parámetros
+            $stmt->bindValue(':cedula_paciente', $cedula_paciente);
+            $stmt->bindValue(':id_departamento', $id_departamento);
+            $stmt->bindValue(':fecha_referencia', $fecha_referencia);
+            $stmt->bindValue(':id_medico', $id_medico);
+
+            // Ejecutar la consulta
+            $stmt->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            // Manejo de errores
+            error_log("Error al agregar referencia: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
+
+
+    private function obtenerIdMedicamentoPorNombre($nombre_medicamento)
+    {
+        try {
+            $sql = "SELECT id_medicamento FROM medicamento WHERE nombre = :nombre LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':nombre', $nombre_medicamento);
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ? $row['id_medicamento'] : null;
+        } catch (PDOException $e) {
+            error_log("Error en obtenerIdMedicamentoPorNombre: " . $e->getMessage());
+            return null;
+        }
+    }
+
+
+    public function obtenerHistorialPorCedula($cedula)
+    {
         $query = "SELECT p.nombre_paciente, p.cedula, p.fecha_nacimiento, p.telefono, p.correo_paciente, 
                 c.fecha_cita, m.nombre_medico AS medico, h.diagnostico, h.tratamiento, h.receta, h.examenes, h.recomendaciones
                 FROM paciente AS p
@@ -88,17 +149,18 @@ class Historial
                 JOIN historial_medico AS h ON h.id_cita = c.id_cita
                 WHERE p.cedula = :cedula";
         $stmt = $this->conn->prepare($query);
-    
+
         $stmt->bindParam(':cedula', $cedula);
-    
+
         if ($stmt->execute()) {
             return $stmt->fetchAll(PDO::FETCH_ASSOC); // Devuelve todos los historiales como un arreglo
         }
-    
+
         return []; // Devuelve un arreglo vacío si no hay resultados
     }
 
-    public function verificarCitaMedicinaGeneral($cedula){
+    public function verificarCitaMedicinaGeneral($cedula)
+    {
         try {
             $sql = "SELECT h.id_historial
                     FROM historial_medico AS h
@@ -147,5 +209,4 @@ class Historial
             ];
         }
     }
-    
 }

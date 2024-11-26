@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['id_usuario'])) {
-    echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
-    exit();
-}
+// if (!isset($_SESSION['id_usuario'])) {
+//     echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
+//     exit();
+// }
 
 require_once '../includes/Database.php';
 require_once '../models/Historial.php';
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($historialModel->agregarHistorial($data)) {
             $id_cita = $conn->lastInsertId();
 
-            // Agregar recetas si existen
+            $recetasGuardadas = true;
             if (isset($_POST['medicamento'], $_POST['dosis'], $_POST['frecuencia'], $_POST['duracion'])) {
                 $recetas = [];
                 foreach ($_POST['medicamento'] as $index => $medicamento) {
@@ -60,8 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     ];
                 }
 
-                $historialModel->agregarRecetas($id_cita, $recetas);
+                $recetasGuardadas = $historialModel->agregarRecetas($id_cita, $recetas);
             }
+
 
             echo json_encode(['success' => true, 'message' => 'Historial médico y receta guardados con éxito']);
         } else {
@@ -164,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($stmt->rowCount() > 0) {
                 $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
+
                 // Serializar los datos y enviarlos mediante POST a historial_clinico.php
                 echo '<form id="form_historial" action="/Gestion_clinica/historial_medico" method="POST">';
                 foreach ($historial as $registro) {
@@ -181,4 +182,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-?>
