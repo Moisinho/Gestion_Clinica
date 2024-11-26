@@ -83,6 +83,7 @@ function loadCitas(fechaFiltro = "") {
                       <td class='p-3'>${cita.nombre_paciente || "Sin paciente"}</td>
                       <td class='p-3'>${cita.motivo || "Sin motivo"}</td>
                       <td class='p-3'>${cita.fecha_cita || "Sin fecha"}</td>
+                      <td class='p-3'>${cita.hora_cita || "Sin horario"}</td>
                       <td class='p-3'>${cita.estado || "Sin estado"}</td>
                       <td class='p-3'>
                           <button onclick="verDetallesCita(${cita.id_cita})" class='bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400'>

@@ -1,6 +1,7 @@
 RewriteEngine On
 RewriteBase /Gestion_clinica/
 RewriteRule ^tailwind$ /Gestion_clinica/app/js/tailwind-config.js [L]
+RewriteRule ^contacto$ /Gestion_clinica/app/views/contacto.php [L]
 
 #Paginas de autenticación
 RewriteRule ^login$ /Gestion_clinica/app/views/login.php [L]
@@ -25,6 +26,7 @@ RewriteRule ^cita_medica$ /Gestion_clinica/app/views/Doctor/cita_medica_doc.php 
 RewriteRule ^historial_medico$ /Gestion_clinica/app/views/Doctor/historial_clinico.php [L]
 RewriteRule ^inicio_js$ /Gestion_clinica/app/views/Js/Doctor/inicio.js [L]
 RewriteRule ^detalles_cita_js$ /Gestion_clinica/app/views/Js/Doctor/detalles_cita.js [L]
+RewriteRule ^historial_js$ /Gestion_clinica/app/views/Js/Doctor/historial.js [L]
 RewriteRule ^home_medico$ /Gestion_clinica/app/views/Doctor/medico_inicio.php [L]
 
 #Paginas de recepcionista

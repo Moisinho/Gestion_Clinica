@@ -145,7 +145,6 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         exit();
     }
     
-    
 }
 
 

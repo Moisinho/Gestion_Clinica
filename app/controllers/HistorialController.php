@@ -1,94 +1,110 @@
 <?php
 session_start();
 
-// if (!isset($_SESSION['id_usuario'])) {
-//     echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
-//     exit();
-// }
-
 require_once '../includes/Database.php';
 require_once '../models/Historial.php';
 
+// Inicializar base de datos y modelo
 $database = new Database();
 $conn = $database->getConnection();
 $historialModel = new Historial($conn);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-
-    // AGREGAR HISTORIAL
-    if ($_POST['action'] == 'agregar') {
-        $data = [
-            "cedula" => $_POST['cedula'] ?? '',
-            "id_cita" => $_POST['id_cita'] ?? '',
-            "id_medico" => $_POST['id_medico'] ?? '',
-            "peso" => $_POST['peso'],
-            "altura" => $_POST['altura'],
-            "presion_arterial" => $_POST['presion_arterial'],
-            "frecuencia_cardiaca" => $_POST['frecuencia_cardiaca'],
-            "tipo_sangre" => $_POST['tipo_sangre'],
-            "antecedentes_patologicos" => is_array($_POST['antecedentes_patologicos'])
-                ? implode(", ", $_POST['antecedentes_patologicos'])
-                : $_POST['antecedentes_patologicos'],
-
-            "otros_antecedentes_patologicos" => $_POST['otros_antecedentes_patologicos'] ?? '',
-
-            "antecedentes_no_patologicos" => is_array($_POST['antecedentes_no_patologicos'])
-                ? implode(", ", $_POST['antecedentes_no_patologicos'])
-                : $_POST['antecedentes_no_patologicos'],
-            "otros_antecedentes_no_patologicos" => $_POST['otros_antecedentes_no_patologicos'] ?? '',
-            "condicion_general" => $_POST['condicion_general'],
-            "examenes_sangre" => $_POST['examenes_sangre'],
-            "laboratorios" => $_POST['laboratorios'],
-            "diagnostico" => $_POST['diagnostico'],
-            "recomendaciones" => $_POST['recomendaciones'],
-            "tratamiento" => $_POST['tratamiento'],
-            "id_departamento_referencia" => $_POST['id_departamento_referencia'] ?? null
-        ];
-
-        if ($historialModel->agregarHistorial($data)) {
-            $id_cita = $conn->lastInsertId();
-
-            $recetasGuardadas = true;
-            if (isset($_POST['medicamento'], $_POST['dosis'], $_POST['frecuencia'], $_POST['duracion'])) {
-                $recetas = [];
-                foreach ($_POST['medicamento'] as $index => $medicamento) {
-                    $recetas[] = [
-                        'medicamento' => $medicamento,
-                        'dosis' => $_POST['dosis'][$index],
-                        'frecuencia' => $_POST['frecuencia'][$index],
-                        'duracion' => $_POST['duracion'][$index]
-                    ];
-                }
-
-                $recetasGuardadas = $historialModel->agregarRecetas($id_cita, $recetas);
-            }
-
-
-            echo json_encode(['success' => true, 'message' => 'Historial médico y receta guardados con éxito']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Error al guardar el historial médico']);
-        }
+// Validar método de solicitud y acción
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action']) && $_POST['action'] === 'agregar') {
+        agregarHistorial($_POST, $historialModel, $conn);
+    } elseif (isset($_POST['accion']) && $_POST['accion'] === 'ver') {
+        verHistorial($_POST);
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
-
-    // OBTENER HISTORIAL POR USUARIO
-    if ($_GET['action'] == 'obtenerPorUsuario' && isset($_GET['usuario'])) {
-        $user = htmlspecialchars(strip_tags($_GET['usuario']));
-        $historial = $historialModel->obtenerHistorialPorUsuario($user);
-
-        if (!empty($historial)) {
-            echo json_encode($historial);
-        } else {
-            echo json_encode(["success" => false, "message" => "No se encontraron registros para el usuario"]);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['action'])) {
+        switch ($_GET['action']) {
+            case 'obtenerPorUsuario':
+                obtenerHistorialPorUsuario($_GET, $historialModel);
+                break;
+            case 'obtenerPorCedula':
+                obtenerHistorialPorCedula($_GET, $historialModel);
+                break;
+            case 'verificarCitaMedicinaGeneral':
+                verificarCitaMedicinaGeneral($_GET, $historialModel);
+                break;
+            default:
+                echo json_encode(['error' => 'Acción no válida']);
+                exit();
         }
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'Solicitud no válida']);
+    echo json_encode(['error' => 'Método no permitido']);
+    exit();
 }
 
-if ($_GET['action'] == 'obtenerPorCedula' && isset($_GET['cedula'])) {
-    $cedula = htmlspecialchars(strip_tags($_GET['cedula']));
+// Funciones para manejar acciones específicas
+function agregarHistorial($data, $historialModel, $conn)
+{
+    $data = [
+        "cedula" => $data['cedula'] ?? '',
+        "id_cita" => $data['id_cita'] ?? '',
+        "id_medico" => $data['id_medico'] ?? '',
+        "peso" => $data['peso'],
+        "altura" => $data['altura'],
+        "presion_arterial" => $data['presion_arterial'],
+        "frecuencia_cardiaca" => $data['frecuencia_cardiaca'],
+        "tipo_sangre" => $data['tipo_sangre'],
+        "antecedentes_patologicos" => is_array($data['antecedentes_personales'])
+            ? implode(", ", $data['antecedentes_personales'])
+            : $data['antecedentes_personales'],
+        "otros_antecedentes_patologicos" => $data['otros_antecedentes'] ?? '',
+        "antecedentes_no_patologicos" => is_array($data['antecedentes_no_patologicos'])
+            ? implode(", ", $data['antecedentes_no_patologicos'])
+            : $data['antecedentes_no_patologicos'],
+        "otros_antecedentes_no_patologicos" => $data['otros_antecedentes_no_patologicos'] ?? '',
+        "condicion_general" => $data['condicion_general'],
+        "examenes_sangre" => $data['examenes_sangre'],
+        "laboratorios" => $data['laboratorios'],
+        "diagnostico" => $data['diagnostico'],
+        "tratamiento" => $data['tratamiento'],
+        "id_departamento_referencia" => $data['id_departamento_referencia'] ?? null
+    ];
 
+    if ($historialModel->agregarHistorial($data)) {
+        $id_cita = $conn->lastInsertId();
+
+        if (isset($data['medicamento'], $data['dosis'], $data['frecuencia'], $data['duracion'])) {
+            $recetas = [];
+            foreach ($data['medicamento'] as $index => $medicamento) {
+                $recetas[] = [
+                    'medicamento' => $medicamento,
+                    'dosis' => $data['dosis'][$index],
+                    'frecuencia' => $data['frecuencia'][$index],
+                    'duracion' => $data['duracion'][$index]
+                ];
+            }
+            $historialModel->agregarRecetas($id_cita, $recetas);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Historial médico y receta guardados con éxito']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Error al guardar el historial médico']);
+    }
+    exit();
+}
+
+function obtenerHistorialPorUsuario($params, $historialModel)
+{
+    $user = htmlspecialchars(strip_tags($params['usuario']));
+    $historial = $historialModel->obtenerHistorialPorUsuario($user);
+
+    if (!empty($historial)) {
+        echo json_encode($historial);
+    } else {
+        echo json_encode(["success" => false, "message" => "Aún noo cuentas con historial médico."]);
+    }
+    exit();
+}
+
+function obtenerHistorialPorCedula($params, $historialModel)
+{
+    $cedula = htmlspecialchars(strip_tags($params['cedula']));
     if (empty($cedula)) {
         echo json_encode(["success" => false, "message" => "La cédula es requerida"]);
         exit();
@@ -97,14 +113,16 @@ if ($_GET['action'] == 'obtenerPorCedula' && isset($_GET['cedula'])) {
     $historial = $historialModel->obtenerHistorialPorCedula($cedula);
 
     if (!empty($historial)) {
-        echo json_encode(['success' => true, 'data' => $historial]); // Devuelve todos los registros
+        echo json_encode(['success' => true, 'data' => $historial]);
     } else {
-        echo json_encode(["success" => false, "message" => "No se encontraron registros para la cédula proporcionada"]);
+        echo json_encode(["success" => false, "message" => "El paciente aún no cuenta con historial."]);
     }
+    exit();
 }
 
-if ($_GET['action'] === 'verificarCitaMedicinaGeneral' && isset($_GET['cedula'])) {
-    $cedula = $_GET['cedula'];
+function verificarCitaMedicinaGeneral($params, $historialModel)
+{
+    $cedula = $params['cedula'];
 
     try {
         $resultado = $historialModel->verificarCitaMedicinaGeneral($cedula);
@@ -124,61 +142,6 @@ if ($_GET['action'] === 'verificarCitaMedicinaGeneral' && isset($_GET['cedula'])
         error_log("Error en verificarCitaMedicinaGeneral: " . $e->getMessage());
         echo json_encode(['error' => 'Error al verificar el historial.']);
     }
-} else {
-    echo json_encode(['error' => 'Acción no válida o datos incompletos.']);
+    exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion = filter_input(INPUT_POST, 'accion', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-    if ($accion === 'ver') {
-        $cedula = filter_input(INPUT_POST, 'cedula', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $id_cita = filter_input(INPUT_POST, 'id_cita', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-        if (!empty($cedula) || !empty($id_cita)) {
-            $database = new Database();
-            $db = $database->getConnection();
-
-            // Consulta para obtener el historial usando cédula o id_cita
-            $sql = "
-            SELECT
-                hm.*,
-                m.nombre_medico,
-                p.nombre_paciente,
-                p.cedula,
-                p.fecha_nacimiento,
-                p.telefono,
-                p.correo_paciente
-            FROM
-                historial_medico hm
-            JOIN
-                medico m ON hm.id_medico = m.id_medico
-            JOIN
-                paciente p ON hm.cedula = p.cedula
-            WHERE
-                hm.cedula = :cedula OR hm.id_cita = :id_cita";
-
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':cedula', $cedula, PDO::PARAM_STR);
-            $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_STR);
-            $stmt->execute();
-
-            if ($stmt->rowCount() > 0) {
-                $historial = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Serializar los datos y enviarlos mediante POST a historial_clinico.php
-                echo '<form id="form_historial" action="/Gestion_clinica/historial_medico" method="POST">';
-                foreach ($historial as $registro) {
-                    echo '<input type="hidden" name="historial[]" value="' . htmlspecialchars(json_encode($registro)) . '">';
-                }
-                echo '</form>';
-                echo '<script>document.getElementById("form_historial").submit();</script>';
-                exit();
-            } else {
-                echo "<p>No se encontró ningún historial para la cédula o ID de cita proporcionados.</p>";
-            }
-        } else {
-            echo "<p>Error: Cédula o ID de cita no válidos.</p>";
-        }
-    }
-}

@@ -1,6 +1,6 @@
 <?php
 session_start();
-var_dump($_SESSION);
+
 // Verificar si el id_usuario existe en la sesión
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: /Gestion_clinica/'); // Cambia a la ruta correcta de tu login
@@ -48,6 +48,7 @@ if (!isset($_SESSION['id_usuario'])) {
                         <th class="p-3 text-left">Paciente</th>
                         <th class="p-3 text-left">Motivo</th>
                         <th class="p-3 text-left">Fecha</th>
+                        <th class="p-3 text-left">Hora</th>
                         <th class="p-3 text-left">Estado</th>
                         <th class="p-3 text-left"></th>
                     </tr>
@@ -76,7 +77,7 @@ if (!isset($_SESSION['id_usuario'])) {
     </main>
     <?php include '../../includes/footer.php'; ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/Gestion_clinica/inicio_js"></script>
+    <script src="/Gestion_clinica/app/views/Js/Doctor/inicio.js"></script>
 </body>
 
 </html>

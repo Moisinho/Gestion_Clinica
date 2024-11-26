@@ -1,12 +1,6 @@
 <?php
 session_start();
 
-//Verificar si el id_usuario está en la sesión; si no, redirigir al usuario a la página de login
-//if (!isset($_SESSION['id_usuario'])) {
-var_dump($_SESSION);
-//   header('Location: ../../../index.php');
-//    exit();
-//}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['id_cita'])) {
         $idCita = $_POST['id_cita'];
@@ -45,8 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- Formulario para actualizar el estado de la cita -->
                 <form id="actualizar-cita-form" method="POST" action="Gestion_clinica/app/controllers/actualizar_cita.php" class="inline">
                     <input type="hidden" name="id_cita" value="<?php echo htmlspecialchars($id_cita); ?>">
-                    <input type="hidden" name="nuevo_estado" value="Confirmada"> <!-- Estado que desees actualizar -->
-                    <button type="submit" class="bg-purple-300 text-purple-900 font-bold py-2 px-4 rounded hover:bg-purple-400">Finalizar Cita</button>
+                    
                 </form>
 
                 <form id="verExpedienteForm" class="inline ml-2">
@@ -170,52 +163,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="laboratorios" class="block font-bold">Laboratorios y Estudios Complementarios</label>
                         <textarea name="laboratorios" id="laboratorios" class="border border-gray-300 rounded p-2 w-full h-24" placeholder="Describa los estudios de laboratorio"></textarea>
                     </div>
-                    <?php
-                        require_once '../../includes/Database.php';
-                        require_once '../../models/Receta.php';
+                </div>
+            </div>
+            <?php
+            require_once '../../includes/Database.php';
+            require_once '../../models/Receta.php';
 
-                        $medicamentoModel = new Medicamento();
-                        $medicamentos = $medicamentoModel->obtenermeds();
+            $medicamentoModel = new Medicamento();
 
-                        if (isset($id_paciente) && !empty($id_paciente)) {
-                            
-                            $db = new Database();
-                            $conn = $db->getConnection();
-
-                            
-                            $query = "SELECT nombre_paciente FROM paciente WHERE cedula = :id_paciente";
-                            $stmt = $conn->prepare($query);
-                            $stmt->bindParam(':id_paciente', $id_paciente, PDO::PARAM_INT);
-                            $stmt->execute();
-
-                            
-                            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-                            $nombre_paciente = $resultado ? $resultado['nombre_paciente'] : null;
-                        }
-                        ?>
-
-                        <?php
-                            require_once '../../includes/Database.php';
-                            if (isset($id_cita) && !empty($id_cita)) {
-                            
-                            $db = new Database();
-                            $conn = $db->getConnection();
-
-                            
-                            $query = "SELECT m.nombre_medico
-                                        FROM medico m
-                                        INNER JOIN cita c ON m.id_medico = c.id_medico
-                                        WHERE c.id_cita = :id_cita";
-                            $stmt = $conn->prepare($query);
-                            $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_INT);
-                            $stmt->execute();
-
-                            
-                            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-                            $nombre_medico = $resultado ? $resultado['nombre_medico'] : null;
-                        }
-                        ?>
-                            
+            $medicamentos = $medicamentoModel->obtenermeds();
+            ?>
 
             <!-- Tu HTML con el formulario -->
             <div class="mt-5">
@@ -279,9 +236,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     });
 
                     doc.setFontSize(12);
-                    doc.text("Paciente:".$nombre_paciente , 20, 40);
+                    doc.text("Paciente: Juan Pérez", 20, 40);
                     doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40);
-                    doc.text("Médico:".$nombre_medico, 20, 50);
+                    doc.text("Médico: Dr. María López", 20, 50);
                     doc.text("Especialidad: Cardiología", 150, 50);
 
                     doc.setLineWidth(0.5);

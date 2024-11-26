@@ -5,12 +5,6 @@ require_once '../includes/Database.php';
 require_once '../models/Historial.php';
 require_once '../models/Cita.php';
 
-// Validar sesión (descomentarlo si es necesario)
-// if (!isset($_SESSION['id_usuario'])) {
-//     echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
-//     exit();
-// }
-
 $inputJSON = file_get_contents('php://input');
 $input = json_decode($inputJSON, true);
 
@@ -46,10 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "presion_arterial" => $input['presion_arterial'],
                 "frecuencia_cardiaca" => $input['frecuencia_cardiaca'],
                 "tipo_sangre" => $input['tipo_sangre'],
-                "antecedentes_patologicos" => is_array($input['antecedentes_patologicos'])
-                    ? implode(", ", $input['antecedentes_patologicos'])
-                    : $input['antecedentes_patologicos'],
-                "otros_antecedentes_patologicos" => $input['otros_antecedentes_patologicos'] ?? '',
+                "antecedentes_personales" => is_array($input['antecedentes_personales'])
+                    ? implode(", ", $input['antecedentes_personales'])
+                    : $input['antecedentes_personales'],
+                "otros_antecedentes" => $input['otros_antecedentes'] ?? '',
                 "antecedentes_no_patologicos" => is_array($input['antecedentes_no_patologicos'])
                     ? implode(", ", $input['antecedentes_no_patologicos'])
                     : $input['antecedentes_no_patologicos'],

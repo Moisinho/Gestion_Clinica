@@ -24,6 +24,7 @@
                 <div class="w-1/2 h-full flex flex-col justify-center items-center"> 
                     <form action="/Gestion_clinica/app/controllers/AuthController.php" method="POST" class="bg-white p-6 rounded-lg w-4/5 flex flex-col"> 
                         <h2 class="text-center text-3xl font-semibold mb-6">Iniciar Sesión</h2>
+
                         <div class="mb-6">
                             <label for="correo" class="text-lg font-bold block text-gray-700">Correo:</label>
                             <input type="email" id="correo" name="correo" required class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md">
@@ -35,6 +36,12 @@
                         <div class="flex justify-center mt-5">
                             <button type="submit" class="font-bold text-lg w-full p-3 bg-purple-600 text-white rounded-md hover:bg-purple-800">Ingresar</button>
                         </div>
+                        <!-- Mostrar mensaje de error -->
+                        <?php if (isset($_GET['error'])): ?>
+                            <div class="bg-red-100 text-red-700 px-4 py-3 rounded mt-4 mb-4">
+                                <?php echo htmlspecialchars($_GET['error']); ?>
+                            </div>
+                        <?php endif; ?>
                     </form>
 
                     <div class="flex justify-around w-full">
@@ -42,6 +49,7 @@
                         <a href="/Gestion_clinica/registro" class="text-purple-600 hover:underline">Registrarse →</a>
                     </div>
                 </div>
+
             </div>
         </section>
     </div>

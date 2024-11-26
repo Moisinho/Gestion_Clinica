@@ -48,22 +48,12 @@ if (!isset($_SESSION['id_usuario'])) {
             </div>
         </div>
         <!-- Sección de Gráficos y Alertas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
             <!-- Gráfico de Citas -->
             <div class="bg-white shadow-lg rounded-lg p-6">
                 <h3 class="text-lg font-bold text-gray-700 mb-4">Citas por Semana</h3>
                 <!-- Aquí iría un gráfico de citas usando una librería como Chart.js -->
                 <canvas id="chartCitas"></canvas>
-            </div>
-
-            <!-- Notificaciones y Alertas -->
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h3 class="text-lg font-bold text-gray-700 mb-4">Notificaciones</h3>
-                <ul class="space-y-2">
-                    <li class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg">3 citas sin confirmar</li>
-                    <li class="bg-red-100 text-red-800 px-4 py-2 rounded-lg">2 médicos no disponibles</li>
-                    <li class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">Próxima actualización de software</li>
-                </ul>
             </div>
         </div>
 

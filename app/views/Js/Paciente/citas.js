@@ -70,6 +70,7 @@ function loadCitas(fechaFiltro = "") {
           "<tr><td colspan='5' class='p-3 text-center text-gray-500'>No hay citas para mostrar.</td></tr>";
       } else {
         citasFiltradas.forEach((cita) => {
+          console.log("Cita:", cita); 
           const fila = document.createElement('tr');
           fila.className = 'border-b'; // Clase para el borde inferior de las filas
 
@@ -79,8 +80,12 @@ function loadCitas(fechaFiltro = "") {
           celdaMotivo.textContent = cita.motivo || "Sin motivo"; // Asignar el motivo
 
           const celdaFecha = document.createElement('td');
-          celdaFecha.className = 'p-3'; // Clase para padding
-          celdaFecha.textContent = cita.fecha_cita || "Sin fecha"; // Asignar la fecha
+          celdaFecha.className = 'p-3';
+          celdaFecha.textContent = cita.fecha_cita || "Sin fecha";
+
+          const celdaHora = document.createElement('td');
+          celdaHora.className = 'p-3';
+          celdaHora.textContent = cita.hora_cita || "Sin horario";
 
           const celdaDoctor = document.createElement('td');
           celdaDoctor.className = 'p-3'; // Clase para padding
@@ -93,6 +98,7 @@ function loadCitas(fechaFiltro = "") {
           // Agregar las celdas a la fila
           fila.appendChild(celdaMotivo);
           fila.appendChild(celdaFecha);
+          fila.appendChild(celdaHora);
           fila.appendChild(celdaDoctor);
           fila.appendChild(celdaEstado);
 

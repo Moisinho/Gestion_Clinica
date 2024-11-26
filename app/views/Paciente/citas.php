@@ -40,6 +40,7 @@ if (!isset($_SESSION['id_usuario'])) {
                     <tr>
                         <th class="p-3 text-left">Motivo</th>
                         <th class="p-3 text-left">Fecha</th>
+                        <th class="p-3 text-left">Hora</th>
                         <th class="p-3 text-left">Doctor</th>
                         <th class="p-3 text-left">Estado</th>
                     </tr>
@@ -71,6 +72,6 @@ if (!isset($_SESSION['id_usuario'])) {
     <script>
         const idUsuario = <?php echo json_encode($id_usuario); ?>;
     </script>
-    <script src="/Gestion_clinica/citas_paciente_js"></script>
+    <script src="/Gestion_clinica/app/views/Js/Paciente/citas.js"></script>
 </body>
 </html>

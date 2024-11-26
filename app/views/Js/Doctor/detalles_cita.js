@@ -129,7 +129,7 @@ function obtenerHistorialPorCedula(cedula) {
 }
 
 function cargarServicios() {
-  fetch("app/controllers/DepartamentoController.php?action=obtenerTodos")
+  fetch("/Gestion_clinica/app/controllers/DepartamentoController.php?action=obtenerTodos")
     .then((response) => response.json())
     .then((data) => {
       if (data) {
@@ -230,7 +230,7 @@ function guardarHistorialMedico() {
   console.log("Info: ", data); // Para depuración
   alert("DATOS");
   // Enviar los datos mediante fetch
-  fetch("app/controllers/GestionController.php", {
+  fetch("/Gestion_clinica/app/controllers/GestionController.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json", // Cambiar a application/json

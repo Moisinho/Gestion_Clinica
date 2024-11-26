@@ -228,6 +228,7 @@ class Cita
             c.id_cita,
             c.motivo,
             c.fecha_cita,
+            c.hora_cita,
             c.estado,
             p.nombre_paciente,
             p.cedula AS id_paciente  -- Traemos la cédula del paciente como su ID
@@ -249,7 +250,7 @@ class Cita
 
     public function obtenerCantidadCitas()
     {
-        $query = "SELECT COUNT(*) as total_citas FROM cita WHERE estado = 'Programada'";
+        $query = "SELECT COUNT(*) as total_citas FROM cita WHERE estado = 'Pendiente'";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -283,6 +284,7 @@ class Cita
             SELECT 
                 motivo, 
                 fecha_cita, 
+                hora_cita,
                 estado, 
                 (SELECT nombre_medico FROM medico WHERE id_medico = cita.id_medico) AS Doctor
             FROM cita 
