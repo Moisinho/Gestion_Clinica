@@ -91,6 +91,54 @@ class Historial
         }
     }
 
+
+    public function agregarHistorial($data)
+    {
+        try {
+            $query = "INSERT INTO historial_medico (
+            cedula, id_cita, id_medico, peso, altura, presion_arterial,
+            frecuencia_cardiaca, tipo_sangre, antecedentes_personales,
+            otros_antecedentes, antecedentes_no_patologicos,
+            otros_antecedentes_no_patologicos, condicion_general,
+            examenes, laboratorios, diagnostico, recomendaciones,
+            tratamiento, id_departamento_referencia
+        ) VALUES (
+            :cedula, :id_cita, :id_medico, :peso, :altura, :presion_arterial,
+            :frecuencia_cardiaca, :tipo_sangre, :antecedentes_personales,
+            :otros_antecedentes, :antecedentes_no_patologicos,
+            :otros_antecedentes_no_patologicos, :condicion_general,
+            :examenes, :laboratorios, :diagnostico, :recomendaciones,
+            :tratamiento, :id_departamento_referencia
+        )";
+
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':cedula', $data['cedula']);
+            $stmt->bindParam(':id_cita', $data['id_cita']);
+            $stmt->bindParam(':id_medico', $data['id_medico']);
+            $stmt->bindParam(':peso', $data['peso']);
+            $stmt->bindParam(':altura', $data['altura']);
+            $stmt->bindParam(':presion_arterial', $data['presion_arterial']);
+            $stmt->bindParam(':frecuencia_cardiaca', $data['frecuencia_cardiaca']);
+            $stmt->bindParam(':tipo_sangre', $data['tipo_sangre']);
+            $stmt->bindParam(':antecedentes_personales', $data['antecedentes_personales']);
+            $stmt->bindParam(':otros_antecedentes', $data['otros_antecedentes']);
+            $stmt->bindParam(':antecedentes_no_patologicos', $data['antecedentes_no_patologicos']);
+            $stmt->bindParam(':otros_antecedentes_no_patologicos', $data['otros_antecedentes_no_patologicos']);
+            $stmt->bindParam(':condicion_general', $data['condicion_general']);
+            $stmt->bindParam(':examenes', $data['examenes']);
+            $stmt->bindParam(':laboratorios', $data['laboratorios']);
+            $stmt->bindParam(':diagnostico', $data['diagnostico']);
+            $stmt->bindParam(':recomendaciones', $data['recomendaciones']);
+            $stmt->bindParam(':tratamiento', $data['tratamiento']);
+            $stmt->bindParam(':id_departamento_referencia', $data['id_departamento_referencia']);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al insertar historial: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function agregarReferencia($cedula_paciente, $id_departamento, $id_medico)
     {
         try {
