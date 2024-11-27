@@ -312,7 +312,7 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
                 url: '/Gestion_Clinica/app/controllers/CitaController.php',
                 type: 'GET',
                 data: {
-                    action: 'obtenerDiagnostico',
+                    action: 'obtenerDetallesCita',
                     id_cita: idCita
                 },
                 success: function (response) {

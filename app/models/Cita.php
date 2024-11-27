@@ -46,7 +46,26 @@ class Cita
 
     public function mapear_citas_confirmadas()
     {
-        $query = "SELECT * FROM cita WHERE estado = 'Confirmada'";
+        $query = "SELECT 
+            c.id_cita,
+            c.estado,
+            c.motivo,
+            c.fecha_cita,
+            c.cedula,
+            c.id_medico,
+            c.id_servicio,
+            h.diagnostico,
+            h.tratamiento
+        FROM 
+            cita c
+        JOIN 
+            historial_medico h 
+        ON 
+            c.id_cita = h.id_cita
+        WHERE 
+            c.estado = 'Atendida';
+        ";
+        
         $stmt = $this->conn->prepare($query);
 
         if ($stmt->execute()) {
@@ -59,7 +78,7 @@ class Cita
     public function buscarCitasPorCriterio($criterio, $valor)
     {
         $valor = "%$valor%";
-        $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Confirmada'";
+        $query = "SELECT * FROM cita WHERE $criterio LIKE :valor AND estado = 'Atendida'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(':valor', $valor, PDO::PARAM_STR);
         $stmt->execute();
@@ -199,7 +218,8 @@ class Cita
         $sql = "
             SELECT 
                 c.fecha_cita, 
-                c.motivo, 
+                c.motivo,
+                c.diagnostico, 
                 p.cedula, 
                 p.nombre_paciente, 
                 p.fecha_nacimiento,
@@ -220,7 +240,6 @@ class Cita
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
 
     public function obtener_citas_medico($id_usuario)
     {
