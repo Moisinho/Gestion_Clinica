@@ -197,8 +197,21 @@ class Cita
     public function obtener_detalles_cita($id_cita)
     {
         $sql = "
-            SELECT diagnostico FROM cita 
-            WHERE id_cita = :id_cita
+            SELECT 
+                c.fecha_cita, 
+                c.motivo, 
+                p.cedula, 
+                p.nombre_paciente, 
+                p.fecha_nacimiento,
+                p.telefono,
+                p.correo_paciente,
+                p.edad
+            FROM 
+                cita c 
+            JOIN 
+                paciente p ON c.cedula = p.cedula
+            WHERE 
+                c.id_cita = :id_cita
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -207,6 +220,7 @@ class Cita
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
 
     public function obtener_citas_medico($id_usuario)
     {
@@ -408,10 +422,9 @@ class Cita
             $stmt->bindParam(':motivo_cancelacion', $motivo_cancelacion);
             $stmt->bindParam(':id_cita', $id_cita);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $this->enviarCorreoCancelarCita($id_cita);
             }
-
         } catch (PDOException $e) {
             echo "Error al actualizar el motivo_cancelacion: " . $e->getMessage();
             return false;
