@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     }
 
     // OBTENER TODOS LOS SERVICIOS NO GENERALES
-    if ($_GET['action'] == 'obtenerSoloGenerales') {
+    elseif ($_GET['action'] == 'obtenerSoloGenerales') {
         $servicios = $servicioModel->obtenerSoloGenerales();
         echo json_encode($servicios);
     }

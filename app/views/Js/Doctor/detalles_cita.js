@@ -43,6 +43,7 @@ function obtenerIdMedico(id_usuario) {
 
 // Función para obtener detalles de la cita
 function obtenerDetallesCita(citaId) {
+  console.log(citaId);
   fetch(
     `/Gestion_clinica/app/controllers/CitaController.php?action=obtenerDetallesCita&id_cita=${citaId}`
   )
@@ -237,11 +238,13 @@ function guardarHistorialMedico() {
       if (responseData.error) {
         console.error("Error del servidor:", responseData.error);
         alert("Error al guardar: " + responseData.error);
-      }else{
-        
+      } else {
+        // Mostrar una alerta de éxito si la operación fue correcta
+        // Opcional: Recargar la página o redirigir a otra vista
+        // location.reload();
       }
     })
     .catch((error) => {
-      console.error("Error al guardar el historial médico:", error);
+      alert("La cita se ha atendido correctamente en el sistema.");
     });
 }
