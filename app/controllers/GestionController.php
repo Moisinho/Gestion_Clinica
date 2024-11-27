@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "laboratorios" => $input['laboratorios'],
                 "diagnostico" => $input['diagnostico'],
                 "tratamiento" => $input['tratamiento'],
-                "id_departamento_referencia" => $input['id_departamento_referencia'] ?? null
+                "id_departamento_referencia" => $input['id_departamento_referencia'] ?? 0
             ];
 
             // Guardar historial médico

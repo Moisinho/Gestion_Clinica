@@ -219,7 +219,7 @@ function guardarHistorialMedico() {
       document.querySelector("textarea[name='diagnostico']").value.trim() || "Sin especificar",
     tratamiento:
       document.querySelector("textarea[name='tratamiento']").value.trim() || "Sin especificar",
-    id_departamento_referencia: document.getElementById("selectServicios").value,
+    id_departamento_referencia: document.getElementById("selectServicios").value || "0",
 
     ...obtenerMedicamentos(), // Agregar medicamentos, dosis, frecuencia y duración
   };
@@ -237,9 +237,8 @@ function guardarHistorialMedico() {
       if (responseData.error) {
         console.error("Error del servidor:", responseData.error);
         alert("Error al guardar: " + responseData.error);
-      } else {
-        console.log("Historial guardado correctamente:", responseData);
-        alert("Historial médico guardado con éxito.");
+      }else{
+        
       }
     })
     .catch((error) => {

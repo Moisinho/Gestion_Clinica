@@ -100,14 +100,14 @@ class Historial
             frecuencia_cardiaca, tipo_sangre, antecedentes_personales,
             otros_antecedentes, antecedentes_no_patologicos,
             otros_antecedentes_no_patologicos, condicion_general,
-            examenes, laboratorios, diagnostico, recomendaciones,
+            examenes, laboratorios, diagnostico,
             tratamiento, id_departamento_referencia
         ) VALUES (
             :cedula, :id_cita, :id_medico, :peso, :altura, :presion_arterial,
             :frecuencia_cardiaca, :tipo_sangre, :antecedentes_personales,
             :otros_antecedentes, :antecedentes_no_patologicos,
             :otros_antecedentes_no_patologicos, :condicion_general,
-            :examenes, :laboratorios, :diagnostico, :recomendaciones,
+            :examenes, :laboratorios, :diagnostico,
             :tratamiento, :id_departamento_referencia
         )";
 
@@ -128,7 +128,6 @@ class Historial
             $stmt->bindParam(':examenes', $data['examenes']);
             $stmt->bindParam(':laboratorios', $data['laboratorios']);
             $stmt->bindParam(':diagnostico', $data['diagnostico']);
-            $stmt->bindParam(':recomendaciones', $data['recomendaciones']);
             $stmt->bindParam(':tratamiento', $data['tratamiento']);
             $stmt->bindParam(':id_departamento_referencia', $data['id_departamento_referencia']);
 

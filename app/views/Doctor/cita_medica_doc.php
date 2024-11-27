@@ -224,75 +224,75 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             </div>
             <script>
-                function generarPDF() {
-                    const {
-                        jsPDF
-                    } = window.jspdf;
-                    const doc = new jsPDF();
+    function generarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-                    const pageWidth = doc.internal.pageSize.getWidth();
-                    const pageHeight = doc.internal.pageSize.getHeight();
+        const pageWidth = doc.internal.pageSize.getWidth();
 
-                    doc.setFontSize(16);
-                    doc.setFont("helvetica", "bold");
-                    doc.text("Receta Médica", pageWidth / 2, 20, {
-                        align: "center"
-                    });
+        const paciente = <?= json_encode($nombre_paciente ?? 'Desconocido') ?>;
+        const medico = <?= json_encode($nombre_medico ?? 'Desconocido') ?>;
 
-                    doc.setFontSize(12);
-                    doc.text("Paciente: Juan Pérez", 20, 40);
-                    doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40);
-                    doc.text("Médico: Dr. María López", 20, 50);
-                    doc.text("Especialidad: Cardiología", 150, 50);
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.text("Receta Médica", pageWidth / 2, 20, { align: "center" });
 
-                    doc.setLineWidth(0.5);
-                    doc.line(20, 60, pageWidth - 20, 60);
+        doc.setFontSize(12);
+        doc.text(Paciente: ${paciente}, 20, 40); // Paciente
+        doc.text("Fecha: " + new Date().toLocaleDateString(), 150, 40); // Fecha
+        doc.text(Médico: ${medico}, 20, 50); // Médico
+        doc.text("Especialidad: Cardiología", 150, 50); // Especialidad
 
-                    const table = document.getElementById("receta-table");
-                    const rows = table.querySelectorAll("tbody tr");
+        doc.setLineWidth(0.5);
+        doc.line(20, 60, pageWidth - 20, 60); // Línea separadora
 
+        const table = document.getElementById("receta-table");
+        const rows = table.querySelectorAll("tbody tr");
 
-                    const headers = ["Medicamento", "Dosis", "Frecuencia", "Duración", "Stock"];
+        const headers = ["Medicamento", "Dosis", "Frecuencia", "Duración", "Stock"];
 
+        let y = 70;
+        doc.setFontSize(10);
 
-                    let y = 70;
-                    doc.setFontSize(10);
-                    doc.text(headers[0], 20, y);
-                    doc.text(headers[1], 60, y);
-                    doc.text(headers[2], 100, y);
-                    doc.text(headers[3], 140, y);
-                    doc.text(headers[4], 180, y);
+        // Cabecera de la tabla
+        doc.text(headers[0], 20, y);
+        doc.text(headers[1], 60, y);
+        doc.text(headers[2], 100, y);
+        doc.text(headers[3], 140, y);
+        doc.text(headers[4], 180, y);
 
-                    y += 10;
-                    rows.forEach((row, index) => {
-                        const medicamento = row.querySelector('select[name="medicamento[]"] option:checked').textContent.trim();
-                        const dosis = row.querySelector('input[name="dosis[]"]').value.trim();
-                        const frecuencia = row.querySelector('input[name="frecuencia[]"]').value.trim();
-                        const duracion = row.querySelector('input[name="duracion[]"]').value.trim();
-                        const stock = row.querySelector('input[name="stock[]"]').value.trim();
+        y += 10;
 
-                        doc.text(medicamento, 20, y + 10);
-                        doc.text(dosis, 60, y + 10);
-                        doc.text(frecuencia, 100, y + 10);
-                        doc.text(duracion, 140, y + 10);
-                        doc.text(stock, 180, y + 10);
-                        y += 10;
-                    });
+        // Cuerpo de la tabla
+        rows.forEach((row) => {
+            const medicamento = row.querySelector('select[name="medicamento[]"] option:checked').textContent.trim();
+            const dosis = row.querySelector('input[name="dosis[]"]').value.trim();
+            const frecuencia = row.querySelector('input[name="frecuencia[]"]').value.trim();
+            const duracion = row.querySelector('input[name="duracion[]"]').value.trim();
+            const stock = row.querySelector('input[name="stock[]"]').value.trim();
 
-                    y += 10;
+            doc.text(medicamento, 20, y);
+            doc.text(dosis, 60, y);
+            doc.text(frecuencia, 100, y);
+            doc.text(duracion, 140, y);
+            doc.text(stock, 180, y);
+            y += 10;
+        });
 
-                    doc.line(20, y, pageWidth - 20, y);
-                    y += 10;
+        y += 10;
 
-                    doc.setFontSize(8);
-                    doc.text("Dirección: Calle Ejemplo 123 | Tel: (123) 456-7890", 20, y);
-                    doc.text("www.clinicasalud.com", pageWidth - 80, y, {
-                        align: "right"
-                    });
+        doc.line(20, y, pageWidth - 20, y); // Línea separadora final
+        y += 10;
 
-                    doc.save("Receta_Medica.pdf");
-                }
-            </script>
+        // Pie de página
+        doc.setFontSize(8);
+        doc.text("Dirección: Calle Ejemplo 123 | Tel: (123) 456-7890", 20, y);
+        doc.text("www.clinicasalud.com", pageWidth - 80, y, { align: "right" });
+
+        // Guardar el PDF
+        doc.save("Receta_Medica.pdf");
+    }
+</script>
 
             <script>
                 function mostrarStock(selectElement) {

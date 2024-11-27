@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: localhost    Database: gestionclinica_bd
+-- Host: localhost    Database: gestionclinica_db
 -- ------------------------------------------------------
--- Server version	9.1.0
+-- Server version	8.0.38
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `administrador`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `administrador` (
   `id_admin` int NOT NULL AUTO_INCREMENT,
-  `nombre_admin` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_admin` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre_admin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `correo_admin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_usuario` int DEFAULT NULL,
   PRIMARY KEY (`id_admin`),
   UNIQUE KEY `correo_admin` (`correo_admin`),
@@ -45,6 +45,34 @@ INSERT INTO `administrador` VALUES (1,'Carlos Hernández','carloshernandez@gmail
 UNLOCK TABLES;
 
 --
+-- Table structure for table `administrador_recepcionista`
+--
+
+DROP TABLE IF EXISTS `administrador_recepcionista`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `administrador_recepcionista` (
+  `id_admin` int NOT NULL,
+  `id_recepcionista` int NOT NULL,
+  `fecha` date DEFAULT NULL,
+  PRIMARY KEY (`id_admin`,`id_recepcionista`),
+  KEY `id_recepcionista` (`id_recepcionista`),
+  CONSTRAINT `administrador_recepcionista_ibfk_1` FOREIGN KEY (`id_admin`) REFERENCES `administrador` (`id_admin`),
+  CONSTRAINT `administrador_recepcionista_ibfk_2` FOREIGN KEY (`id_recepcionista`) REFERENCES `recepcionista` (`id_recepcionista`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `administrador_recepcionista`
+--
+
+LOCK TABLES `administrador_recepcionista` WRITE;
+/*!40000 ALTER TABLE `administrador_recepcionista` DISABLE KEYS */;
+INSERT INTO `administrador_recepcionista` VALUES (1,1,'2024-10-01'),(1,2,'2024-10-02'),(1,3,'2024-10-03');
+/*!40000 ALTER TABLE `administrador_recepcionista` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `cama`
 --
 
@@ -53,9 +81,9 @@ DROP TABLE IF EXISTS `cama`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cama` (
   `id_cama` int NOT NULL AUTO_INCREMENT,
-  `estado` enum('Disponible','Ocupada','Mantenimiento') COLLATE utf8mb4_general_ci DEFAULT 'Disponible',
+  `estado` enum('Disponible','Ocupada','Mantenimiento') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Disponible',
   `id_habitacion` int DEFAULT NULL,
-  `tipo_cama` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipo_cama` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_cama`),
   KEY `id_habitacion` (`id_habitacion`),
   CONSTRAINT `cama_ibfk_1` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`id_habitacion`)
@@ -81,15 +109,15 @@ DROP TABLE IF EXISTS `cita`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cita` (
   `id_cita` int NOT NULL AUTO_INCREMENT,
-  `estado` varchar(50) COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
-  `motivo` varchar(5000) COLLATE utf8mb4_general_ci NOT NULL,
+  `estado` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `motivo` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fecha_cita` date DEFAULT NULL,
-  `diagnostico` text COLLATE utf8mb4_general_ci,
-  `tratamiento` text COLLATE utf8mb4_general_ci,
-  `cedula` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `diagnostico` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tratamiento` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `id_medico` int DEFAULT NULL,
   `id_servicio` int DEFAULT NULL,
-  `especialidad_referencia` varchar(60) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `especialidad_referencia` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `hora_cita` time DEFAULT NULL,
   PRIMARY KEY (`id_cita`),
   KEY `cedula` (`cedula`),
@@ -98,7 +126,7 @@ CREATE TABLE `cita` (
   CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`cedula`) REFERENCES `paciente` (`cedula`),
   CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id_medico`),
   CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`id_servicio`) REFERENCES `servicio` (`id_servicio`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,6 +135,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
+INSERT INTO `cita` VALUES (1,'Atendida','Me siento mal, me duele el cuerpo','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:00:00'),(2,'Atendida','Me siento mal unu','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:45:00');
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,8 +148,8 @@ DROP TABLE IF EXISTS `clientes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clientes` (
   `ClienteID` int NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `Provincia` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `Nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `Provincia` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`ClienteID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -146,8 +175,8 @@ CREATE TABLE `compra_medicamento` (
   `id_compra` int NOT NULL AUTO_INCREMENT,
   `monto` decimal(10,2) DEFAULT NULL,
   `fecha_compra` date DEFAULT NULL,
-  `detalles_compra` text COLLATE utf8mb4_general_ci,
-  `cedula_paciente` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `detalles_compra` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `cedula_paciente` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_compra`),
   KEY `cedula_paciente` (`cedula_paciente`),
   CONSTRAINT `compra_medicamento_ibfk_1` FOREIGN KEY (`cedula_paciente`) REFERENCES `paciente` (`cedula`)
@@ -200,11 +229,11 @@ DROP TABLE IF EXISTS `departamento`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `departamento` (
   `id_departamento` int NOT NULL AUTO_INCREMENT,
-  `nombre_departamento` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
-  `tipo` varchar(15) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nombre_departamento` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tipo` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_departamento`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,8 +242,33 @@ CREATE TABLE `departamento` (
 
 LOCK TABLES `departamento` WRITE;
 /*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
-INSERT INTO `departamento` VALUES (1,'Pediatría','Atención médica especializada en niños y adolescentes, incluyendo seguimiento del desarrollo y tratamiento de enfermedades.','Especialidad'),(2,'Cardiología','Diagnóstico, tratamiento y prevención de enfermedades cardiovasculares, realizando procedimientos como electrocardiogramas y ecocardiogramas.','Especialidad'),(3,'Oncología','Diagnóstico y tratamiento de diferentes tipos de cáncer, ofreciendo servicios como consultas, quimioterapia y radioterapia.','Especialidad'),(4,'Odontología','Servicios de salud dental, como consultas de rutina, tratamientos de conducto y ortodoncia.','General'),(5,'Medicina General','Atención médica integral para problemas de salud comunes, exámenes de laboratorio y vacunación.','General'),(6,'Dermatología','Diagnóstico y tratamiento de enfermedades de la piel, el cabello y las uñas, incluyendo consultas y biopsias.','Especialidad');
+INSERT INTO `departamento` VALUES (0,'Sin referencia','--','especialidad'),(1,'Pediatría','Atención médica especializada en niños y adolescentes, incluyendo seguimiento del desarrollo y tratamiento de enfermedades.','Especialidad'),(2,'Cardiología','Diagnóstico, tratamiento y prevención de enfermedades cardiovasculares, realizando procedimientos como electrocardiogramas y ecocardiogramas.','Especialidad'),(3,'Oncología','Diagnóstico y tratamiento de diferentes tipos de cáncer, ofreciendo servicios como consultas, quimioterapia y radioterapia.','Especialidad'),(4,'Odontología','Servicios de salud dental, como consultas de rutina, tratamientos de conducto y ortodoncia.','General'),(5,'Medicina General','Atención médica integral para problemas de salud comunes, exámenes de laboratorio y vacunación.','General'),(6,'Dermatología','Diagnóstico y tratamiento de enfermedades de la piel, el cabello y las uñas, incluyendo consultas y biopsias.','Especialidad');
 /*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `examenes`
+--
+
+DROP TABLE IF EXISTS `examenes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `examenes` (
+  `id_examen` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `descripcion` text COLLATE utf8mb4_general_ci,
+  `costo` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id_examen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `examenes`
+--
+
+LOCK TABLES `examenes` WRITE;
+/*!40000 ALTER TABLE `examenes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `examenes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -228,7 +282,7 @@ CREATE TABLE `factura` (
   `id_factura` int NOT NULL AUTO_INCREMENT,
   `monto` decimal(10,2) NOT NULL,
   `fecha_creacion` date NOT NULL,
-  `detalles_factura` text COLLATE utf8mb4_general_ci,
+  `detalles_factura` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `id_cita` int DEFAULT NULL,
   `id_recepcionista` int DEFAULT NULL,
   PRIMARY KEY (`id_factura`),
@@ -257,8 +311,8 @@ DROP TABLE IF EXISTS `farmaceutico`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `farmaceutico` (
   `id_farmaceutico` int NOT NULL AUTO_INCREMENT,
-  `nombre_farmaceutico` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_farmaceutico` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre_farmaceutico` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `correo_farmaceutico` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_usuario` int DEFAULT NULL,
   PRIMARY KEY (`id_farmaceutico`),
   UNIQUE KEY `correo_farmaceutico` (`correo_farmaceutico`),
@@ -287,8 +341,8 @@ DROP TABLE IF EXISTS `habitacion`;
 CREATE TABLE `habitacion` (
   `id_habitacion` int NOT NULL AUTO_INCREMENT,
   `capacidad_disponible` int NOT NULL,
-  `ubicacion` text COLLATE utf8mb4_general_ci,
-  `tipo` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ubicacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tipo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_habitacion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -311,27 +365,27 @@ DROP TABLE IF EXISTS `historial_medico`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `historial_medico` (
-  `cedula` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_cita` int DEFAULT NULL,
-  `id_medico` int DEFAULT NULL,
+  `cedula` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id_cita` int NOT NULL,
+  `id_medico` int NOT NULL,
   `peso` decimal(10,2) DEFAULT NULL,
   `altura` decimal(10,2) DEFAULT NULL,
-  `presion_arterial` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `presion_arterial` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `frecuencia_cardiaca` int DEFAULT NULL,
-  `tipo_sangre` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `antecedentes_personales` text COLLATE utf8mb4_general_ci,
-  `otros_antecedentes` text COLLATE utf8mb4_general_ci,
-  `antecedentes_no_patologicos` text COLLATE utf8mb4_general_ci,
-  `otros_antecedentes_no_patologicos` text COLLATE utf8mb4_general_ci,
-  `condicion_general` text COLLATE utf8mb4_general_ci,
-  `examenes` text COLLATE utf8mb4_general_ci,
-  `laboratorios` text COLLATE utf8mb4_general_ci,
-  `diagnostico` text COLLATE utf8mb4_general_ci,
-  `motivo` text COLLATE utf8mb4_general_ci,
-  `tratamiento` text COLLATE utf8mb4_general_ci,
+  `tipo_sangre` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `antecedentes_personales` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `otros_antecedentes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `antecedentes_no_patologicos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `otros_antecedentes_no_patologicos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `condicion_general` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `examenes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `laboratorios` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `diagnostico` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `motivo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `tratamiento` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `fecha_cita` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_departamento_referencia` int DEFAULT NULL,
-  PRIMARY KEY (`cedula`),
+  PRIMARY KEY (`cedula`,`id_cita`,`id_medico`),
   KEY `id_cita` (`id_cita`),
   KEY `id_medico` (`id_medico`),
   KEY `fk_departamento_referencia` (`id_departamento_referencia`),
@@ -347,6 +401,7 @@ CREATE TABLE `historial_medico` (
 
 LOCK TABLES `historial_medico` WRITE;
 /*!40000 ALTER TABLE `historial_medico` DISABLE KEYS */;
+INSERT INTO `historial_medico` VALUES ('8-1002-2121',1,5,70.00,166.00,'120',76,'O+','','Sin especificar','','Sin especificar','Sin especificar','Sin especificar','Sin especificar','Sin especificar',NULL,'Sin especificar','2024-11-27 02:34:02',2),('8-1002-2121',2,5,70.00,166.00,'123',76,'O+','','Sin especificar','','Sin especificar','Sin especificar','Sin especificar','Sin especificar','Hola',NULL,'si','2024-11-27 02:43:22',0);
 /*!40000 ALTER TABLE `historial_medico` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,8 +439,8 @@ DROP TABLE IF EXISTS `medicamento`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicamento` (
   `id_medicamento` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
+  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `cant_stock` int DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `fecha_expiracion` date DEFAULT NULL,
@@ -412,8 +467,8 @@ DROP TABLE IF EXISTS `medico`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medico` (
   `id_medico` int NOT NULL AUTO_INCREMENT,
-  `nombre_medico` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo_medico` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nombre_medico` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `correo_medico` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `id_hora` int DEFAULT NULL,
   `id_departamento` int DEFAULT NULL,
   `id_usuario` int DEFAULT NULL,
@@ -445,15 +500,15 @@ DROP TABLE IF EXISTS `paciente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente` (
-  `cedula` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `nombre_paciente` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo_paciente` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre_paciente` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `correo_paciente` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `direccion_paciente` text COLLATE utf8mb4_general_ci,
-  `telefono` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `direccion_paciente` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `edad` int NOT NULL,
   `id_usuario` int DEFAULT NULL,
-  `sexo` enum('Masculino','Femenino') COLLATE utf8mb4_general_ci NOT NULL,
+  `sexo` enum('Masculino','Femenino') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_seguro` int DEFAULT NULL,
   PRIMARY KEY (`cedula`),
   KEY `paciente_usuario_fk` (`id_usuario`),
@@ -469,7 +524,7 @@ CREATE TABLE `paciente` (
 
 LOCK TABLES `paciente` WRITE;
 /*!40000 ALTER TABLE `paciente` DISABLE KEYS */;
-INSERT INTO `paciente` VALUES ('10-321-6789','Ana Méndez','anamendez@gmail.com','1989-04-17','Residencial del Sol, Casa 11, Chorrera','6120-4432',35,23,'Femenino',1),('10-345-6789','Carla Espinosa','carlaespinosa@gmail.com','1993-06-06','Villa Norte, Casa 3, Chorrera','6902-4531',31,24,'Femenino',2),('10-345-8901','Camila Torres','camilatorres@gmail.com','1988-05-25','Barrio Nuevo, Casa 23, Chorrera','6890-2314',36,25,'Femenino',3),('10-567-8901','Laura Rosales','laurarosales@gmail.com','1987-08-21','Villa del Mar, Casa 7, Chorrera','6432-7890',37,26,'Femenino',4),('10-654-3210','María López','marialopez@gmail.com','1985-11-22','Villa Los Ángeles, Casa 2, Chorrera','6897-5412',39,33,'Femenino',4),('10-678-1234','Daniela Gutiérrez','danielagutierrez@gmail.com','1992-12-18','Edificio Pacífico, Piso 9, Apartamento 18, Chorrera','6578-3210',31,27,'Femenino',5),('3-123-7890','Sebastián Ríos','sebastianrios@gmail.com','1991-10-09','Barrio Nuevo, Casa 19, Colón','6897-2301',33,28,'Masculino',5),('3-234-5678','Luis Ortega','luisortega@gmail.com','1997-12-11','Edificio Estrella, Piso 2, Apartamento 4, Colón','6789-5412',26,29,'Masculino',6),('3-234-6578','Martín Ruiz','martinruiz@gmail.com','1995-03-28','Edificio Rivera, Piso 6, Apartamento 10, Colón','6123-6578',29,30,'Masculino',1),('3-456-7891','Pablo Morales','pablomorales@gmail.com','1993-06-10','Edificio Sol, Piso 8, Apartamento 15, Colón','6678-4321',31,43,'Masculino',2),('3-890-2345','Valeria Sánchez','valeriasanchez@gmail.com','1991-09-03','Edificio Central, Piso 5, Apartamento 12, Colón','6678-3412',33,31,'Femenino',2),('6-987-1234','Rosa Jiménez','rosajimenez@gmail.com','1998-08-30','Avenida Libertad, Casa 10, Chiriquí','6453-1209',26,32,'Femenino',3),('8-123-4567','Andrés Castillo','andrescastillo@gmail.com','1990-03-15','Calle 12, Casa 34, Panamá','6124-9876',34,34,'Masculino',5),('8-123-6789','Ricardo Vargas','ricardovargas@gmail.com','1994-02-18','Avenida Real, Casa 20, Panamá','6198-9876',30,35,'Masculino',5),('8-345-8901','Elena Martínez','elenamartinez@gmail.com','1990-07-13','Barrio Centro, Casa 12, Panamá','6678-9087',34,36,'Femenino',6),('8-678-1234','Diego Pérez','diegoperez@gmail.com','1996-07-19','Calle Principal, Casa 8, Panamá','6589-1209',28,37,'Masculino',6),('8-678-2345','Juan Vega','juanvega@gmail.com','1991-01-05','Edificio Luna, Piso 3, Apartamento 7, Panamá','6901-5678',33,38,'Masculino',5),('8-765-1234','Carlos Hernández','carloshernandez@gmail.com','1995-10-20','Avenida Central, Edificio Estrella, Piso 5, Apartamento 502, Ciudad de Panamá, Panamá','6123-4567',29,1,'Masculino',1),('8-789-1234','Natalia Quintero','nataliaquintero@gmail.com','1999-11-05','Residencial Verde, Casa 4, Panamá','6890-4321',25,41,'Femenino',4),('8-890-2345','Gabriela Herrera','gabrielaherrera@gmail.com','1997-04-22','Residencial Bahía, Casa 5, Panamá','6124-8765',27,42,'Femenino',3);
+INSERT INTO `paciente` VALUES ('10-321-6789','Ana Méndez','anamendez@gmail.com','1989-04-17','Residencial del Sol, Casa 11, Chorrera','6120-4432',35,23,'Femenino',1),('10-345-6789','Carla Espinosa','carlaespinosa@gmail.com','1993-06-06','Villa Norte, Casa 3, Chorrera','6902-4531',31,24,'Femenino',2),('10-345-8901','Camila Torres','camilatorres@gmail.com','1988-05-25','Barrio Nuevo, Casa 23, Chorrera','6890-2314',36,25,'Femenino',3),('10-567-8901','Laura Rosales','laurarosales@gmail.com','1987-08-21','Villa del Mar, Casa 7, Chorrera','6432-7890',37,26,'Femenino',4),('10-654-3210','María López','marialopez@gmail.com','1985-11-22','Villa Los Ángeles, Casa 2, Chorrera','6897-5412',39,33,'Femenino',4),('10-678-1234','Daniela Gutiérrez','danielagutierrez@gmail.com','1992-12-18','Edificio Pacífico, Piso 9, Apartamento 18, Chorrera','6578-3210',31,27,'Femenino',5),('3-123-7890','Sebastián Ríos','sebastianrios@gmail.com','1991-10-09','Barrio Nuevo, Casa 19, Colón','6897-2301',33,28,'Masculino',5),('3-234-5678','Luis Ortega','luisortega@gmail.com','1997-12-11','Edificio Estrella, Piso 2, Apartamento 4, Colón','6789-5412',26,29,'Masculino',6),('3-234-6578','Martín Ruiz','martinruiz@gmail.com','1995-03-28','Edificio Rivera, Piso 6, Apartamento 10, Colón','6123-6578',29,30,'Masculino',1),('3-456-7891','Pablo Morales','pablomorales@gmail.com','1993-06-10','Edificio Sol, Piso 8, Apartamento 15, Colón','6678-4321',31,43,'Masculino',2),('3-890-2345','Valeria Sánchez','valeriasanchez@gmail.com','1991-09-03','Edificio Central, Piso 5, Apartamento 12, Colón','6678-3412',33,31,'Femenino',2),('6-987-1234','Rosa Jiménez','rosajimenez@gmail.com','1998-08-30','Avenida Libertad, Casa 10, Chiriquí','6453-1209',26,32,'Femenino',3),('8-1002-2121','Odeth Arevalo','odetharevalo26@gmail.com','2004-08-26','Panamá, Pacora, Condado Real','6639-7771',20,44,'Femenino',6),('8-123-4567','Andrés Castillo','andrescastillo@gmail.com','1990-03-15','Calle 12, Casa 34, Panamá','6124-9876',34,34,'Masculino',5),('8-123-6789','Ricardo Vargas','ricardovargas@gmail.com','1994-02-18','Avenida Real, Casa 20, Panamá','6198-9876',30,35,'Masculino',5),('8-345-8901','Elena Martínez','elenamartinez@gmail.com','1990-07-13','Barrio Centro, Casa 12, Panamá','6678-9087',34,36,'Femenino',6),('8-678-1234','Diego Pérez','diegoperez@gmail.com','1996-07-19','Calle Principal, Casa 8, Panamá','6589-1209',28,37,'Masculino',6),('8-678-2345','Juan Vega','juanvega@gmail.com','1991-01-05','Edificio Luna, Piso 3, Apartamento 7, Panamá','6901-5678',33,38,'Masculino',5),('8-765-1234','Carlos Hernández','carloshernandez@gmail.com','1995-10-20','Avenida Central, Edificio Estrella, Piso 5, Apartamento 502, Ciudad de Panamá, Panamá','6123-4567',29,1,'Masculino',1),('8-789-1234','Natalia Quintero','nataliaquintero@gmail.com','1999-11-05','Residencial Verde, Casa 4, Panamá','6890-4321',25,41,'Femenino',4),('8-890-2345','Gabriela Herrera','gabrielaherrera@gmail.com','1997-04-22','Residencial Bahía, Casa 5, Panamá','6124-8765',27,42,'Femenino',3);
 /*!40000 ALTER TABLE `paciente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -481,13 +536,13 @@ DROP TABLE IF EXISTS `paciente_hospitalizado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente_hospitalizado` (
-  `cedula` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_cama` int NOT NULL,
   `id_medico` int NOT NULL,
   `fecha_ingreso` datetime NOT NULL,
   `fecha_egreso` datetime DEFAULT NULL,
-  `motivo` text COLLATE utf8mb4_general_ci,
-  `estado_pacienteH` enum('Hospitalizado','No hospitalizado') COLLATE utf8mb4_general_ci DEFAULT 'Hospitalizado',
+  `motivo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `estado_pacienteH` enum('Hospitalizado','No hospitalizado') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Hospitalizado',
   PRIMARY KEY (`cedula`,`id_cama`),
   KEY `id_cama` (`id_cama`),
   KEY `id_medico` (`id_medico`),
@@ -516,10 +571,10 @@ DROP TABLE IF EXISTS `proveedor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `proveedor` (
   `id_proveedor` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ubicacion` text COLLATE utf8mb4_general_ci,
-  `telefono` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ubicacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_proveedor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -542,8 +597,8 @@ DROP TABLE IF EXISTS `recepcionista`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `recepcionista` (
   `id_recepcionista` int NOT NULL AUTO_INCREMENT,
-  `nombre_recepcionista` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_recepcionista` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `nombre_recepcionista` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `correo_recepcionista` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_usuario` int DEFAULT NULL,
   PRIMARY KEY (`id_recepcionista`),
   UNIQUE KEY `correo_recepcionista` (`correo_recepcionista`),
@@ -573,16 +628,16 @@ CREATE TABLE `receta` (
   `id_receta` int NOT NULL AUTO_INCREMENT,
   `id_cita` int DEFAULT NULL,
   `id_medicamento` int DEFAULT NULL,
-  `dosis` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `duracion` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `frecuencia` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` varchar(12) COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `dosis` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `duracion` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `frecuencia` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `estado` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
   PRIMARY KEY (`id_receta`),
   KEY `id_cita` (`id_cita`),
   KEY `id_medicamento` (`id_medicamento`),
   CONSTRAINT `receta_ibfk_1` FOREIGN KEY (`id_cita`) REFERENCES `cita` (`id_cita`),
   CONSTRAINT `receta_ibfk_2` FOREIGN KEY (`id_medicamento`) REFERENCES `medicamento` (`id_medicamento`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,6 +646,7 @@ CREATE TABLE `receta` (
 
 LOCK TABLES `receta` WRITE;
 /*!40000 ALTER TABLE `receta` DISABLE KEYS */;
+INSERT INTO `receta` VALUES (1,1,1,'2','1 semana','cada 8 horas','Pendiente'),(2,2,2,'2','3 semanas','cada 8 horas','Pendiente');
 /*!40000 ALTER TABLE `receta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -602,8 +658,8 @@ DROP TABLE IF EXISTS `referencia_especialidad`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `referencia_especialidad` (
-  `id_referencia` int NOT NULL AUTO_INCREMENT,
-  `cedula_paciente` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_referencia` int NOT NULL DEFAULT '0',
+  `cedula_paciente` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_departamento` int NOT NULL,
   `fecha_referencia` date NOT NULL,
   `id_medico` int NOT NULL,
@@ -623,6 +679,7 @@ CREATE TABLE `referencia_especialidad` (
 
 LOCK TABLES `referencia_especialidad` WRITE;
 /*!40000 ALTER TABLE `referencia_especialidad` DISABLE KEYS */;
+INSERT INTO `referencia_especialidad` VALUES (0,'8-1002-2121',0,'2024-11-27',5),(1,'8-1002-2121',2,'2024-11-27',5);
 /*!40000 ALTER TABLE `referencia_especialidad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -635,8 +692,8 @@ DROP TABLE IF EXISTS `restablecer_contrasenia`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `restablecer_contrasenia` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `token` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `correo` (`correo`),
@@ -662,8 +719,8 @@ DROP TABLE IF EXISTS `restablecimiento_tokens`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `restablecimiento_tokens` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `token` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fecha_expiracion` datetime NOT NULL,
   `usado` tinyint(1) DEFAULT '0',
   `creado_en` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -692,9 +749,9 @@ DROP TABLE IF EXISTS `seguro`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seguro` (
   `id_seguro` int NOT NULL AUTO_INCREMENT,
-  `nombre_aseguradora` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `contacto_aseguradora` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `direccion_aseguradora` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nombre_aseguradora` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `contacto_aseguradora` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `direccion_aseguradora` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_seguro`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -717,16 +774,16 @@ DROP TABLE IF EXISTS `seguro_paciente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seguro_paciente` (
-  `cedula` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `cedula` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_seguro` int NOT NULL,
-  `numero_poliza` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `numero_poliza` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `deducible_anual` decimal(10,2) NOT NULL,
   `coaseguro` decimal(5,2) NOT NULL,
   `limite_cobertura` decimal(15,2) DEFAULT NULL,
   `monto_utilizado` decimal(15,2) DEFAULT '0.00',
-  `activo` enum('Activo','Inactivo') COLLATE utf8mb4_general_ci DEFAULT 'Activo',
+  `activo` enum('Activo','Inactivo') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Activo',
   PRIMARY KEY (`cedula`),
   UNIQUE KEY `numero_poliza` (`numero_poliza`),
   KEY `id_seguro` (`id_seguro`),
@@ -753,8 +810,8 @@ DROP TABLE IF EXISTS `servicio`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `servicio` (
   `id_servicio` int NOT NULL AUTO_INCREMENT,
-  `nombre_servicio` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
+  `nombre_servicio` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `costo` decimal(10,2) DEFAULT NULL,
   `id_departamento` int DEFAULT NULL,
   PRIMARY KEY (`id_servicio`),
@@ -771,6 +828,41 @@ LOCK TABLES `servicio` WRITE;
 /*!40000 ALTER TABLE `servicio` DISABLE KEYS */;
 INSERT INTO `servicio` VALUES (1,'Consulta pediátrica de control y seguimiento','Revisión integral del estado de salud y desarrollo del niño, examen físico, vacunación y orientación a los padres.',70.00,1),(2,'Atención de urgencias pediátricas','Evaluación y tratamiento inmediato de problemas de salud agudos en niños y adolescentes.',100.00,1),(3,'Terapia de rehabilitación infantil','Sesiones de terapia física, ocupacional o del lenguaje para el desarrollo de habilidades motoras y cognitivas.',80.00,1),(4,'Consulta cardiológica','Evaluación del estado cardiovascular, diagnóstico de enfermedades y recomendaciones de tratamiento.',90.00,2),(5,'Electrocardiograma','Examen para evaluar la actividad eléctrica del corazón.',50.00,2),(6,'Ecocardiograma','Estudio de imagen que permite visualizar la estructura y funcionamiento del corazón.',100.00,2),(7,'Consulta oncológica','Evaluación integral del paciente, diagnóstico y planificación del tratamiento del cáncer.',120.00,3),(8,'Quimioterapia','Administración de medicamentos citotóxicos para el tratamiento del cáncer.',650.00,3),(9,'Radioterapia','Aplicación de radiación ionizante para el tratamiento del cáncer.',180.00,3),(10,'Consulta odontológica de rutina','Examen oral, limpieza dental y orientación sobre higiene bucal.',50.00,4),(11,'Endodoncia (tratamiento de conducto)','Procedimiento para tratar infecciones en el interior del diente.',200.00,4),(12,'Ortodoncia (tratamiento de brackets)','Uso de aparatos dentales para corregir la posición de los dientes.',2500.00,4),(13,'Consulta médica general','Evaluación y atención de problemas de salud comunes.',60.00,5),(14,'Examen de laboratorio básico','Análisis de sangre, orina u otras muestras para diagnóstico.',40.00,5),(15,'Aplicación de vacunas','Inmunización contra enfermedades prevenibles.',30.00,5),(16,'Consulta dermatológica','Evaluación y diagnóstico de problemas de piel, cabello y uñas.',80.00,6),(17,'Biopsia de piel','Extracción de una pequeña muestra de piel para análisis.',100.00,6),(18,'Tratamiento de acné','Terapias para el manejo de acné y otras afecciones de la piel.',60.00,6);
 /*!40000 ALTER TABLE `servicio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `solicitudes_examenes`
+--
+
+DROP TABLE IF EXISTS `solicitudes_examenes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `solicitudes_examenes` (
+  `id_solicitud` int NOT NULL AUTO_INCREMENT,
+  `cedula` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_examen` int NOT NULL,
+  `id_medico` int NOT NULL,
+  `fecha_solicitud` datetime DEFAULT CURRENT_TIMESTAMP,
+  `estado` enum('Pendiente','Realizado','Cancelado') COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `fecha_realizacion` datetime DEFAULT NULL,
+  `resultado` text COLLATE utf8mb4_general_ci,
+  PRIMARY KEY (`id_solicitud`),
+  KEY `cedula` (`cedula`),
+  KEY `id_examen` (`id_examen`),
+  KEY `id_medico` (`id_medico`),
+  CONSTRAINT `solicitudes_examenes_ibfk_1` FOREIGN KEY (`cedula`) REFERENCES `paciente` (`cedula`),
+  CONSTRAINT `solicitudes_examenes_ibfk_2` FOREIGN KEY (`id_examen`) REFERENCES `examenes` (`id_examen`),
+  CONSTRAINT `solicitudes_examenes_ibfk_3` FOREIGN KEY (`id_medico`) REFERENCES `medico` (`id_medico`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `solicitudes_examenes`
+--
+
+LOCK TABLES `solicitudes_examenes` WRITE;
+/*!40000 ALTER TABLE `solicitudes_examenes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `solicitudes_examenes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -811,13 +903,13 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `contrasenia` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `tipo_usuario` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contrasenia` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `tipo_usuario` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `contrasenia` (`contrasenia`),
   UNIQUE KEY `correo` (`correo`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -826,17 +918,45 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'carloshernandez@gmail.com','$2y$10$aHuoou5eteishPI7jBT4DulP76Fet8MdfzAcWjTRhsb9GL0OGNROu','Administrador'),(2,'juangomez@gmail.com','$2y$10$QucQBCwnuwSMtV4XT.nFW.ZkfqVwKsYKZbjLRVzxW6fxaoneb7GtK','Farmaceutico'),(3,'anarodriguez@gmail.com','$2y$10$tJIAmF/jJiapwlCX6/HkFeyGZrjUr66l8IZuMnVzWxe8tyjGrRjiS','Recepcionista'),(4,'abigailjones@gmail.com','$2y$10$MDrIWGtgbVcrK.besi2GbuawMCvUHHji5s9xOPTG//0EtwmMQnifa','Recepcionista'),(5,'carlosmendoza@gmail.com','$2y$10$1GHdtO0qPlmjEAFcbsF7b.hLC5JCWH4mZjCGBsOKhicf5G5RXN.xe','Médico'),(6,'elenarodriguez@gmail.com','$2y$10$jm4ShMvJLnSmCEPsyaE3muRnpdStfIA4H/WYWo65uguC/vQHVsYF2','Médico'),(7,'beatrizcastillo@gmail.com','$2y$10$43vftZr.z0H524fwGK5OMuguC90dHH8UtgRzmvdtPq5dgh.jY3LiC','Médico'),(8,'javiergomez@gmail.com','$2y$10$XTv6Vm61txGRqNgWZvrzmuJNFCat48WK8.Bn2gCrfEoHwDX2GqgXu','Médico'),(9,'marianaperez@gmail.com','$2y$10$0thVysUqDCRa27bvu8/5Q.JaEzajWtkUoYC2duBpSGCuzPsx4bfoS','Médico'),(10,'manuellopez@gmail.com','$2y$10$dMDGqbwCpXoxJHHmJwP7g.gpWcuaqvQrc43o1IJumQNyQvohMUlX.','Médico'),(11,'fernandoortiz@gmail.com','$2y$10$YmX78SD3CabpvIgIvSn0U.LFtq1O6Prvy8SllvFEo3ZIPqz4wXMDG','Médico'),(12,'sofiaramirez@gmail.com','$2y$10$YvpaTMJ/D4TJp99MEl0r0eBuCyYAGPKQNyyl.ehOh6l3eZgjehh.G','Médico'),(13,'ricardotorres@gmail.com','$2y$10$6rhitVVba145kCcMNtudteUj/S5oGvlb.i6Pphxs4DvR/soL/uUA6','Médico'),(14,'albertofernandez@gmail.com','$2y$10$Th2Sgjta/LhwjcOrZMfiDe463MzSOpUP2CgkQ86tHrf0YI2uTEMHC','Médico'),(15,'lauracastillo@gmail.com','$2y$10$M3NVg3ZXktSKgMXte25oVeddRoz3aYULbawFwK1M.61iFLgQccorK','Médico'),(16,'anaortega@gmail.com','$2y$10$CSvTgKj2hx6k.CU2S7tXVOFNUmjf/duIdFKtCVEbpmQeGiqMqVbv.','Médico'),(17,'lauramartinez@gmail.com','$2y$10$50lK4KGAOxMhysb9uGuCieDbjxar8fHVFht8PBbDmt008a2qAj9y.','Médico'),(18,'javierrodriguez@gmail.com','$2y$10$nXd5bZb6JFbSCFaog3e0Cudst4nrCqmOd17bpYduHy0QIG7dft0mG','Médico'),(19,'pedromendez@gmail.com','$2y$10$kysFt0i.4lvKZ2fToQWJReyvjY.1kYbueBocjvpsDzYowrDF0tT9W','Médico'),(20,'isablesanchez@gmail.com','$2y$10$lrh0o0j8nhPw4e2vIesAmeM6AaNO5I1w4iIWjilHFvm7jv5414iu.','Médico'),(21,'carlosfernandez@gmail.com','$2y$10$ahzcvmN3TmrAhD9fEY9XHOTbWKKnJbDZLuYOA0pKaKe3oR.MOBaze','Médico'),(22,'elenamorales@gmail.com','$2y$10$OhI5zEu8Y7CptP43EJxN5u/iFECeRzUk47DKHwfcNQsWRAoQxPZxe','Médico'),(23,'anamendez@gmail.com','$2y$10$diYGTrkTrB8si0iNNyzKzO5n1i8DjI2tPPcW.lQLupIEJd1WbyO2W','Paciente'),(24,'carlaespinosa@gmail.com','$2y$10$8lC4Vjxer3D/cJh5M0qjYeRpF0LPcMYY43pEf4xbWcWGwoqNqx1UC','Paciente'),(25,'camilatorres@gmail.com','$2y$10$g0u1h4XyLl8kjramq9UvpuDzlwiKVmfwJQYLV6Sl36l398cg1g9zS','Paciente'),(26,'laurarosales@gmail.com','$2y$10$7WyxqaVZiG5v9SNUCr./ZOjYHn.nLHE08GyBVFfVd8TnbAXM/.r/y','Paciente'),(27,'danielagutierrez@gmail.com','$2y$10$81ktHi/B/sIeuV6ue1y7kOC7bStW9atxziDxgfMnPSTeckyLtflyW','Paciente'),(28,'sebastianrios@gmail.com','$2y$10$Pw0G6QqApR7gU68M1.EnSO3PTEm9LQ0Tdcd4WEIaoIdnMu8sPIZTG','Paciente'),(29,'luisortega@gmail.com','$2y$10$t6OfOYKuYoRCtKlh5Nin/.CQdbcZo9A5qEEzaOpyqxrl8cqATFK/S','Paciente'),(30,'martinruiz@gmail.com','$2y$10$tpFtUVOfEFqkjK6wrnb.xen1Mk1zQtSMEELGQIpUkQa4J4OzI22Ey','Paciente'),(31,'valeriasanchez@gmail.com','$2y$10$FsZhr5No0mhTkuRgfmgXu.Qy0j6G3Rv2II6ZubezZOqqLl1.JV12.','Paciente'),(32,'rosajimenez@gmail.com','$2y$10$0bNgTW/r6kgrxRS13gn4tufnESthvEo7wbwINdgxa0THj19UGTQSa','Paciente'),(33,'marialopez@gmail.com','$2y$10$QDr3/q2PIWWvPZPFhtNAfeaEs6AXcfbfmtn.V1TIcNqdolQe5o6Wq','Paciente'),(34,'andrescastillo@gmail.com','$2y$10$Fny.oM3hSYfMpAS1XaMaVuQH8fR6De.VQV6LqbXHfRa.AI/nvZI/u','Paciente'),(35,'ricardovargas@gmail.com','$2y$10$NM0.bhNskErnAn39m.4hwukodjBUWS4ZRdw/JtbBgtrvD9/dV1vwC','Paciente'),(36,'elenamartinez@gmail.com','$2y$10$/lgnbEUHepmKiSEvhee.IO6v03Tcj0DSg7IeCNan0/W8dXUtUhJPq','Paciente'),(37,'diegoperez@gmail.com','$2y$10$KQixKQBmDV9uestQ5MC5BO8w/WQfBb64cizIDSS.UVQ2lLEiaaMI2','Paciente'),(38,'juanvega@gmail.com','$2y$10$rdvG5Nsue7SYzeDTvh8u7.Af4pgSv1YV6YJ55J.KMYk9WPeRcbcrG','Paciente'),(41,'nataliaquintero@gmail.com','$2y$10$NHX9nftnbF41QAV2IGSqPuImxNuAIdYLpdQkiiu2gCG.mGAqgEFxW','Paciente'),(42,'gabrielaherrera@gmail.com','$2y$10$GWoGge54w9oCvsCaLAcfY.QqR45k5qt4vgMEzPeh0g8DiFm8fuLn.','Paciente'),(43,'pablomorales@gmail.com','$2y$10$X87zidEPYqEO7c42qnrM8elt0z.KhAWqdkApu0eRcGPw5xy4XKaci','Paciente');
+INSERT INTO `usuario` VALUES (1,'carloshernandez@gmail.com','$2y$10$aHuoou5eteishPI7jBT4DulP76Fet8MdfzAcWjTRhsb9GL0OGNROu','Administrador'),(2,'juangomez@gmail.com','$2y$10$QucQBCwnuwSMtV4XT.nFW.ZkfqVwKsYKZbjLRVzxW6fxaoneb7GtK','Farmaceutico'),(3,'anarodriguez@gmail.com','$2y$10$tJIAmF/jJiapwlCX6/HkFeyGZrjUr66l8IZuMnVzWxe8tyjGrRjiS','Recepcionista'),(4,'abigailjones@gmail.com','$2y$10$MDrIWGtgbVcrK.besi2GbuawMCvUHHji5s9xOPTG//0EtwmMQnifa','Recepcionista'),(5,'carlosmendoza@gmail.com','$2y$10$1GHdtO0qPlmjEAFcbsF7b.hLC5JCWH4mZjCGBsOKhicf5G5RXN.xe','Médico'),(6,'elenarodriguez@gmail.com','$2y$10$jm4ShMvJLnSmCEPsyaE3muRnpdStfIA4H/WYWo65uguC/vQHVsYF2','Médico'),(7,'beatrizcastillo@gmail.com','$2y$10$43vftZr.z0H524fwGK5OMuguC90dHH8UtgRzmvdtPq5dgh.jY3LiC','Médico'),(8,'javiergomez@gmail.com','$2y$10$XTv6Vm61txGRqNgWZvrzmuJNFCat48WK8.Bn2gCrfEoHwDX2GqgXu','Médico'),(9,'marianaperez@gmail.com','$2y$10$0thVysUqDCRa27bvu8/5Q.JaEzajWtkUoYC2duBpSGCuzPsx4bfoS','Médico'),(10,'manuellopez@gmail.com','$2y$10$dMDGqbwCpXoxJHHmJwP7g.gpWcuaqvQrc43o1IJumQNyQvohMUlX.','Médico'),(11,'fernandoortiz@gmail.com','$2y$10$YmX78SD3CabpvIgIvSn0U.LFtq1O6Prvy8SllvFEo3ZIPqz4wXMDG','Médico'),(12,'sofiaramirez@gmail.com','$2y$10$YvpaTMJ/D4TJp99MEl0r0eBuCyYAGPKQNyyl.ehOh6l3eZgjehh.G','Médico'),(13,'ricardotorres@gmail.com','$2y$10$6rhitVVba145kCcMNtudteUj/S5oGvlb.i6Pphxs4DvR/soL/uUA6','Médico'),(14,'albertofernandez@gmail.com','$2y$10$Th2Sgjta/LhwjcOrZMfiDe463MzSOpUP2CgkQ86tHrf0YI2uTEMHC','Médico'),(15,'lauracastillo@gmail.com','$2y$10$M3NVg3ZXktSKgMXte25oVeddRoz3aYULbawFwK1M.61iFLgQccorK','Médico'),(16,'anaortega@gmail.com','$2y$10$CSvTgKj2hx6k.CU2S7tXVOFNUmjf/duIdFKtCVEbpmQeGiqMqVbv.','Médico'),(17,'lauramartinez@gmail.com','$2y$10$50lK4KGAOxMhysb9uGuCieDbjxar8fHVFht8PBbDmt008a2qAj9y.','Médico'),(18,'javierrodriguez@gmail.com','$2y$10$nXd5bZb6JFbSCFaog3e0Cudst4nrCqmOd17bpYduHy0QIG7dft0mG','Médico'),(19,'pedromendez@gmail.com','$2y$10$kysFt0i.4lvKZ2fToQWJReyvjY.1kYbueBocjvpsDzYowrDF0tT9W','Médico'),(20,'isablesanchez@gmail.com','$2y$10$lrh0o0j8nhPw4e2vIesAmeM6AaNO5I1w4iIWjilHFvm7jv5414iu.','Médico'),(21,'carlosfernandez@gmail.com','$2y$10$ahzcvmN3TmrAhD9fEY9XHOTbWKKnJbDZLuYOA0pKaKe3oR.MOBaze','Médico'),(22,'elenamorales@gmail.com','$2y$10$OhI5zEu8Y7CptP43EJxN5u/iFECeRzUk47DKHwfcNQsWRAoQxPZxe','Médico'),(23,'anamendez@gmail.com','$2y$10$diYGTrkTrB8si0iNNyzKzO5n1i8DjI2tPPcW.lQLupIEJd1WbyO2W','Paciente'),(24,'carlaespinosa@gmail.com','$2y$10$8lC4Vjxer3D/cJh5M0qjYeRpF0LPcMYY43pEf4xbWcWGwoqNqx1UC','Paciente'),(25,'camilatorres@gmail.com','$2y$10$g0u1h4XyLl8kjramq9UvpuDzlwiKVmfwJQYLV6Sl36l398cg1g9zS','Paciente'),(26,'laurarosales@gmail.com','$2y$10$7WyxqaVZiG5v9SNUCr./ZOjYHn.nLHE08GyBVFfVd8TnbAXM/.r/y','Paciente'),(27,'danielagutierrez@gmail.com','$2y$10$81ktHi/B/sIeuV6ue1y7kOC7bStW9atxziDxgfMnPSTeckyLtflyW','Paciente'),(28,'sebastianrios@gmail.com','$2y$10$Pw0G6QqApR7gU68M1.EnSO3PTEm9LQ0Tdcd4WEIaoIdnMu8sPIZTG','Paciente'),(29,'luisortega@gmail.com','$2y$10$t6OfOYKuYoRCtKlh5Nin/.CQdbcZo9A5qEEzaOpyqxrl8cqATFK/S','Paciente'),(30,'martinruiz@gmail.com','$2y$10$tpFtUVOfEFqkjK6wrnb.xen1Mk1zQtSMEELGQIpUkQa4J4OzI22Ey','Paciente'),(31,'valeriasanchez@gmail.com','$2y$10$FsZhr5No0mhTkuRgfmgXu.Qy0j6G3Rv2II6ZubezZOqqLl1.JV12.','Paciente'),(32,'rosajimenez@gmail.com','$2y$10$0bNgTW/r6kgrxRS13gn4tufnESthvEo7wbwINdgxa0THj19UGTQSa','Paciente'),(33,'marialopez@gmail.com','$2y$10$QDr3/q2PIWWvPZPFhtNAfeaEs6AXcfbfmtn.V1TIcNqdolQe5o6Wq','Paciente'),(34,'andrescastillo@gmail.com','$2y$10$Fny.oM3hSYfMpAS1XaMaVuQH8fR6De.VQV6LqbXHfRa.AI/nvZI/u','Paciente'),(35,'ricardovargas@gmail.com','$2y$10$NM0.bhNskErnAn39m.4hwukodjBUWS4ZRdw/JtbBgtrvD9/dV1vwC','Paciente'),(36,'elenamartinez@gmail.com','$2y$10$/lgnbEUHepmKiSEvhee.IO6v03Tcj0DSg7IeCNan0/W8dXUtUhJPq','Paciente'),(37,'diegoperez@gmail.com','$2y$10$KQixKQBmDV9uestQ5MC5BO8w/WQfBb64cizIDSS.UVQ2lLEiaaMI2','Paciente'),(38,'juanvega@gmail.com','$2y$10$rdvG5Nsue7SYzeDTvh8u7.Af4pgSv1YV6YJ55J.KMYk9WPeRcbcrG','Paciente'),(41,'nataliaquintero@gmail.com','$2y$10$NHX9nftnbF41QAV2IGSqPuImxNuAIdYLpdQkiiu2gCG.mGAqgEFxW','Paciente'),(42,'gabrielaherrera@gmail.com','$2y$10$GWoGge54w9oCvsCaLAcfY.QqR45k5qt4vgMEzPeh0g8DiFm8fuLn.','Paciente'),(43,'pablomorales@gmail.com','$2y$10$X87zidEPYqEO7c42qnrM8elt0z.KhAWqdkApu0eRcGPw5xy4XKaci','Paciente'),(44,'odetharevalo26@gmail.com','$2y$10$sPa9f9kGjfZAxBgAQCTeIOJSDmn2mjvOS8NdiGaEW9Be.rZZ/XJlG','Paciente');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'gestionclinica_bd'
+-- Dumping events for database 'gestionclinica_db'
 --
 
 --
--- Dumping routines for database 'gestionclinica_bd'
+-- Dumping routines for database 'gestionclinica_db'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `BuscarCitas` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarCitas`(IN `busqueda` VARCHAR(255))
+BEGIN
+    SELECT * 
+    FROM cita
+    WHERE 
+        estado LIKE CONCAT('%', busqueda, '%') OR
+        recordatorio LIKE CONCAT('%', busqueda, '%') OR
+        fecha_cita LIKE CONCAT('%', busqueda, '%') OR
+        diagnostico LIKE CONCAT('%', busqueda, '%') OR
+        tratamiento LIKE CONCAT('%', busqueda, '%') OR
+        cedula LIKE CONCAT('%', busqueda, '%') OR
+        id_medico LIKE CONCAT('%', busqueda, '%');
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `ObtenerDatosRecetas` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -899,4 +1019,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-26 12:30:55
+-- Dump completed on 2024-11-26 22:07:22
