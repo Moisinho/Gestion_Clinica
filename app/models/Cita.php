@@ -65,7 +65,7 @@ class Cita
         WHERE 
             c.estado = 'Atendida';
         ";
-        
+
         $stmt = $this->conn->prepare($query);
 
         if ($stmt->execute()) {
@@ -217,21 +217,23 @@ class Cita
     {
         $sql = "
             SELECT 
-                c.fecha_cita, 
-                c.motivo,
-                c.diagnostico, 
-                p.cedula, 
-                p.nombre_paciente, 
-                p.fecha_nacimiento,
-                p.telefono,
-                p.correo_paciente,
-                p.edad
-            FROM 
-                cita c 
-            JOIN 
-                paciente p ON c.cedula = p.cedula
-            WHERE 
-                c.id_cita = :id_cita
+            c.fecha_cita, 
+            c.motivo,
+            h.diagnostico, 
+            p.cedula, 
+            p.nombre_paciente, 
+            p.fecha_nacimiento,
+            p.telefono,
+            p.correo_paciente,
+            p.edad
+        FROM 
+            cita c
+        JOIN 
+            paciente p ON c.cedula = p.cedula
+        JOIN 
+            historial_medico h ON c.id_cita = h.id_cita
+        WHERE 
+            c.id_cita = :id_cita
         ";
 
         $stmt = $this->conn->prepare($sql);
