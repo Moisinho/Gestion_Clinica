@@ -192,7 +192,7 @@ class Historial
                     FROM historial_medico AS h
                     JOIN medico AS m ON h.id_medico = m.id_medico
                     JOIN servicio AS s ON m.departamento = s.id_departamento
-                    WHERE h.cedula = :cedula AND s.nombre_servicio = 'Consulta médica general'";
+                    WHERE h.cedula = :cedula AND s.id_departamento IN (1, 4, 5)";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':cedula', $cedula, PDO::PARAM_STR);
