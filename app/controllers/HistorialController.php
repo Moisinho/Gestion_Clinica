@@ -12,9 +12,7 @@ $historialModel = new Historial($conn);
 // Validar método de solicitud y acción
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'agregar') {
-        agregarHistorial($_POST, $historialModel, $conn);
-    } elseif (isset($_POST['accion']) && $_POST['accion'] === 'ver') {
-        verHistorial($_POST);
+        echo ("Metodo cambiado a GestionController");
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['action'])) {
@@ -39,65 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Funciones para manejar acciones específicas
-function agregarHistorial($data, $historialModel, $conn)
-{
-    $data = [
-        "cedula" => $data['cedula'] ?? '',
-        "id_cita" => $data['id_cita'] ?? '',
-        "id_medico" => $data['id_medico'] ?? '',
-        "peso" => $data['peso'],
-        "altura" => $data['altura'],
-        "presion_arterial" => $data['presion_arterial'],
-        "frecuencia_cardiaca" => $data['frecuencia_cardiaca'],
-        "tipo_sangre" => $data['tipo_sangre'],
-        "antecedentes_patologicos" => is_array($data['antecedentes_personales'])
-            ? implode(", ", $data['antecedentes_personales'])
-            : $data['antecedentes_personales'],
-        "otros_antecedentes_patologicos" => $data['otros_antecedentes'] ?? '',
-        "antecedentes_no_patologicos" => is_array($data['antecedentes_no_patologicos'])
-            ? implode(", ", $data['antecedentes_no_patologicos'])
-            : $data['antecedentes_no_patologicos'],
-        "otros_antecedentes_no_patologicos" => $data['otros_antecedentes_no_patologicos'] ?? '',
-        "condicion_general" => $data['condicion_general'],
-        "examenes_sangre" => $data['examenes_sangre'],
-        "laboratorios" => $data['laboratorios'],
-        "diagnostico" => $data['diagnostico'],
-        "tratamiento" => $data['tratamiento'],
-        "id_departamento_referencia" => $data['id_departamento_referencia'] ?? null
-    ];
-
-    if ($historialModel->agregarHistorial($data)) {
-        $id_cita = $conn->lastInsertId();
-
-        if (isset($data['medicamento'], $data['dosis'], $data['frecuencia'], $data['duracion'])) {
-            $recetas = [];
-            foreach ($data['medicamento'] as $index => $medicamento) {
-                $recetas[] = [
-                    'medicamento' => $medicamento,
-                    'dosis' => $data['dosis'][$index],
-                    'frecuencia' => $data['frecuencia'][$index],
-                    'duracion' => $data['duracion'][$index]
-                ];
-            }
-            $historialModel->agregarRecetas($id_cita, $recetas);
-        }
-
-        echo json_encode(['success' => true, 'message' => 'Historial médico y receta guardados con éxito']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Error al guardar el historial médico']);
-    }
-    exit();
-}
-
 function obtenerHistorialPorUsuario($params, $historialModel)
 {
     $user = htmlspecialchars(strip_tags($params['usuario']));
     $historial = $historialModel->obtenerHistorialPorUsuario($user);
 
-    if (!empty($historial)) {
+    if ($historial['success']) {
         echo json_encode($historial);
     } else {
-        echo json_encode(["success" => false, "message" => "Aún noo cuentas con historial médico."]);
+        echo json_encode(["success" => false, "message" => "Aún no cuentas con historial médico."]);
     }
     exit();
 }
@@ -112,8 +60,12 @@ function obtenerHistorialPorCedula($params, $historialModel)
 
     $historial = $historialModel->obtenerHistorialPorCedula($cedula);
 
-    if (!empty($historial)) {
-        echo json_encode(['success' => true, 'data' => $historial]);
+    if ($historial['success']) {
+        echo json_encode([
+            'success' => true,
+            'paciente' => $historial['paciente'],
+            'historial' => $historial['historial']
+        ]);
     } else {
         echo json_encode(["success" => false, "message" => "El paciente aún no cuenta con historial."]);
     }
@@ -144,4 +96,3 @@ function verificarCitaMedicinaGeneral($params, $historialModel)
     }
     exit();
 }
-

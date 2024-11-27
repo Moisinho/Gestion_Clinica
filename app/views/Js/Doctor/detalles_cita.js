@@ -2,8 +2,6 @@ let idCita; // Variable global para almacenar el ID de la cita
 let cedulaPaciente;
 let idMedico;
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM CARGADO");
-  console.log("ID USUARIO: ", id_usuario);
   obtenerIdMedico(id_usuario);
   const urlParams = new URLSearchParams(window.location.search);
   idCita = urlParams.get("id_cita"); // Obtén el id_cita de la URL
@@ -34,7 +32,6 @@ function obtenerIdMedico(id_usuario) {
     .then((data) => {
       if (data) {
         idMedico = data.id_medico;
-        console.log("ID MEDICO: ", idMedico);
       } else {
         console.error("No se encontro id en la respuesta");
       }
@@ -105,7 +102,6 @@ document.getElementById("verExpedienteBtn").addEventListener("click", function (
   const cedula = document.querySelector("input[name='id_paciente']").value;
 
   if (cedula) {
-    console.log("Cédula del paciente:", cedula); // Verifica que se está obteniendo la cédula correctamente
     window.location.href = `/Gestion_clinica/historial_medico?id_paciente=${cedula}`;
   } else {
     console.error("ID del paciente no proporcionado.");
@@ -129,7 +125,7 @@ function obtenerHistorialPorCedula(cedula) {
 }
 
 function cargarServicios() {
-  fetch("/Gestion_clinica/app/controllers/DepartamentoController.php?action=obtenerTodos")
+  fetch("app/controllers/DepartamentoController.php?action=obtenerTodos")
     .then((response) => response.json())
     .then((data) => {
       if (data) {
@@ -141,7 +137,6 @@ function cargarServicios() {
           option.textContent = servicio.nombre_departamento;
           selectServicios.appendChild(option);
         });
-        console.log("Departamentos cargados");
       } else {
         console.error("No se encontraron servicios en la respuesta");
       }
@@ -154,101 +149,100 @@ function cargarServicios() {
 function obtenerMedicamentos() {
   const filas = document.querySelectorAll("#receta-body tr");
 
-  const medicamentos = [];
+  const medicamento = [];
   const dosis = [];
-  const frecuencias = [];
-  const duraciones = [];
+  const frecuencia = [];
+  const duracion = [];
 
   filas.forEach((fila) => {
     const selectMedicamento = fila.querySelector("select[name='medicamento[]']");
-    const medicamento = selectMedicamento.selectedOptions[0]?.text.trim(); // Captura el nombre visible
+    const medicamentoInput = selectMedicamento.selectedOptions[0]?.text.trim(); // Captura el nombre visible
     const dosisInput = fila.querySelector("input[name='dosis[]']").value;
     const frecuenciaInput = fila.querySelector("input[name='frecuencia[]']").value;
     const duracionInput = fila.querySelector("input[name='duracion[]']").value;
 
-    if (medicamento && medicamento !== "Seleccione un medicamento") {
-      medicamentos.push(medicamento); // Captura el nombre
+    if (medicamentoInput && medicamentoInput !== "Seleccione un medicamento") {
+      medicamento.push(medicamentoInput); // Captura el nombre
       dosis.push(dosisInput || "--");
-      frecuencias.push(frecuenciaInput || "--");
-      duraciones.push(duracionInput || "--");
+      frecuencia.push(frecuenciaInput || "--");
+      duracion.push(duracionInput || "--");
     }
   });
 
-  return { medicamentos, dosis, frecuencias, duraciones };
+  // Devolver los campos en singular
+  return {
+    medicamento: medicamento,
+    dosis: dosis,
+    frecuencia: frecuencia,
+    duracion: duracion,
+  };
 }
 
 function guardarHistorialMedico() {
-  // Asignar "--" a los textareas vacíos
-  document.querySelectorAll("textarea").forEach((textarea) => {
-    if (textarea.value.trim() === "") {
-      textarea.value = "Sin especificar"; // Valor por defecto
-    }
-  });
-
-  const { medicamentos, dosis, frecuencias, duraciones } = obtenerMedicamentos();
-
-  // Recoger los datos del formulario
+  // Recoger y asignar valores predeterminados
   const data = {
     action: "agregar",
     cedula: cedulaPaciente,
     id_cita: idCita,
     id_medico: idMedico,
-    peso: document.querySelector("input[name='peso']").value,
-    altura: document.querySelector("input[name='altura']").value,
-    presion_arterial: document.querySelector("input[name='presion_arterial']").value,
-    frecuencia_cardiaca: document.querySelector("input[name='frecuencia_cardiaca']").value,
-    tipo_sangre: document.getElementById("tipo_sangre").value,
+    peso: document.querySelector("input[name='peso']").value.trim() || "Sin especificar",
+    altura: document.querySelector("input[name='altura']").value.trim() || "Sin especificar",
+    presion_arterial:
+      document.querySelector("input[name='presion_arterial']").value.trim() || "Sin especificar",
+    frecuencia_cardiaca:
+      document.querySelector("input[name='frecuencia_cardiaca']").value.trim() || "Sin especificar",
+    tipo_sangre: document.getElementById("tipo_sangre").value || "Sin especificar",
 
-    antecedentes_patologicos:
-      Array.from(document.querySelectorAll("input[name='antecedentes_patologicos[]']:checked")).map(
-        (input) => input.value
-      ) || [],
+    antecedentes_personales: Array.from(
+      document.querySelectorAll("input[name='antecedentes_patologicos[]']:checked")
+    ).map((input) => input.value),
 
-    otros_antecedentes_patologicos: document.getElementById("otros_antecedentes_patologicos").value,
+    otros_antecedentes:
+      document.getElementById("otros_antecedentes_patologicos").value.trim() || "Sin especificar",
 
-    antecedentes_no_patologicos:
-      Array.from(
-        document.querySelectorAll("input[name='antecedentes_no_patologicos[]']:checked")
-      ).map((input) => input.value) || [],
+    antecedentes_no_patologicos: Array.from(
+      document.querySelectorAll("input[name='antecedentes_no_patologicos[]']:checked")
+    ).map((input) => input.value),
 
-    otros_antecedentes_no_patologicos: document.getElementById("otros_antecedentes_no_patologicos")
-      .value,
+    otros_antecedentes_no_patologicos:
+      document.getElementById("otros_antecedentes_no_patologicos").value.trim() ||
+      "Sin especificar",
 
-    condicion_general: document.querySelector("textarea[name='condicion_general']").value,
-    examenes_sangre: document.querySelector("textarea[name='examenes_sangre']").value,
-    laboratorios: document.querySelector("textarea[name='laboratorios']").value,
-    diagnostico: document.querySelector("textarea[name='diagnostico']").value,
-    tratamiento: document.querySelector("textarea[name='tratamiento']").value,
+    condicion_general:
+      document.querySelector("textarea[name='condicion_general']").value.trim() ||
+      "Sin especificar",
+    examenes:
+      document.querySelector("textarea[name='examenes_sangre']").value.trim() || "Sin especificar",
+    laboratorios:
+      document.querySelector("textarea[name='laboratorios']").value.trim() || "Sin especificar",
+    diagnostico:
+      document.querySelector("textarea[name='diagnostico']").value.trim() || "Sin especificar",
+    tratamiento:
+      document.querySelector("textarea[name='tratamiento']").value.trim() || "Sin especificar",
     id_departamento_referencia: document.getElementById("selectServicios").value,
 
-    medicamento: medicamentos,
-    dosis: dosis,
-    frecuencia: frecuencias,
-    duracion: duraciones,
+    ...obtenerMedicamentos(), // Agregar medicamentos, dosis, frecuencia y duración
   };
 
-  console.log("Info: ", data); // Para depuración
-  alert("DATOS");
   // Enviar los datos mediante fetch
-  fetch("/Gestion_clinica/app/controllers/GestionController.php", {
+  fetch("app/controllers/GestionController.php", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json", // Cambiar a application/json
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data), // Convertir datos a JSON
+    body: JSON.stringify(data),
   })
-    .then((response) => response.text()) // Usar .text() en lugar de .json() para ver el contenido crudo
-    .then((text) => {
-      console.log("Respuesta del servidor:", text);
-      try {
-        const responseData = JSON.parse(text); // Intenta analizar la respuesta
-        console.log("Respuesta JSON:", responseData);
-      } catch (e) {
-        console.error("Error al analizar la respuesta:", e);
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (responseData.error) {
+        console.error("Error del servidor:", responseData.error);
+        alert("Error al guardar: " + responseData.error);
+      } else {
+        console.log("Historial guardado correctamente:", responseData);
+        alert("Historial médico guardado con éxito.");
       }
     })
     .catch((error) => {
       console.error("Error al guardar el historial médico:", error);
-      alert("Hubo un error al guardar el historial médico.");
     });
 }

@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     : $input['antecedentes_no_patologicos'],
                 "otros_antecedentes_no_patologicos" => $input['otros_antecedentes_no_patologicos'] ?? '',
                 "condicion_general" => $input['condicion_general'],
-                "examenes_sangre" => $input['examenes_sangre'],
+                "examenes" => $input['examenes'],
                 "laboratorios" => $input['laboratorios'],
                 "diagnostico" => $input['diagnostico'],
                 "tratamiento" => $input['tratamiento'],
