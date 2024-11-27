@@ -1,19 +1,8 @@
-<?php 
+<?php
 session_start();
 if (!isset($_SESSION['id_usuario'])) {
     header('Location: /Gestion_clinica/index.php');
     exit();
-}
-require_once '../../includes/Database.php';
-require_once '../../models/Factura.php';
-
-$database = new Database();
-$conn = $database->getConnection();
-$factura = new Factura($conn);
-$id_factura = isset($_GET['id_factura']) ? $_GET['id_factura'] : null;
-$factura_details = null;
-if ($id_factura) {
-    $factura_details = $factura->obtenerDetallesFactura($id_factura);
 }
 ?>
 
@@ -24,23 +13,76 @@ if ($id_factura) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factura</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="flex justify-center items-center h-screen bg-gray-200">
-<div class="bg-white p-6 rounded-lg shadow-lg w-96">
-    <h2 class="text-2xl font-bold mb-4 text-center">Factura</h2>
-    <p class="mb-2"><strong>ID Factura:</strong> <?php echo isset($factura_details['id_factura']) ? $factura_details['id_factura'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Nombre Paciente:</strong> <?php echo isset($factura_details['nombre_paciente']) ? $factura_details['nombre_paciente'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Correo:</strong> <?php echo isset($factura_details['correo_paciente']) ? $factura_details['correo_paciente'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Teléfono:</strong> <?php echo isset($factura_details['telefono']) ? $factura_details['telefono'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Monto:</strong> <?php echo isset($factura_details['monto']) ? $factura_details['monto'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Detalles:</strong> <?php echo isset($factura_details['detalles_factura']) ? $factura_details['detalles_factura'] : 'N/A'; ?></p>
-    <p class="mb-2"><strong>Fecha de Creación:</strong> <?php echo isset($factura_details['fecha_creacion']) ? $factura_details['fecha_creacion'] : 'N/A'; ?></p>
+<body class="flex justify-center items-center h-screen bg-purple-100">
+    <div class="bg-white p-8 rounded-xl shadow-xl w-[36rem]">
+        <h2 class="text-4xl font-extrabold mb-8 text-center text-purple-800">Detalles de la Factura</h2>
 
-    <div class="mt-4 text-center">
-        <p class="text-green-600 text-lg">¡Cobro realizado con éxito!</p>
-        <a href="/Gestion_clinica/home_recepcionista" class="mt-4 inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500 transition">Volver</a>
+        <!-- Aquí se mostrarán los datos de la factura -->
+        <div id="factura-details" class="space-y-6">
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">ID Factura:</strong> <span id="id_factura">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Nombre del Paciente:</strong> <span id="nombre_paciente">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Correo:</strong> <span id="correo_paciente">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Teléfono:</strong> <span id="telefono">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Monto:</strong> <span id="monto">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Método de Pago:</strong> <span id="metodo_pago">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Detalles:</strong> <span id="detalles_factura">N/A</span></p>
+            <p class="text-black font-bold text-lg"><strong class="text-purple-700">Fecha de Creación:</strong> <span id="fecha_creacion">N/A</span></p>
+        </div>
+
+        <!-- Mensaje de confirmación y botón para volver -->
+        <div class="mt-8 text-center">
+            <p class="text-green-700 font-bold text-xl">¡Cobro realizado con éxito!</p>
+            <a href="/Gestion_clinica/home_recepcionista" class="mt-6 inline-block bg-purple-700 text-white py-3 px-8 text-lg rounded-lg shadow-lg hover:bg-purple-600 transition-all">
+                Volver
+            </a>
+        </div>
     </div>
-</div>
 
+    <script>
+        $(document).ready(function() {
+            // Obtener el id_factura desde el URL (pasado como parámetro GET)
+            var facturaId = new URLSearchParams(window.location.search).get('id_factura');
+
+            if (facturaId) {
+                // Llamada AJAX para obtener los detalles de la factura
+                $.ajax({
+                    url: '/Gestion_Clinica/app/controllers/FacturaController.php',
+                    type: 'GET',
+                    data: {
+                        action: 'facturaPorId',
+                        id_factura: facturaId
+                    },
+                    success: function(response) {
+                        if (typeof response === 'string') {
+                            response = JSON.parse(response);
+                        }
+
+                        if (response.status === 'success') {
+                            var facturaDetails = response.factura_details;
+
+                            // Mostrar los detalles de la factura en el HTML
+                            $('#id_factura').text(facturaDetails.id_factura);
+                            $('#nombre_paciente').text(facturaDetails.nombre_paciente);
+                            $('#correo_paciente').text(facturaDetails.correo_paciente);
+                            $('#telefono').text(facturaDetails.telefono);
+                            $('#monto').text(facturaDetails.monto);
+                            $('#metodo_pago').text(facturaDetails.metodo_pago);
+                            $('#detalles_factura').text(facturaDetails.detalles_factura);
+                            $('#fecha_creacion').text(facturaDetails.fecha_creacion);
+                        } else {
+                            $('#factura-details').html('<p class="text-red-600 text-center text-lg">No se encontró la factura.</p>');
+                        }
+                    },
+                    error: function() {
+                        alert('Error al obtener los detalles de la factura.');
+                    }
+                });
+            } else {
+                alert('No se ha proporcionado un ID de factura.');
+            }
+        });
+    </script>
 </body>
 </html>

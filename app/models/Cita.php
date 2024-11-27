@@ -197,21 +197,8 @@ class Cita
     public function obtener_detalles_cita($id_cita)
     {
         $sql = "
-            SELECT 
-                c.fecha_cita, 
-                c.motivo, 
-                p.cedula, 
-                p.nombre_paciente, 
-                p.fecha_nacimiento,
-                p.telefono,
-                p.correo_paciente,
-                p.edad
-            FROM 
-                cita c 
-            JOIN 
-                paciente p ON c.cedula = p.cedula
-            WHERE 
-                c.id_cita = :id_cita
+            SELECT diagnostico FROM cita 
+            WHERE id_cita = :id_cita
         ";
 
         $stmt = $this->conn->prepare($sql);
@@ -403,6 +390,86 @@ class Cita
         <p>Hora de la cita: <strong>{$infoCita['hora']}</strong></p>
         <p>Por favor, contacte a la clínica si necesita más información.</p>
     ";
+
+        require_once '../helpers/correo.php';
+        if (enviarCorreoSMTP($infoCita['correo'], $asunto, $mensaje)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function insertarMotivoCancelacion($id_cita, $motivo_cancelacion)
+    {
+        $sql = "UPDATE cita SET motivo_cancelacion = :motivo_cancelacion WHERE id_cita = :id_cita";
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':motivo_cancelacion', $motivo_cancelacion);
+            $stmt->bindParam(':id_cita', $id_cita);
+
+            if($stmt->execute()){
+                $this->enviarCorreoCancelarCita($id_cita);
+            }
+
+        } catch (PDOException $e) {
+            echo "Error al actualizar el motivo_cancelacion: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function obtenerInformacionCancelar($id_cita)
+    {
+        $query = "
+        SELECT 
+            p.correo_paciente AS correo,
+            c.fecha_cita,
+            p.nombre_paciente,
+            m.nombre_medico AS doctor,
+            c.hora_cita as hora,
+            c.motivo_cancelacion
+        FROM 
+            cita c
+        JOIN 
+            paciente p ON c.cedula = p.cedula
+        JOIN 
+            medico m ON c.id_medico = m.id_medico
+        WHERE 
+            c.id_cita = :id_cita
+    ";
+
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_cita', $id_cita, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                echo "Error en la ejecución de la consulta.";
+                return null;
+            }
+        } catch (PDOException $e) {
+            echo "Error en la consulta: " . $e->getMessage();
+            return null;
+        }
+    }
+
+    public function enviarCorreoCancelarCita($id_cita)
+    {
+
+        $infoCita = $this->obtenerInformacionCancelar($id_cita);
+
+        if (!$infoCita) {
+            echo "<script>alert('No se pudo obtener la información de la cita.');</script>";
+            return false;
+        }
+        $asunto = 'Cita Cancelada';
+        $mensaje = "
+        <h1>Estimado(a) {$infoCita['nombre_paciente']}</h1>
+        <p>Su cita programada para la fecha: <strong>{$infoCita['fecha_cita']}, con el doctor: <strong>{$infoCita['doctor']}</strong>  ha sido cancelada.</strong></p>
+        <p>Motivo de Cancelación: <strong>{$infoCita['motivo_cancelacion']}</strong></p>
+        <p>Por favor, vuelva a agendar una cita por la página web o acercándose a la clínica y consultar con uno de nuestros recepcionistas.</p>
+        ";
 
         require_once '../helpers/correo.php';
         if (enviarCorreoSMTP($infoCita['correo'], $asunto, $mensaje)) {

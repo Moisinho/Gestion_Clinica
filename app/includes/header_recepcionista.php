@@ -8,10 +8,8 @@
 
         <!-- Navegación -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="/Gestion_clinica/home_recepcionista" class="hover:text-purple-800">Inicio</a>
-            <a href="/Gestion_clinica/reservar_cita" class="hover:text-purple-800">Agendar cita</a>
-            <a href="" class="hover:text-purple-800">Horarios Médicos</a>
-            <a href="" class="hover:text-purple-800">Contacto</a>
+            <a href="/Gestion_clinica/home_recepcionista" class="font-bold hover:text-purple-800">Inicio</a>
+            <a href="/Gestion_clinica/reservar_cita" class="font-bold hover:text-purple-800">Agendar cita</a>
             <div class="flex justify-end p-4">
                 <form action="/Gestion_clinica/app/controllers/logout.php" method="post">
                     <button type="submit" class="bg-white text-purple-700 font-semibold py-2 px-4 rounded-lg hover:bg-purple-100">Cerrar Sesión</button>

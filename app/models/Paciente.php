@@ -22,7 +22,9 @@ class Paciente
         $this->conn = $db;
     }
 
-    public function obtenerCedulaByUserId($id_usuario){
+    // Método para obtener la cédula de un paciente por su id de usuario
+    public function obtenerCedulaByUserId($id_usuario)
+    {
         $query = "SELECT cedula FROM paciente WHERE id_usuario = :id_usuario";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id_usuario', $id_usuario);
@@ -34,5 +36,17 @@ class Paciente
         }
     }
 
+    // Método para buscar un paciente por cédula
+    public function buscarPacientePorCedula($cedula)
+    {
+        $query = "SELECT * FROM paciente WHERE cedula = :cedula";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':cedula', $cedula);
+
+        if ($stmt->execute()) {
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Retorna el paciente si existe
+        } else {
+            return null; // Si no se encuentra, retorna null
+        }
+    }
 }
-?>

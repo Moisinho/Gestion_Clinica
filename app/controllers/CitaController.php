@@ -68,6 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         }
         exit();
     }
+    // MANEJO DE INSERCION DE MOTIVO DE CANCELACION
+    elseif ($_POST['action'] == 'insertarMotivoCancelar') {
+        $id_cita = $_POST['id_cita'];
+        $motivo_cancelacion = $_POST['motivo_cancelacion'];
+
+        if ($cita->insertarMotivoCancelacion($id_cita, $motivo_cancelacion)) {
+            echo json_encode(['status' => 'success', 'message' => 'Motivo actualizado exitosamente.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar la cita.']);
+        }
+        exit();
+    }
 }
 
 // PETICIONES GET
@@ -83,10 +95,17 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode($citasMedico);
         exit();
     }
-    //OBTENER DETALLES DE CITAS PARA EL MODAL DE RECEPCIONISTA
-    elseif ($_GET['action'] == 'obtenerDetallesCita' && isset($_GET['id_cita'])) {
+    //OBTENER DIAGNOSTICO DE CITAS PARA EL MODAL DE RECEPCIONISTA
+    elseif ($_GET['action'] == 'obtenerDiagnostico' && isset($_GET['id_cita'])) {
         $id_cita = $_GET['id_cita'];
+
+        // Log para verificar el valor recibido
+        error_log("ID Cita recibido: $id_cita");
+
         $detallesCita = $cita->obtener_detalles_cita($id_cita);
+
+        // Log para verificar la consulta
+        error_log("Detalles obtenidos: " . json_encode($detallesCita));
 
         // Verificar si se obtuvieron detalles
         if ($detallesCita) {
@@ -128,5 +147,4 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['action'])) {
         echo json_encode($citas);
         exit();
     }
-    
 }

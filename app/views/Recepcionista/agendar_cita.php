@@ -7,35 +7,41 @@ if (!isset($_SESSION['id_usuario'])) {
     header('Location: ../../../index.php');
     exit();
 }
+
+$id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Reservas de Citas Médicas</title>
+    <title>Agendar Cita - Recepcionista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/Gestion_clinica/app/js/tailwind-config.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body class="bg-gray-100">
     <!-- Encabezado -->
     <?php include '../../includes/header_recepcionista.php'; ?>
-    
+
     <section class="my-8">
-        <h2 class="text-Moradote text-3xl font-bold text-center">Registro de Reservas de Citas Médicas</h2>
+        <h2 class="text-Moradote text-3xl font-bold text-center">Agendar Cita Médica</h2>
         <hr class="mt-2 border-t-2 border-purple-700 w-1/2 mx-auto">
     </section>
 
     <div class="container mx-auto w-6/12 mb-10">
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-lg font-bold text-Moradote mb-4">Datos de la Reserva de Cita</h3>
-            <form id="reservaForm" method="POST" action="/Gestion_clinica/app/controllers/citaController.php">
+            <form id="reservaForm" method="POST" action="/Gestion_clinica/app/controllers/CitaController.php">
                 <input type="hidden" name="action" value="registrar">
 
                 <div class="mb-4">
                     <label for="cedula" class="block text-gray-700">Cédula</label>
                     <input type="text" id="cedula" name="cedula" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <div id="errorCedula" class="text-red-500 mt-2"></div> <!-- Aquí se mostrará el mensaje de error -->
                 </div>
 
                 <div class="mb-4">
@@ -46,11 +52,6 @@ if (!isset($_SESSION['id_usuario'])) {
                 </div>
 
                 <div class="mb-4">
-                    <label for="motivo" class="block text-gray-700">Motivo de cita</label>
-                    <input type="text" id="motivo" name="motivo" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
-
-                <div class="mb-4">
                     <label for="medico" class="block text-gray-700">Médico de atención</label>
                     <select id="medico" name="medico" required class="w-full px-4 py-2 border rounded-lg">
                         <option value="">Seleccione un médico</option>
@@ -58,8 +59,8 @@ if (!isset($_SESSION['id_usuario'])) {
                 </div>
 
                 <div class="mb-4">
-                    <label for="fecha" class="block text-gray-700">Fecha de cita</label>
-                    <input type="date" id="fecha" name="fecha_cita" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <label for="motivo" class="block text-gray-700">Motivo de cita</label>
+                    <input type="text" id="motivo" name="motivo" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
 
                 <div class="flex justify-between">
@@ -71,55 +72,118 @@ if (!isset($_SESSION['id_usuario'])) {
     </div>
 
     <script>
-        // Función para vaciar los campos del formulario
-        function borrarReserva() {
-            document.getElementById("reservaForm").reset();
-        }
+        // Variable para almacenar el tiempo de espera
+        let timeout;
 
-        // Cargar servicios dinámicamente
-        $(document).ready(function() {
-            $.ajax({
-                url: '/Gestion_clinica/app/controllers/citaController.php',
-                type: 'GET',
-                data: { action: 'obtenerServicios' },
-                dataType: 'json',
-                success: function(servicios) {
-                    console.log(servicios);
-                    if (Array.isArray(servicios)) {
-                        servicios.forEach(function(servicio) {
-                            $('#servicio').append('<option value="' + servicio.id_servicio + '">' + servicio.nombre_servicio + '</option>');
-                        });
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + ", " + errorThrown);
-                    console.log("Response: " + jqXHR.responseText);
-                    alert("Error al cargar los servicios.");
-                }
-            });
+        $('#cedula').keyup(function() {
+            var cedula = $(this).val(); // Obtener el valor de la cédula
 
-            // Cargar médicos dinámicamente
-            $.ajax({
-                url: '/Gestion_clinica/app/controllers/citaController.php',
-                type: 'GET',
-                data: { action: 'obtenerMedicos' },
-                dataType: 'json',
-                success: function(medicos) {
-                    console.log(medicos);
-                    if (Array.isArray(medicos)) {
-                        medicos.forEach(function(medico) {
-                            $('#medico').append('<option value="' + medico.id_medico + '">' + medico.nombre_medico + '</option>');
-                        });
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error: " + textStatus + ", " + errorThrown);
-                    console.log("Response: " + jqXHR.responseText);
-                    alert("Error al cargar los médicos.");
+            // Eliminar mensaje de error anterior
+            $('#errorCedula').remove();
+
+            // Limitar las solicitudes con un retraso
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                if (cedula.length > 0) {
+                    $.ajax({
+                        url: '/Gestion_Clinica/app/controllers/PacienteController.php',
+                        type: 'GET',
+                        data: {
+                            action: 'buscarPorCedula',
+                            cedula: cedula
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            // Si la cédula existe
+                            if (response.existe) {
+                                $.ajax({
+                                    url: '/Gestion_Clinica/app/controllers/HistorialController.php',
+                                    type: 'GET',
+                                    data: {
+                                        action: 'verificarCitaMedicinaGeneral',
+                                        cedula: cedula
+                                    },
+                                    dataType: 'json',
+                                    success: function(historialResponse) {
+                                        if (historialResponse.success) {
+                                            alert(historialResponse.mensaje);
+                                            $.ajax({
+                                                url: '/Gestion_Clinica/app/controllers/ServicioController.php',
+                                                type: 'GET',
+                                                data: {
+                                                    action: 'obtenerTodos'
+                                                },
+                                                dataType: 'json',
+                                                success: function(servicios) {
+                                                    var selectServicio = $('#servicio');
+                                                    selectServicio.empty(); // Limpiar las opciones
+                                                    servicios.forEach(function(servicio) {
+                                                        selectServicio.append('<option value="' + servicio.id_servicio + '">' + servicio.nombre_servicio + '</option>');
+                                                    });
+                                                    cargarMedicosPorServicio();
+                                                },
+                                                error: function() {
+                                                    alert("Error al cargar los servicios.");
+                                                }
+                                            });
+                                        } else {
+                                            var selectServicio = $('#servicio');
+                                            selectServicio.empty();
+                                            selectServicio.append('<option value="1">Cita Medicina General</option>');
+                                            selectServicio.append('<option value="6">Cita Odontología</option>');
+                                            cargarMedicosPorServicio();
+                                        }
+                                    }
+                                });
+                            } else {
+                                // Si no existe, mostrar el error
+                                $('#cedula').after('<div id="errorCedula" class="text-red-500 mt-2">Cédula no encontrada</div>');
+                            }
+                        },
+                        error: function() {
+                            alert("Error al verificar la cédula.");
+                        }
+                    });
                 }
-            });
+            }, 500); // Espera 500ms después de que el usuario deje de escribir
         });
+
+        // Función para cargar los médicos según el servicio seleccionado
+        function cargarMedicosPorServicio() {
+            var id_servicio = $('#servicio').val();
+            if (id_servicio) {
+                $.ajax({
+                    url: '/Gestion_Clinica/app/controllers/MedicoController.php',
+                    type: 'GET',
+                    data: {
+                        action: 'obtenerMedicosPorServicio',
+                        id_servicio: id_servicio
+                    },
+                    dataType: 'json',
+                    success: function(medicos) {
+                        var selectMedico = $('#medico');
+                        selectMedico.empty();
+                        selectMedico.append('<option value="">Seleccione un médico</option>');
+
+                        if (medicos.success && Array.isArray(medicos.data)) {
+                            medicos.data.forEach(function(medico) {
+                                selectMedico.append('<option value="' + medico.id_medico + '">' + medico.nombre_medico + '</option>');
+                            });
+                        } else {
+                            alert("No se encontraron médicos para el servicio seleccionado.");
+                        }
+                    },
+                    error: function() {
+                        alert("Error al cargar los médicos.");
+                    }
+                });
+            } else {
+                $('#medico').empty().append('<option value="">Seleccione un médico</option>');
+            }
+        }
     </script>
+
     <?php include '../../includes/footer.php'; ?>
 </body>
+
 </html>

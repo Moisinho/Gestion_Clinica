@@ -99,15 +99,13 @@ class ServicioModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerMonto($id_cita)
-    {
-        $query = "SELECT s.costo
-                    FROM servicio AS s
-                    JOIN cita AS c ON c.id_servicio = s.id_servicio
-                    WHERE c.id_cita = :id_cita";
+    public function obtenerMonto($id_servicio){
+        $query = "SELECT costo
+                    FROM servicio 
+                    WHERE id_servicio = :id_servicio";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_cita', $id_cita);
+        $stmt->bindParam(':id_servicio', $id_servicio);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
