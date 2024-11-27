@@ -188,11 +188,11 @@ class Historial
     public function verificarCitaMedicinaGeneral($cedula)
     {
         try {
-            $sql = "SELECT h.id_historial
+            $sql = "SELECT h.id_cita
                     FROM historial_medico AS h
                     JOIN medico AS m ON h.id_medico = m.id_medico
-                    JOIN servicio AS s ON m.id_servicio = s.id_servicio
-                    WHERE h.cedula = :cedula AND s.nombre_servicio = 'Cita Medicina General'";
+                    JOIN servicio AS s ON m.departamento = s.id_departamento
+                    WHERE h.cedula = :cedula AND s.nombre_servicio = 'Consulta médica general'";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':cedula', $cedula, PDO::PARAM_STR);
@@ -207,7 +207,7 @@ class Historial
             }
 
             // Si no hay resultados, verificar si el usuario tiene historial
-            $sqlHistorial = "SELECT id_historial 
+            $sqlHistorial = "SELECT id_cita
                             FROM historial_medico 
                             WHERE cedula = :cedula";
 

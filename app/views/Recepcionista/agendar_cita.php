@@ -94,6 +94,7 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                         },
                         dataType: 'json',
                         success: function(response) {
+                            console.log(response.existe)
                             // Si la cédula existe
                             if (response.existe) {
                                 $.ajax({
@@ -127,11 +128,30 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                                                 }
                                             });
                                         } else {
-                                            var selectServicio = $('#servicio');
-                                            selectServicio.empty();
-                                            selectServicio.append('<option value="1">Cita Medicina General</option>');
-                                            selectServicio.append('<option value="6">Cita Odontología</option>');
-                                            cargarMedicosPorServicio();
+                                            $.ajax({
+                                                url: '/Gestion_Clinica/app/controllers/ServicioController.php',
+                                                type: 'GET',
+                                                data: {
+                                                    action: 'obtenerSoloGenerales'
+                                                },
+                                                dataType: 'json',
+                                                success: function(servicios) {
+                                                    console.log("Servicios obtenidos:", servicios);
+                                                    var selectServicio = $('#servicio');
+                                                    servicios.forEach(function(servicio) {
+                                                        console.log("Agregando servicio: ", servicio);
+                                                        selectServicio.append('<option value="' + servicio.id_servicio + '">' + servicio.nombre_servicio + '</option>');
+                                                    });
+
+                                                    // Llamar la función para cargar médicos al cargar la página
+                                                    cargarMedicosPorServicio();
+                                                },
+                                                error: function(jqXHR, textStatus, errorThrown) {
+                                                    console.error("Error al cargar servicios:", textStatus, errorThrown);
+                                                    console.log("Respuesta del servidor:", jqXHR.responseText);
+                                                    alert("Error al cargar los servicios.");
+                                                }
+                                            });
                                         }
                                     }
                                 });
@@ -181,6 +201,11 @@ $id_usuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
                 $('#medico').empty().append('<option value="">Seleccione un médico</option>');
             }
         }
+
+        // Evento change para el select de servicios
+        $('#servicio').change(function() {
+            cargarMedicosPorServicio(); // Volver a cargar médicos cada vez que se cambie el servicio
+        });
     </script>
 
     <?php include '../../includes/footer.php'; ?>

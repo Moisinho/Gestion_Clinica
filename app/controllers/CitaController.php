@@ -60,14 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     elseif ($_POST['action'] == 'actualizar') {
         $id_cita = $_POST['id_cita'];
         $nuevo_estado = $_POST['nuevo_estado'];
-
+    
         if ($cita->actualizarEstado($id_cita, $nuevo_estado)) {
-            echo json_encode(['success' => true, 'message' => 'Cita actualizada exitosamente.']);
+            echo json_encode(['status' => 'success', 'message' => 'Cita actualizada exitosamente.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Error al actualizar la cita.']);
+            echo json_encode(['status' => 'error', 'message' => 'Error al actualizar la cita.']);
         }
         exit();
-    }
+    }    
     // MANEJO DE INSERCION DE MOTIVO DE CANCELACION
     elseif ($_POST['action'] == 'insertarMotivoCancelar') {
         $id_cita = $_POST['id_cita'];

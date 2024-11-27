@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: localhost    Database: gestionclinica_db
 -- ------------------------------------------------------
--- Server version	8.0.38
+-- Server version	5.5.5-10.4.32-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,10 +23,10 @@ DROP TABLE IF EXISTS `administrador`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `administrador` (
-  `id_admin` int NOT NULL AUTO_INCREMENT,
-  `nombre_admin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_admin` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_usuario` int DEFAULT NULL,
+  `id_admin` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_admin` varchar(100) NOT NULL,
+  `correo_admin` varchar(100) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_admin`),
   UNIQUE KEY `correo_admin` (`correo_admin`),
   KEY `fk_id_usuario_admin` (`id_usuario`),
@@ -52,8 +52,8 @@ DROP TABLE IF EXISTS `administrador_recepcionista`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `administrador_recepcionista` (
-  `id_admin` int NOT NULL,
-  `id_recepcionista` int NOT NULL,
+  `id_admin` int(11) NOT NULL,
+  `id_recepcionista` int(11) NOT NULL,
   `fecha` date DEFAULT NULL,
   PRIMARY KEY (`id_admin`,`id_recepcionista`),
   KEY `id_recepcionista` (`id_recepcionista`),
@@ -80,10 +80,10 @@ DROP TABLE IF EXISTS `cama`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cama` (
-  `id_cama` int NOT NULL AUTO_INCREMENT,
-  `estado` enum('Disponible','Ocupada','Mantenimiento') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Disponible',
-  `id_habitacion` int DEFAULT NULL,
-  `tipo_cama` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_cama` int(11) NOT NULL AUTO_INCREMENT,
+  `estado` enum('Disponible','Ocupada','Mantenimiento') DEFAULT 'Disponible',
+  `id_habitacion` int(11) DEFAULT NULL,
+  `tipo_cama` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id_cama`),
   KEY `id_habitacion` (`id_habitacion`),
   CONSTRAINT `cama_ibfk_1` FOREIGN KEY (`id_habitacion`) REFERENCES `habitacion` (`id_habitacion`)
@@ -108,17 +108,18 @@ DROP TABLE IF EXISTS `cita`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cita` (
-  `id_cita` int NOT NULL AUTO_INCREMENT,
-  `estado` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
-  `motivo` varchar(5000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id_cita` int(11) NOT NULL AUTO_INCREMENT,
+  `estado` varchar(50) DEFAULT 'Pendiente',
+  `motivo` varchar(5000) NOT NULL,
   `fecha_cita` date DEFAULT NULL,
-  `diagnostico` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `tratamiento` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `id_medico` int DEFAULT NULL,
-  `id_servicio` int DEFAULT NULL,
-  `especialidad_referencia` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `diagnostico` text DEFAULT NULL,
+  `tratamiento` text DEFAULT NULL,
+  `cedula` varchar(15) DEFAULT NULL,
+  `id_medico` int(11) DEFAULT NULL,
+  `id_servicio` int(11) DEFAULT NULL,
+  `especialidad_referencia` varchar(60) DEFAULT NULL,
   `hora_cita` time DEFAULT NULL,
+  `motivo_cancelacion` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_cita`),
   KEY `cedula` (`cedula`),
   KEY `id_medico` (`id_medico`),
@@ -135,7 +136,7 @@ CREATE TABLE `cita` (
 
 LOCK TABLES `cita` WRITE;
 /*!40000 ALTER TABLE `cita` DISABLE KEYS */;
-INSERT INTO `cita` VALUES (1,'Atendida','Me siento mal, me duele el cuerpo','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:00:00'),(2,'Atendida','Me siento mal unu','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:45:00');
+INSERT INTO `cita` VALUES (1,'Atendida','Me siento mal, me duele el cuerpo','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:00:00',NULL),(2,'Atendida','Me siento mal unu','2024-11-28',NULL,NULL,'8-1002-2121',5,5,NULL,'14:45:00',NULL);
 /*!40000 ALTER TABLE `cita` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,9 +148,9 @@ DROP TABLE IF EXISTS `clientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clientes` (
-  `ClienteID` int NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Provincia` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ClienteID` int(11) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(100) NOT NULL,
+  `Provincia` varchar(50) NOT NULL,
   PRIMARY KEY (`ClienteID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -172,11 +173,11 @@ DROP TABLE IF EXISTS `compra_medicamento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `compra_medicamento` (
-  `id_compra` int NOT NULL AUTO_INCREMENT,
+  `id_compra` int(11) NOT NULL AUTO_INCREMENT,
   `monto` decimal(10,2) DEFAULT NULL,
   `fecha_compra` date DEFAULT NULL,
-  `detalles_compra` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `cedula_paciente` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `detalles_compra` text DEFAULT NULL,
+  `cedula_paciente` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id_compra`),
   KEY `cedula_paciente` (`cedula_paciente`),
   CONSTRAINT `compra_medicamento_ibfk_1` FOREIGN KEY (`cedula_paciente`) REFERENCES `paciente` (`cedula`)
@@ -200,8 +201,8 @@ DROP TABLE IF EXISTS `compras`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `compras` (
-  `CompraID` int NOT NULL AUTO_INCREMENT,
-  `ClienteID` int NOT NULL,
+  `CompraID` int(11) NOT NULL AUTO_INCREMENT,
+  `ClienteID` int(11) NOT NULL,
   `FechaCompra` date NOT NULL,
   `TotalCompra` decimal(10,2) NOT NULL,
   PRIMARY KEY (`CompraID`),
@@ -228,10 +229,10 @@ DROP TABLE IF EXISTS `departamento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `departamento` (
-  `id_departamento` int NOT NULL AUTO_INCREMENT,
-  `nombre_departamento` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `tipo` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_departamento` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_departamento` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `tipo` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id_departamento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -254,9 +255,9 @@ DROP TABLE IF EXISTS `examenes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `examenes` (
-  `id_examen` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_general_ci,
+  `id_examen` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
   `costo` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id_examen`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -279,17 +280,21 @@ DROP TABLE IF EXISTS `factura`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `factura` (
-  `id_factura` int NOT NULL AUTO_INCREMENT,
+  `id_factura` int(11) NOT NULL AUTO_INCREMENT,
   `monto` decimal(10,2) NOT NULL,
   `fecha_creacion` date NOT NULL,
-  `detalles_factura` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `id_cita` int DEFAULT NULL,
-  `id_recepcionista` int DEFAULT NULL,
+  `detalles_factura` varchar(255) NOT NULL,
+  `nombre_paciente` varchar(255) NOT NULL,
+  `correo_paciente` varchar(255) NOT NULL,
+  `telefono` varchar(15) NOT NULL,
+  `metodo_pago` varchar(50) NOT NULL,
+  `id_cita` int(11) NOT NULL,
+  `id_recepcionista` int(11) NOT NULL,
   PRIMARY KEY (`id_factura`),
   KEY `id_cita` (`id_cita`),
-  KEY `fk_factura_recepcionista` (`id_recepcionista`),
+  KEY `id_recepcionista` (`id_recepcionista`),
   CONSTRAINT `factura_ibfk_1` FOREIGN KEY (`id_cita`) REFERENCES `cita` (`id_cita`),
-  CONSTRAINT `fk_factura_recepcionista` FOREIGN KEY (`id_recepcionista`) REFERENCES `recepcionista` (`id_recepcionista`)
+  CONSTRAINT `factura_ibfk_2` FOREIGN KEY (`id_recepcionista`) REFERENCES `recepcionista` (`id_recepcionista`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -310,10 +315,10 @@ DROP TABLE IF EXISTS `farmaceutico`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `farmaceutico` (
-  `id_farmaceutico` int NOT NULL AUTO_INCREMENT,
-  `nombre_farmaceutico` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_farmaceutico` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_usuario` int DEFAULT NULL,
+  `id_farmaceutico` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_farmaceutico` varchar(255) NOT NULL,
+  `correo_farmaceutico` varchar(255) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_farmaceutico`),
   UNIQUE KEY `correo_farmaceutico` (`correo_farmaceutico`),
   KEY `id_usuario` (`id_usuario`),
@@ -339,10 +344,10 @@ DROP TABLE IF EXISTS `habitacion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `habitacion` (
-  `id_habitacion` int NOT NULL AUTO_INCREMENT,
-  `capacidad_disponible` int NOT NULL,
-  `ubicacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `tipo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_habitacion` int(11) NOT NULL AUTO_INCREMENT,
+  `capacidad_disponible` int(11) NOT NULL,
+  `ubicacion` text DEFAULT NULL,
+  `tipo` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_habitacion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -365,26 +370,26 @@ DROP TABLE IF EXISTS `historial_medico`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `historial_medico` (
-  `cedula` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_cita` int NOT NULL,
-  `id_medico` int NOT NULL,
+  `cedula` varchar(255) NOT NULL,
+  `id_cita` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
   `peso` decimal(10,2) DEFAULT NULL,
   `altura` decimal(10,2) DEFAULT NULL,
-  `presion_arterial` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `frecuencia_cardiaca` int DEFAULT NULL,
-  `tipo_sangre` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `antecedentes_personales` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `otros_antecedentes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `antecedentes_no_patologicos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `otros_antecedentes_no_patologicos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `condicion_general` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `examenes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `laboratorios` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `diagnostico` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `motivo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `tratamiento` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `fecha_cita` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `id_departamento_referencia` int DEFAULT NULL,
+  `presion_arterial` varchar(20) DEFAULT NULL,
+  `frecuencia_cardiaca` int(11) DEFAULT NULL,
+  `tipo_sangre` varchar(10) DEFAULT NULL,
+  `antecedentes_personales` text DEFAULT NULL,
+  `otros_antecedentes` text DEFAULT NULL,
+  `antecedentes_no_patologicos` text DEFAULT NULL,
+  `otros_antecedentes_no_patologicos` text DEFAULT NULL,
+  `condicion_general` text DEFAULT NULL,
+  `examenes` text DEFAULT NULL,
+  `laboratorios` text DEFAULT NULL,
+  `diagnostico` text DEFAULT NULL,
+  `motivo` text DEFAULT NULL,
+  `tratamiento` text DEFAULT NULL,
+  `fecha_cita` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id_departamento_referencia` int(11) DEFAULT NULL,
   PRIMARY KEY (`cedula`,`id_cita`,`id_medico`),
   KEY `id_cita` (`id_cita`),
   KEY `id_medico` (`id_medico`),
@@ -413,7 +418,7 @@ DROP TABLE IF EXISTS `horario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `horario` (
-  `id_hora` int NOT NULL AUTO_INCREMENT,
+  `id_hora` int(11) NOT NULL AUTO_INCREMENT,
   `hora_inicio` time DEFAULT NULL,
   `hora_fin` time DEFAULT NULL,
   PRIMARY KEY (`id_hora`)
@@ -438,10 +443,10 @@ DROP TABLE IF EXISTS `medicamento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medicamento` (
-  `id_medicamento` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `cant_stock` int DEFAULT NULL,
+  `id_medicamento` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `cant_stock` int(11) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
   `fecha_expiracion` date DEFAULT NULL,
   PRIMARY KEY (`id_medicamento`)
@@ -466,12 +471,12 @@ DROP TABLE IF EXISTS `medico`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medico` (
-  `id_medico` int NOT NULL AUTO_INCREMENT,
-  `nombre_medico` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo_medico` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `id_hora` int DEFAULT NULL,
-  `id_departamento` int DEFAULT NULL,
-  `id_usuario` int DEFAULT NULL,
+  `id_medico` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_medico` varchar(100) DEFAULT NULL,
+  `correo_medico` varchar(100) DEFAULT NULL,
+  `id_hora` int(11) DEFAULT NULL,
+  `id_departamento` int(11) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_medico`),
   KEY `id_hora` (`id_hora`),
   KEY `id_departamento` (`id_departamento`),
@@ -500,16 +505,16 @@ DROP TABLE IF EXISTS `paciente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente` (
-  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `nombre_paciente` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo_paciente` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cedula` varchar(15) NOT NULL,
+  `nombre_paciente` varchar(100) DEFAULT NULL,
+  `correo_paciente` varchar(100) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `direccion_paciente` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `edad` int NOT NULL,
-  `id_usuario` int DEFAULT NULL,
-  `sexo` enum('Masculino','Femenino') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_seguro` int DEFAULT NULL,
+  `direccion_paciente` text DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `edad` int(11) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `sexo` enum('Masculino','Femenino') NOT NULL,
+  `id_seguro` int(11) DEFAULT NULL,
   PRIMARY KEY (`cedula`),
   KEY `paciente_usuario_fk` (`id_usuario`),
   KEY `fk_id_seguro` (`id_seguro`),
@@ -536,13 +541,13 @@ DROP TABLE IF EXISTS `paciente_hospitalizado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `paciente_hospitalizado` (
-  `cedula` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_cama` int NOT NULL,
-  `id_medico` int NOT NULL,
+  `cedula` varchar(15) NOT NULL,
+  `id_cama` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
   `fecha_ingreso` datetime NOT NULL,
   `fecha_egreso` datetime DEFAULT NULL,
-  `motivo` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `estado_pacienteH` enum('Hospitalizado','No hospitalizado') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Hospitalizado',
+  `motivo` text DEFAULT NULL,
+  `estado_pacienteH` enum('Hospitalizado','No hospitalizado') DEFAULT 'Hospitalizado',
   PRIMARY KEY (`cedula`,`id_cama`),
   KEY `id_cama` (`id_cama`),
   KEY `id_medico` (`id_medico`),
@@ -570,11 +575,11 @@ DROP TABLE IF EXISTS `proveedor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `proveedor` (
-  `id_proveedor` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `ubicacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_proveedor` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) DEFAULT NULL,
+  `ubicacion` text DEFAULT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `correo` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_proveedor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -596,10 +601,10 @@ DROP TABLE IF EXISTS `recepcionista`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `recepcionista` (
-  `id_recepcionista` int NOT NULL AUTO_INCREMENT,
-  `nombre_recepcionista` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `correo_recepcionista` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_usuario` int DEFAULT NULL,
+  `id_recepcionista` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_recepcionista` varchar(100) NOT NULL,
+  `correo_recepcionista` varchar(100) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_recepcionista`),
   UNIQUE KEY `correo_recepcionista` (`correo_recepcionista`),
   KEY `fk_id_usuario` (`id_usuario`),
@@ -625,13 +630,13 @@ DROP TABLE IF EXISTS `receta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `receta` (
-  `id_receta` int NOT NULL AUTO_INCREMENT,
-  `id_cita` int DEFAULT NULL,
-  `id_medicamento` int DEFAULT NULL,
-  `dosis` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `duracion` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `frecuencia` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `estado` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `id_receta` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cita` int(11) DEFAULT NULL,
+  `id_medicamento` int(11) DEFAULT NULL,
+  `dosis` varchar(50) DEFAULT NULL,
+  `duracion` varchar(50) DEFAULT NULL,
+  `frecuencia` varchar(50) DEFAULT NULL,
+  `estado` varchar(12) DEFAULT 'Pendiente',
   PRIMARY KEY (`id_receta`),
   KEY `id_cita` (`id_cita`),
   KEY `id_medicamento` (`id_medicamento`),
@@ -658,11 +663,11 @@ DROP TABLE IF EXISTS `referencia_especialidad`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `referencia_especialidad` (
-  `id_referencia` int NOT NULL DEFAULT '0',
-  `cedula_paciente` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_departamento` int NOT NULL,
+  `id_referencia` int(11) NOT NULL DEFAULT 0,
+  `cedula_paciente` varchar(15) NOT NULL,
+  `id_departamento` int(11) NOT NULL,
   `fecha_referencia` date NOT NULL,
-  `id_medico` int NOT NULL,
+  `id_medico` int(11) NOT NULL,
   PRIMARY KEY (`id_referencia`),
   KEY `cedula_paciente_fk` (`cedula_paciente`),
   KEY `departamento_fk` (`id_departamento`),
@@ -691,10 +696,10 @@ DROP TABLE IF EXISTS `restablecer_contrasenia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `restablecer_contrasenia` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(100) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
+  `fecha_creacion` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `correo` (`correo`),
   CONSTRAINT `restablecer_contrasenia_ibfk_1` FOREIGN KEY (`correo`) REFERENCES `usuario` (`correo`) ON DELETE CASCADE
@@ -718,12 +723,12 @@ DROP TABLE IF EXISTS `restablecimiento_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `restablecimiento_tokens` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(100) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
   `fecha_expiracion` datetime NOT NULL,
-  `usado` tinyint(1) DEFAULT '0',
-  `creado_en` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `usado` tinyint(1) DEFAULT 0,
+  `creado_en` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`),
   UNIQUE KEY `correo` (`correo`),
@@ -748,10 +753,10 @@ DROP TABLE IF EXISTS `seguro`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seguro` (
-  `id_seguro` int NOT NULL AUTO_INCREMENT,
-  `nombre_aseguradora` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `contacto_aseguradora` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `direccion_aseguradora` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_seguro` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_aseguradora` varchar(100) NOT NULL,
+  `contacto_aseguradora` varchar(100) DEFAULT NULL,
+  `direccion_aseguradora` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_seguro`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -774,16 +779,16 @@ DROP TABLE IF EXISTS `seguro_paciente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seguro_paciente` (
-  `cedula` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `id_seguro` int NOT NULL,
-  `numero_poliza` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `cedula` varchar(20) NOT NULL,
+  `id_seguro` int(11) NOT NULL,
+  `numero_poliza` varchar(50) NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `deducible_anual` decimal(10,2) NOT NULL,
   `coaseguro` decimal(5,2) NOT NULL,
   `limite_cobertura` decimal(15,2) DEFAULT NULL,
-  `monto_utilizado` decimal(15,2) DEFAULT '0.00',
-  `activo` enum('Activo','Inactivo') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Activo',
+  `monto_utilizado` decimal(15,2) DEFAULT 0.00,
+  `activo` enum('Activo','Inactivo') DEFAULT 'Activo',
   PRIMARY KEY (`cedula`),
   UNIQUE KEY `numero_poliza` (`numero_poliza`),
   KEY `id_seguro` (`id_seguro`),
@@ -809,11 +814,11 @@ DROP TABLE IF EXISTS `servicio`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `servicio` (
-  `id_servicio` int NOT NULL AUTO_INCREMENT,
-  `nombre_servicio` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `id_servicio` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_servicio` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
   `costo` decimal(10,2) DEFAULT NULL,
-  `id_departamento` int DEFAULT NULL,
+  `id_departamento` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_servicio`),
   KEY `fk_departamento` (`id_departamento`),
   CONSTRAINT `fk_departamento` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`) ON DELETE CASCADE
@@ -838,14 +843,14 @@ DROP TABLE IF EXISTS `solicitudes_examenes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `solicitudes_examenes` (
-  `id_solicitud` int NOT NULL AUTO_INCREMENT,
-  `cedula` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_examen` int NOT NULL,
-  `id_medico` int NOT NULL,
-  `fecha_solicitud` datetime DEFAULT CURRENT_TIMESTAMP,
-  `estado` enum('Pendiente','Realizado','Cancelado') COLLATE utf8mb4_general_ci DEFAULT 'Pendiente',
+  `id_solicitud` int(11) NOT NULL AUTO_INCREMENT,
+  `cedula` varchar(15) NOT NULL,
+  `id_examen` int(11) NOT NULL,
+  `id_medico` int(11) NOT NULL,
+  `fecha_solicitud` datetime DEFAULT current_timestamp(),
+  `estado` enum('Pendiente','Realizado','Cancelado') DEFAULT 'Pendiente',
   `fecha_realizacion` datetime DEFAULT NULL,
-  `resultado` text COLLATE utf8mb4_general_ci,
+  `resultado` text DEFAULT NULL,
   PRIMARY KEY (`id_solicitud`),
   KEY `cedula` (`cedula`),
   KEY `id_examen` (`id_examen`),
@@ -873,11 +878,11 @@ DROP TABLE IF EXISTS `suministro_medicamento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `suministro_medicamento` (
-  `id_proveedor` int NOT NULL,
-  `id_medicamento` int NOT NULL,
+  `id_proveedor` int(11) NOT NULL,
+  `id_medicamento` int(11) NOT NULL,
   `fecha` date NOT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
-  `cantidad` int DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_proveedor`,`id_medicamento`,`fecha`),
   KEY `id_medicamento` (`id_medicamento`),
   CONSTRAINT `suministro_medicamento_ibfk_1` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_proveedor`),
@@ -902,10 +907,10 @@ DROP TABLE IF EXISTS `usuario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
-  `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `contrasenia` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `tipo_usuario` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+  `correo` varchar(100) DEFAULT NULL,
+  `contrasenia` varchar(100) NOT NULL,
+  `tipo_usuario` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `contrasenia` (`contrasenia`),
   UNIQUE KEY `correo` (`correo`)
@@ -929,34 +934,6 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'gestionclinica_db'
 --
-/*!50003 DROP PROCEDURE IF EXISTS `BuscarCitas` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_AUTO_VALUE_ON_ZERO' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscarCitas`(IN `busqueda` VARCHAR(255))
-BEGIN
-    SELECT * 
-    FROM cita
-    WHERE 
-        estado LIKE CONCAT('%', busqueda, '%') OR
-        recordatorio LIKE CONCAT('%', busqueda, '%') OR
-        fecha_cita LIKE CONCAT('%', busqueda, '%') OR
-        diagnostico LIKE CONCAT('%', busqueda, '%') OR
-        tratamiento LIKE CONCAT('%', busqueda, '%') OR
-        cedula LIKE CONCAT('%', busqueda, '%') OR
-        id_medico LIKE CONCAT('%', busqueda, '%');
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `ObtenerDatosRecetas` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1019,4 +996,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-26 22:07:22
+-- Dump completed on 2024-11-26 22:22:10

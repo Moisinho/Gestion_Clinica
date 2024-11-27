@@ -53,6 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         echo json_encode($servicios);
     }
 
+    // OBTENER TODOS LOS SERVICIOS NO GENERALES
+    if ($_GET['action'] == 'obtenerSoloGenerales') {
+        $servicios = $servicioModel->obtenerSoloGenerales();
+        echo json_encode($servicios);
+    }
+
     // OBTENER SERVICIO POR USUARIO
     elseif ($_GET['action'] == 'obtenerServiciosPorUsuario') {
         $cedula = $_GET['cedula'];

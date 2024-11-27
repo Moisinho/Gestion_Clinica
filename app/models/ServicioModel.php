@@ -19,6 +19,17 @@ class ServicioModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Método para obtener todos los servicios no generales
+    public function obtenerSoloGenerales()
+    {
+        $query = "SELECT * FROM servicio WHERE id_departamento IN (1, 4, 5)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function obtenerServiciosPorUsuario($cedula)
     {
         try {
@@ -99,7 +110,8 @@ class ServicioModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerMonto($id_servicio){
+    public function obtenerMonto($id_servicio)
+    {
         $query = "SELECT costo
                     FROM servicio 
                     WHERE id_servicio = :id_servicio";

@@ -526,6 +526,7 @@ if (!empty($criterioBD) && !empty($valorBusqueda)) {
 
                         // Si la respuesta es exitosa, proceder con la generación de la factura
                         var jsonResponse = JSON.parse(response);
+                        console.log(jsonResponse.status);
                         if (jsonResponse.status === 'success') {
                             // Proceder con la generación de la factura
                             $.ajax({
