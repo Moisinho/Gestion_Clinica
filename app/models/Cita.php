@@ -219,8 +219,35 @@ class Cita
             SELECT 
             c.fecha_cita, 
             c.motivo,
-            h.diagnostico, 
             p.cedula, 
+            p.nombre_paciente, 
+            p.fecha_nacimiento,
+            p.telefono,
+            p.correo_paciente,
+            p.edad
+        FROM 
+            cita c
+        JOIN 
+            paciente p ON c.cedula = p.cedula
+        WHERE 
+            c.id_cita = :id_cita
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id_cita', $id_cita, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function obtener_detalles_cita_factura($id_cita)
+    {
+        $sql = "
+            
+SELECT 
+            c.fecha_cita, 
+            c.motivo,
+            p.cedula,
+            h.diagnostico, 
             p.nombre_paciente, 
             p.fecha_nacimiento,
             p.telefono,

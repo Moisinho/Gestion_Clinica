@@ -353,7 +353,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="mt-5">
                 <h3 class="text-lg font-bold text-Moradote">Diagnostico</h3>
-                <textarea name="diagnostico" id="diagnostico" class="border border-gray-300 rounded p-2 w-full h-24" placeholder="Especifique las recomendaciones..."></textarea>
+                <textarea name="diagnostico" required id="diagnostico" class="border border-gray-300 rounded p-2 w-full h-24" placeholder="Especifique las recomendaciones..."></textarea>
             </div>
 
             <div class="mt-5">

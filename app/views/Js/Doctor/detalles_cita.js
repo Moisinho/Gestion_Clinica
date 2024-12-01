@@ -240,8 +240,7 @@ function guardarHistorialMedico() {
         alert("Error al guardar: " + responseData.error);
       } else {
         // Mostrar una alerta de éxito si la operación fue correcta
-        // Opcional: Recargar la página o redirigir a otra vista
-        // location.reload();
+        alert("La cita se ha atendido correctamente en el sistema.");
       }
     })
     .catch((error) => {
